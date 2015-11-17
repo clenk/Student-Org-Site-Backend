@@ -88,5 +88,19 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed.
     """
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    queryset = myUser.objects.all()
+    serializer_class = myUserSerializer
+
+class PostViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows for CRUD operations on post objects.
+    """
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+def home(request):
+  """
+  Send requests to / to the ember.js clientside app  """
+  
+  return render_to_response('index.html',
+                {}, RequestContext(request))

@@ -8,6 +8,7 @@ class Tag(models.Model):
     This is a tag for user submitted post entries.
     """
     name = models.CharField(max_length=20, blank=False, unique=True)
+    posts = models.ManyToManyField('Post', blank=True)
     def __str__(self):
         return str(self.id)+":"+self.name
 
@@ -15,6 +16,15 @@ class Tag(models.Model):
         verbose_name_plural = "Tags"
 
 class TagAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
+class myUser(User):
+    name = models.CharField(max_length=20, blank=False, unique=True)
+    emailAddress = models.CharField(max_length=120, blank=False, unique=True)
+    profileImageUrl = models.CharField(max_length=120)
+    posts = models.ManyToManyField('Post', blank=True)
+
+class myUserAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
 class Post(models.Model):

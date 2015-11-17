@@ -10,6 +10,7 @@ router = routers.DefaultRouter()
 #router.register(r'posts', views.PostViewSet) #use this for viewset approach
 router.register(r'tags', views.TagViewSet)
 router.register(r'users', views.UserViewSet)
+router.register(r'posts', views.PostViewSet)
 
 #REST API
 urlpatterns = [
