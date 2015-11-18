@@ -101,7 +101,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    '/var/www/Student_Site_Org_Backend/static/',
+    '/var/www/Student_Org_Site_Backend/static/',
 )
 
 REST_FRAMEWORK = {
