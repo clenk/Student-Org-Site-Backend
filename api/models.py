@@ -18,14 +18,34 @@ class Tag(models.Model):
 class TagAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
+class Event(models.Model):
+    """
+    This is an event for the calendar.
+    """
+    title = models.CharField(max_length=20, blank=False, unique=True)
+    start = models.CharField(max_length=20, blank=False, unique=True)
+    end = models.CharField(max_length=20, blank=False, unique=True)
+    #allday = models.BooleanField(unique=True)
+    tags = models.ManyToManyField('tag', blank=True)
+    def __str__(self):
+        return str(self.id)+":"+self.name
+
+    class Meta:
+        verbose_name_plural = "Events"
+
+class EventAdmin(admin.ModelAdmin):
+    #This inner class indicates to the admin interface how to display a post
+    #See the Django documentation for more information
+    list_display = ('title', 'start', 'end',)
+
 class myUser(User):
-    name = models.CharField(max_length=20, blank=False, unique=True)
-    emailAddress = models.CharField(max_length=120, blank=False, unique=True)
+    '''name = models.CharField(max_length=20, blank=False, unique=True)
+    emailAddress = models.CharField(max_length=120, blank=False, unique=True)'''
     profileImageUrl = models.CharField(max_length=120)
     posts = models.ManyToManyField('Post', blank=True)
 
 class myUserAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('username',)
 
 class Post(models.Model):
     """

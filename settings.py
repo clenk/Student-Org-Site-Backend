@@ -80,6 +80,8 @@ DATABASES = {
     }
 }
 
+#AUTH_USER_MODEL = 'Student_Org_Site_Backend.myUser' # use settings.AUTH_USER_MODEL to get the user info
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/

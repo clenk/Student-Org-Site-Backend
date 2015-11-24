@@ -11,6 +11,7 @@ router = routers.DefaultRouter()
 router.register(r'tags', views.TagViewSet)
 router.register(r'users', views.UserViewSet)
 router.register(r'posts', views.PostViewSet)
+router.register(r'events', views.EventViewSet)
 
 #REST API
 urlpatterns = [

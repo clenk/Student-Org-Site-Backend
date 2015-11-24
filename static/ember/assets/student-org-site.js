@@ -635,7 +635,7 @@ define('student-org-site/models/event', ['exports', 'ember-data'], function (exp
     	title: DS['default'].attr('string'),
     	start: DS['default'].attr('date'),
     	end: DS['default'].attr('date'),
-    	allday: DS['default'].attr('boolean'),
+    	//allday: DS.attr('boolean'),
     	tags: DS['default'].hasMany('tag', { async: true })
     }); /*.reopenClass({
         FIXTURES: [
@@ -8026,7 +8026,7 @@ catch(err) {
 if (runningTests) {
   require("student-org-site/tests/test-helper");
 } else {
-  require("student-org-site/app")["default"].create({"API_HOST":"http://localhost:8000","name":"student-org-site","version":"0.0.0+0965af8a","API_NAMESPACE":"api","API_ADD_TRAILING_SLASHES":true});
+  require("student-org-site/app")["default"].create({"API_HOST":"http://localhost:8000","name":"student-org-site","version":"0.0.0+b0ed9ace","API_NAMESPACE":"api","API_ADD_TRAILING_SLASHES":true});
 }
 
 /* jshint ignore:end */

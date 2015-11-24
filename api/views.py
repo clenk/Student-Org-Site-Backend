@@ -84,12 +84,19 @@ class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
+class EventViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows for CRUD operations on event objects.
+    """
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed.
     """
-    queryset = myUser.objects.all()
-    serializer_class = myUserSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 class PostViewSet(viewsets.ModelViewSet):
     """

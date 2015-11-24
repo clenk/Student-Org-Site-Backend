@@ -4,15 +4,22 @@ from rest_framework import serializers
 from django.contrib.auth.models import *
 from Student_Org_Site_Backend.api.models import *
 
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ('id','title', 'start', 'end', 'allday', 'tags')
+
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id','name', 'url')
 
-class myUserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
+    #name = serializers.username #TODO change the field name 'username' to 'name'
     class Meta:
         model = myUser
-        fields = ('id', 'name', 'password', 'emailAddress', 'profileImageUrl', 'posts')
+        #fields = ('id', 'username', 'password', 'email', 'profileImageUrl', 'posts')
+        fields = ('id', 'username', 'password', 'email',)
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
