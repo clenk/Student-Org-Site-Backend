@@ -227,15 +227,15 @@ define('student-org-site/components/nav-bar', ['exports', 'ember'], function (ex
 	'use strict';
 
 	exports['default'] = Ember['default'].Component.extend({
-		authControllerChild: null,
-		actions: {
-			foo: function foo() {
-				var auth = this.get('authControllerChild');
-				auth.set('username', 'cheese');
-				alert(auth.get('username'));
-			}
-		}
+		authControllerChild: null
 	});
+	/*actions: {
+		foo: function(){
+			var auth = this.get('authControllerChild');
+			auth.set('username', 'cheese');
+			alert(auth.get('username'));
+		}
+	}*/
 
 });
 define('student-org-site/components/page-title', ['exports', 'ember'], function (exports, Ember) {
@@ -795,6 +795,7 @@ define('student-org-site/router', ['exports', 'ember', 'student-org-site/config/
     this.route('auth', {});
     this.route('search', {});
     this.route('addEvent', {});
+    this.route('bad-url', { path: '/*badurl' }); // Catch unrecognized URLs
   });
 
   exports['default'] = Router;
@@ -867,14 +868,14 @@ define('student-org-site/routes/application', ['exports', 'ember'], function (ex
 			}
 		},
 		setupController: function setupController(controller, model) {
-			controller.set('authController', this.controllerFor('auth'));
+			//controller.set('authController', this.controllerFor('auth'));
 			controller.set('posts', model.posts);
 			controller.set('events', model.events);
 		},
 		actions: {
-			willTransition: function willTransition(transition) {
-				this.authCheck(transition);
-			}
+			/*willTransition: function(transition){
+	  	this.authCheck(transition);
+	  },*/
 		}
 	});
 
@@ -891,6 +892,13 @@ define('student-org-site/routes/auth', ['exports', 'ember'], function (exports, 
 	 	controller.set('users', model);
 	 }*/
 	});
+
+});
+define('student-org-site/routes/bad-url', ['exports', 'ember'], function (exports, Ember) {
+
+	'use strict';
+
+	exports['default'] = Ember['default'].Route.extend({});
 
 });
 define('student-org-site/routes/calendar', ['exports', 'ember'], function (exports, Ember) {
@@ -1717,6 +1725,52 @@ define('student-org-site/templates/auth', ['exports'], function (exports) {
       ],
       locals: [],
       templates: [child0, child1]
+    };
+  }()));
+
+});
+define('student-org-site/templates/bad-url', ['exports'], function (exports) {
+
+  'use strict';
+
+  exports['default'] = Ember.HTMLBars.template((function() {
+    return {
+      meta: {
+        "revision": "Ember@1.13.7",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 1,
+            "column": 50
+          }
+        },
+        "moduleName": "student-org-site/templates/bad-url.hbs"
+      },
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
+        dom.insertBoundary(fragment, 0);
+        dom.insertBoundary(fragment, null);
+        return morphs;
+      },
+      statements: [
+        ["inline","page-title",[],["title","Uh-Oh! Nothing To See Here!"],["loc",[null,[1,0],[1,50]]]]
+      ],
+      locals: [],
+      templates: []
     };
   }()));
 
@@ -7102,6 +7156,16 @@ define('student-org-site/tests/routes/auth.jshint', function () {
   });
 
 });
+define('student-org-site/tests/routes/bad-url.jshint', function () {
+
+  'use strict';
+
+  module('JSHint - routes');
+  test('routes/bad-url.js should pass jshint', function() { 
+    ok(true, 'routes/bad-url.js should pass jshint.'); 
+  });
+
+});
 define('student-org-site/tests/routes/calendar.jshint', function () {
 
   'use strict';
@@ -8026,7 +8090,7 @@ catch(err) {
 if (runningTests) {
   require("student-org-site/tests/test-helper");
 } else {
-  require("student-org-site/app")["default"].create({"API_HOST":"http://localhost:8000","name":"student-org-site","version":"0.0.0+b0ed9ace","API_NAMESPACE":"api","API_ADD_TRAILING_SLASHES":true});
+  require("student-org-site/app")["default"].create({"API_HOST":"http://localhost:8000","name":"student-org-site","version":"0.0.0+db1556fd","API_NAMESPACE":"api","API_ADD_TRAILING_SLASHES":true});
 }
 
 /* jshint ignore:end */
