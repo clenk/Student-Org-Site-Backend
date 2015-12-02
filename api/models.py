@@ -60,7 +60,7 @@ class Post(models.Model):
     tags = models.ManyToManyField('tag', blank=True)
     def __str__(self):
         return str(self.id) +":" +self.title
- 		
+
     class Meta:
         #This will be used by the admin interface
         verbose_name_plural = "Posts"
