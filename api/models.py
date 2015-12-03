@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib import admin
+from Student_Org_Site_Backend.api.validators import *
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 class Tag(models.Model):
@@ -54,12 +56,21 @@ class Post(models.Model):
     title = models.CharField(max_length=40, blank=False)
     subtitle = models.CharField(max_length=40, blank=False)
     image = models.CharField(max_length=120, blank=True)
-    content = models.TextField(blank=False)
+    content = models.TextField(blank=False, validators=[removeJavascriptKeyword])
     datePublished = models.TextField(blank=False)
     author = models.ForeignKey(User)
     tags = models.ManyToManyField('tag', blank=True)
     def __str__(self):
         return str(self.id) +":" +self.title
+
+    """
+    def clean(self):
+        if 'shit' in (self.title + self.content):
+            raise ValidationError('post contains profanity')
+    """
+    def clean(self):
+        self.title = self.title.replace('shit','****')
+        self.content = self.content.replace('shit','****')
 
     class Meta:
         #This will be used by the admin interface
