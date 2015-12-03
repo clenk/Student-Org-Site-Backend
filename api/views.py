@@ -11,6 +11,7 @@ from rest_framework import viewsets
 from Student_Org_Site_Backend.api.serializers import *
 from django.http import Http404
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -123,6 +124,7 @@ class TagViewSet(viewsets.ModelViewSet):
     """
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    lookup_field = 'name'
 
 class EventViewSet(viewsets.ModelViewSet):
     """
@@ -137,6 +139,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    lookup_field = 'username'
 
 class PostViewSet(viewsets.ModelViewSet):
     """
@@ -148,6 +151,6 @@ class PostViewSet(viewsets.ModelViewSet):
 def home(request):
   """
   Send requests to / to the ember.js clientside app  """
-  
+
   return render_to_response('index.html',
                 {}, RequestContext(request))

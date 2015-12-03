@@ -12,7 +12,7 @@ class EventSerializer(serializers.ModelSerializer):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('id','name', 'url')
+        fields = ('id','name', )
 
 class UserSerializer(serializers.ModelSerializer):
     #name = serializers.username #TODO change the field name 'username' to 'name'
@@ -23,7 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())
-    #author = serializers.SlugRelatedField(read_only=True, slug_field='username')
+
     tags = serializers.SlugRelatedField(slug_field='name', many=True, queryset=Tag.objects.all())
     class Meta:
         model = Post
