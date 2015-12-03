@@ -227,15 +227,15 @@ define('student-org-site/components/nav-bar', ['exports', 'ember'], function (ex
 	'use strict';
 
 	exports['default'] = Ember['default'].Component.extend({
-		authControllerChild: null
-	});
-	/*actions: {
-		foo: function(){
-			var auth = this.get('authControllerChild');
-			auth.set('username', 'cheese');
-			alert(auth.get('username'));
+		authControllerChild: null,
+		actions: {
+			foo: function foo() {
+				var auth = this.get('authControllerChild');
+				auth.set('username', 'cheese');
+				alert(auth.get('username'));
+			}
 		}
-	}*/
+	});
 
 });
 define('student-org-site/components/page-title', ['exports', 'ember'], function (exports, Ember) {
@@ -305,63 +305,55 @@ define('student-org-site/controllers/array', ['exports', 'ember'], function (exp
 });
 define('student-org-site/controllers/auth', ['exports', 'ember'], function (exports, Ember) {
 
-	'use strict';
+    'use strict';
 
-	exports['default'] = Ember['default'].Controller.extend({
-		username: '',
-		loggedIn: false,
-		errorMsg: '',
-		remember: false,
-		actions: {
-			login: function login() {
-				//var DBuser = this.store.find('person', { name: "Peter" });
-				var DBuser = this.store.all('user');
-				/*console.log(DBuser.content);
-	   console.log(DBuser.content[2].username);
-	   console.log(DBuser.content.length);*/
-				//do stuff to authenticate here
-				console.log('login');
-				var user = this.get('username');
-				var pass = this.get('password');
-				var match = false;
-				//console.log("About to log all usernames");
-				for (var i = 0; i < DBuser.content.length; i++) {
-					//console.log(DBuser.content[i]._data.username);
-					if (user === DBuser.content[i]._data.username) {
-						if (pass === DBuser.content[i]._data.password) {
-							match = true;
-						}
-					}
-				}
+    exports['default'] = Ember['default'].Controller.extend({
+        username: '',
+        isLoggedIn: false,
+        errorMsg: '',
+        remember: false,
+        actions: {
+            login: function login() {
+                //do stuff to authenticate here
+                var username = this.get('username');
+                var password = this.get('password');
+                var remember = this.get('remember');
+                var data = {
+                    'username': username,
+                    'password': password };
+                var controllerObj = this;
+                Ember['default'].$.post('../api/session/', data, function (response) {
+                    if (response.isauthenticated) {
+                        //success
+                        console.log('Login POST Request to ../api/session/ was successful.');
+                        controllerObj.set('username', response.username);
+                        controllerObj.set('userid', response.userid);
+                        controllerObj.set('isLoggedIn', true);
+                    } else {
+                        //errors
+                        console.log('Login POST Request to ../api/session/ was successful.');
+                        controllerObj.set('errorMsg', response.message);
+                    }
+                });
+            },
+            logout: function logout() {
+                var remember = this.get('remember');;
+                var controllerObj = this;
+                Ember['default'].$.ajax({ url: '../api/session/', type: 'DELETE' }).then(function (response) {
+                    console.log('Logout success.');
+                    controllerObj.set('isLoggedIn', false);
+                    controllerObj.set('errorMsg', '');
+                    controllerObj.set('username', '');
+                    controllerObj.set('userid', '');
+                    if (!remember) {
+                        //save to username and pass to local storage
 
-				for (i = 0; i < DBuser.content.length; i++) {
-					//console.log(DBuser.content[i].username);
-					if (user === DBuser.content[i].username) {
-						//if(pass === DBuser.content[i].password){
-						match = true;
-						//}
-					}
-				}
-
-				if (match === false) {
-					this.set('errorMsg', 'invalid attempt');
-				} else {
-					this.set('loggedIn', true);
-					this.transitionTo('index');
-					this.set('errorMsg', '');
-				}
-				this.set('password', '');
-			},
-			logout: function logout() {
-				this.set('loggedIn', false);
-				this.set('username', '');
-				this.set('password', '');
-			},
-			test: function test() {
-				console.log('test');
-			}
-		}
-	});
+                    }
+                    controllerObj.transitionToRoute('auth');
+                });
+            }
+        }
+    });
 
 });
 define('student-org-site/controllers/calendar', ['exports', 'ember'], function (exports, Ember) {
@@ -828,10 +820,10 @@ define('student-org-site/routes/application', ['exports', 'ember'], function (ex
 
 	exports['default'] = Ember['default'].Route.extend({
 		currentTransition: null,
-		/*beforeModel: function(transition){
-	 	this.authCheck(transition);
-	 	//will have other stuff here once its connected to restapi
-	 },*/
+		beforeModel: function beforeModel(transition) {
+			this.authCheck(transition);
+			//will have other stuff here once its connected to restapi
+		},
 		// Data here is accessible from anywhere in the application
 		model: function model() {
 			return Ember['default'].RSVP.hash({
@@ -851,10 +843,10 @@ define('student-org-site/routes/application', ['exports', 'ember'], function (ex
 			console.log('Checking authentication');
 			var t = this;
 			var auth = t.controllerFor('auth');
-			console.log("are you logged in " + auth.get('loggedIn'));
+			console.log("are you logged in " + auth.get('isLoggedIn'));
 			var previoustrans = t.get('currentTransition');
 			console.log('User attempting to access: /' + transition.targetName);
-			if (!auth.loggedIn) {
+			if (!auth.isLoggedIn) {
 				if (transition.targetName === 'auth' || transition.targetName === 'createAccount' || transition.targetName === 'calendar' || transition.targetName === 'about') {} else {
 					t.set('currentTransition', transition);
 					transition.abort();
@@ -873,9 +865,9 @@ define('student-org-site/routes/application', ['exports', 'ember'], function (ex
 			controller.set('events', model.events);
 		},
 		actions: {
-			/*willTransition: function(transition){
-	  	this.authCheck(transition);
-	  },*/
+			willTransition: function willTransition(transition) {
+				this.authCheck(transition);
+			}
 		}
 	});
 
@@ -885,12 +877,12 @@ define('student-org-site/routes/auth', ['exports', 'ember'], function (exports, 
 	'use strict';
 
 	exports['default'] = Ember['default'].Route.extend({
-		/*model: function(){
-	 	return this.store.find('user');
-	 },
-	 setupController: function(controller, model){
-	 	controller.set('users', model);
-	 }*/
+		model: function model() {
+			return this.store.find('user');
+		},
+		setupController: function setupController(controller, model) {
+			controller.set('users', model);
+		}
 	});
 
 });
@@ -6880,7 +6872,7 @@ define('student-org-site/tests/controllers/auth.jshint', function () {
 
   module('JSHint - controllers');
   test('controllers/auth.js should pass jshint', function() { 
-    ok(true, 'controllers/auth.js should pass jshint.'); 
+    ok(false, 'controllers/auth.js should pass jshint.\ncontrollers/auth.js: line 33, col 49, Unnecessary semicolon.\ncontrollers/auth.js: line 47, col 15, Missing semicolon.\ncontrollers/auth.js: line 13, col 17, \'remember\' is defined but never used.\ncontrollers/auth.js: line 36, col 22, \'response\' is defined but never used.\n\n4 errors'); 
   });
 
 });

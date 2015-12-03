@@ -62,8 +62,36 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())
+
     tags = serializers.SlugRelatedField(slug_field='name', many=True, queryset=Tag.objects.all())
     class Meta:
         model = Post
         fields = ('id','title', 'subtitle', 'image', 'content', 'datePublished', 'author', 'tags', 'url')
+    def validate_content(self, value):
+        """
+        Check that the content field doesn't contain the keyword javascript'
+        """
+        if "teststr" in value:
+            raise serializers.ValidationError("String %s contains invalid 'teststr' string" % value)
+        return value
+
+    """
+    def validate(self, data):
+        if 'shit' in (data['title'] + data['content']):
+            raise serializers.ValidationError('This post contains profanity')
+        return data
+    """
+
+    def validate(self, data):
+        data['title'] = data['title'].replace('shit','****')
+        data['content'] = data['content'].replace('shit','****')
+        return data
+    
+    def validate_author(self, value):
+        if not self.context['request'].user == value:
+            raise serializers.ValidationError('You cannot create a post as another user')
+
+
+
+
 
