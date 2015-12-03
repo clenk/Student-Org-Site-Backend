@@ -14,6 +14,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 import os
 from localsettings import *
 #import Student_Org_Site_Backend.rest_framework_config #settings.DATABASE error when not commented out. ENGINE error
+#from Student_Org_Site_Backend.api.models import *
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -38,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'Student_Org_Site_Backend',
     'Student_Org_Site_Backend.api',
     'rest_framework',
 )
@@ -81,7 +83,7 @@ DATABASES = {
     }
 }
 
-#AUTH_USER_MODEL = 'Student_Org_Site_Backend.myUser' # use settings.AUTH_USER_MODEL to get the user info
+#AUTH_USER_MODEL = 'api.Usr' # use settings.AUTH_USER_MODEL to get the user info
 
 
 # Internationalization

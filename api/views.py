@@ -101,6 +101,13 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     lookup_field = 'username'
 
+class UserProfileViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed.
+    """
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+
 class PostViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows for CRUD operations on post objects.

@@ -14,12 +14,51 @@ class TagSerializer(serializers.ModelSerializer):
         model = Tag
         fields = ('id','name', )
 
+# class UserSerializer(serializers.ModelSerializer):
+#     #name = serializers.username #TODO change the field name 'username' to 'name'
+#     profileImageUrl = serializers.CharField(source='myuser.profileImageUrl')
+#     # posts = serializers.Field(source='myuser.posts')
+#     class Meta:
+#         #model = myUser
+#         model = User
+#         fields = ('id', 'username', 'password', 'email', 'profileImageUrl', 'posts')
+#         #fields = ('id', 'username', 'password', 'email',)
+
+# class UsrSerializer(serializers.ModelSerializer):
+#     username = serializers.CharField(source='user.username')
+#     email = serializers.CharField(source='user.email')
+#     password = serializers.CharField(source='user.password')
+#     class Meta:
+#         model = Usr
+#         fields = ('id', 'username', 'password', 'email', 'profileImageUrl', 'posts')
+
+#     def restore_object(self, attrs, instance=None):
+#         """
+#         Given a dictionary of deserialized field values, either update
+#         an existing model instance, or create a new model instance.
+#         """
+#         if instance is not None:
+#             instance.user.username = attrs.get('user.username', instance.user.username)
+#             instance.user.email = attrs.get('user.email', instance.user.email)
+#             instance.user.password = attrs.get('user.password', instance.user.password)
+#             instance.user.profileImageUrl = attrs.get('user.profileImageUrl', instance.user.profileImageUrl)
+#             instance.user.posts = attrs.get('user.posts', instance.user.posts)
+#             return instance
+
+#         user = User.objects.create_user(username=attrs.get('user.username'), email= attrs.get('user.email'), password=attrs.get('user.password'))
+#         return Usr(user=user)
+
 class UserSerializer(serializers.ModelSerializer):
-    #name = serializers.username #TODO change the field name 'username' to 'name'
     class Meta:
-        model = myUser
-        #fields = ('id', 'username', 'password', 'email', 'profileImageUrl', 'posts')
+        model = User
         fields = ('id', 'username', 'password', 'email',)
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    profileImageUrl = serializers.CharField(source='myuser.profileImageUrl')
+    posts = serializers.Field(source='myuser.posts')
+    class Meta:
+        model = UserProfile
+        fields = ('user', 'profileImageUrl', 'posts')
 
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())

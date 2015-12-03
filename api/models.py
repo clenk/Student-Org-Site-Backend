@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib import admin
 
+from django.contrib.auth.models import AbstractUser
+from django.utils.translation import ugettext_lazy as _
+
 # Create your models here.
 class Tag(models.Model):
     """
@@ -38,14 +41,41 @@ class EventAdmin(admin.ModelAdmin):
     #See the Django documentation for more information
     list_display = ('title', 'start', 'end',)
 
-class myUser(User):
-    '''name = models.CharField(max_length=20, blank=False, unique=True)
-    emailAddress = models.CharField(max_length=120, blank=False, unique=True)'''
+# class myUser(models.Model):
+#     # '''name = models.CharField(max_length=20, blank=False, unique=True)
+#     # emailAddress = models.CharField(max_length=120, blank=False, unique=True)'''
+#     # profileImageUrl = models.CharField(max_length=120)
+#     # posts = models.ManyToManyField('Post', blank=True)
+
+#     user = models.OneToOneField(User)
+#     profileImageUrl = models.CharField(max_length=120)
+#     posts = models.ManyToManyField('Post', blank=True)
+
+# class myUserAdmin(admin.ModelAdmin):
+#     list_display = ('username',)
+
+# class Usr(User):
+#     user = models.OneToOneField(User)
+#     profileImageUrl = models.CharField(max_length=120)
+#     posts = models.ManyToManyField('Post', blank=True)
+
+# class UsrAdmin(admin.ModelAdmin):
+#     list_display = ('username',)
+
+# class Usr(AbstractUser):
+#     profileImageUrl = models.CharField(max_length=120)
+#     posts = models.ManyToManyField('Post', blank=True)
+
+# class UsrAdmin(admin.ModelAdmin):
+#     list_display = ('username',)
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
     profileImageUrl = models.CharField(max_length=120)
     posts = models.ManyToManyField('Post', blank=True)
 
-class myUserAdmin(admin.ModelAdmin):
-    list_display = ('username',)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user','profileImageUrl')
 
 class Post(models.Model):
     """
