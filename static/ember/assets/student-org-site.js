@@ -329,15 +329,16 @@ define('student-org-site/controllers/auth', ['exports', 'ember'], function (expo
                         controllerObj.set('username', response.username);
                         controllerObj.set('userid', response.userid);
                         controllerObj.set('isLoggedIn', true);
+                        controllerObj.transitionToRoute('/'); //redirects back home after login
                     } else {
-                        //errors
-                        console.log('Login POST Request to ../api/session/ was successful.');
-                        controllerObj.set('errorMsg', response.message);
-                    }
+                            //errors
+                            console.log('Login POST Request to ../api/session/ was successful but with errors.');
+                            controllerObj.set('errorMsg', response.message);
+                        }
                 });
             },
             logout: function logout() {
-                var remember = this.get('remember');;
+                var remember = this.get('remember');
                 var controllerObj = this;
                 Ember['default'].$.ajax({ url: '../api/session/', type: 'DELETE' }).then(function (response) {
                     console.log('Logout success.');
@@ -846,7 +847,7 @@ define('student-org-site/routes/application', ['exports', 'ember'], function (ex
 			console.log("are you logged in " + auth.get('isLoggedIn'));
 			var previoustrans = t.get('currentTransition');
 			console.log('User attempting to access: /' + transition.targetName);
-			if (!auth.isLoggedIn) {
+			if (!auth.get('isLoggedIn')) {
 				if (transition.targetName === 'auth' || transition.targetName === 'createAccount' || transition.targetName === 'calendar' || transition.targetName === 'about') {} else {
 					t.set('currentTransition', transition);
 					transition.abort();
@@ -1713,7 +1714,7 @@ define('student-org-site/templates/auth', ['exports'], function (exports) {
       },
       statements: [
         ["inline","log",[["get","username",["loc",[null,[1,6],[1,14]]]]],[],["loc",[null,[1,0],[1,16]]]],
-        ["block","if",[["get","loggedIn",["loc",[null,[2,6],[2,14]]]]],[],0,1,["loc",[null,[2,0],[38,7]]]]
+        ["block","if",[["get","isLoggedIn",["loc",[null,[2,6],[2,16]]]]],[],0,1,["loc",[null,[2,0],[38,7]]]]
       ],
       locals: [],
       templates: [child0, child1]
@@ -4481,43 +4482,43 @@ define('student-org-site/templates/components/nav-bar', ['exports'], function (e
       };
     }());
     var child4 = (function() {
-      return {
-        meta: {
-          "revision": "Ember@1.13.7",
-          "loc": {
-            "source": null,
-            "start": {
-              "line": 11,
-              "column": 1
+      var child0 = (function() {
+        return {
+          meta: {
+            "revision": "Ember@1.13.7",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 31,
+                "column": 2
+              },
+              "end": {
+                "line": 31,
+                "column": 60
+              }
             },
-            "end": {
-              "line": 11,
-              "column": 60
-            }
+            "moduleName": "student-org-site/templates/components/nav-bar.hbs"
           },
-          "moduleName": "student-org-site/templates/components/nav-bar.hbs"
-        },
-        arity: 0,
-        cachedFragment: null,
-        hasRendered: false,
-        buildFragment: function buildFragment(dom) {
-          var el0 = dom.createDocumentFragment();
-          var el1 = dom.createElement("a");
-          dom.setAttribute(el1,"href","/admin");
-          var el2 = dom.createTextNode("Admin");
-          dom.appendChild(el1, el2);
-          dom.appendChild(el0, el1);
-          return el0;
-        },
-        buildRenderNodes: function buildRenderNodes() { return []; },
-        statements: [
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createElement("a");
+            dom.setAttribute(el1,"href","/auth");
+            var el2 = dom.createTextNode("Logout");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes() { return []; },
+          statements: [
 
-        ],
-        locals: [],
-        templates: []
-      };
-    }());
-    var child5 = (function() {
+          ],
+          locals: [],
+          templates: []
+        };
+      }());
       return {
         meta: {
           "revision": "Ember@1.13.7",
@@ -4547,19 +4548,27 @@ define('student-org-site/templates/components/nav-bar', ['exports'], function (e
           dom.appendChild(el0, el1);
           var el1 = dom.createComment("button {{action 'foo'}}>alert foo</button");
           dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n		");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createComment("");
+          dom.appendChild(el0, el1);
           var el1 = dom.createTextNode("\n");
           dom.appendChild(el0, el1);
           return el0;
         },
-        buildRenderNodes: function buildRenderNodes() { return []; },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment,5,5,contextualElement);
+          return morphs;
+        },
         statements: [
-
+          ["block","link-to",["auth"],["tagName","li"],0,null,["loc",[null,[31,2],[31,72]]]]
         ],
         locals: [],
-        templates: []
+        templates: [child0]
       };
     }());
-    var child6 = (function() {
+    var child5 = (function() {
       var child0 = (function() {
         return {
           meta: {
@@ -4572,7 +4581,7 @@ define('student-org-site/templates/components/nav-bar', ['exports'], function (e
               },
               "end": {
                 "line": 33,
-                "column": 86
+                "column": 80
               }
             },
             "moduleName": "student-org-site/templates/components/nav-bar.hbs"
@@ -4583,8 +4592,9 @@ define('student-org-site/templates/components/nav-bar', ['exports'], function (e
           buildFragment: function buildFragment(dom) {
             var el0 = dom.createDocumentFragment();
             var el1 = dom.createElement("a");
-            dom.setAttribute(el1,"href","/createAccount");
-            var el2 = dom.createTextNode("Create Account");
+            dom.setAttribute(el1,"href","/auth");
+            var el2 = dom.createElement("i");
+            dom.setAttribute(el2,"class","fa fa-user");
             dom.appendChild(el1, el2);
             dom.appendChild(el0, el1);
             return el0;
@@ -4607,7 +4617,7 @@ define('student-org-site/templates/components/nav-bar', ['exports'], function (e
               "column": 1
             },
             "end": {
-              "line": 34,
+              "line": 35,
               "column": 1
             }
           },
@@ -4632,48 +4642,10 @@ define('student-org-site/templates/components/nav-bar', ['exports'], function (e
           return morphs;
         },
         statements: [
-          ["block","link-to",["createAccount"],["tagName","li"],0,null,["loc",[null,[33,2],[33,98]]]]
+          ["block","link-to",["auth"],["tagName","li"],0,null,["loc",[null,[33,2],[33,92]]]]
         ],
         locals: [],
         templates: [child0]
-      };
-    }());
-    var child7 = (function() {
-      return {
-        meta: {
-          "revision": "Ember@1.13.7",
-          "loc": {
-            "source": null,
-            "start": {
-              "line": 36,
-              "column": 1
-            },
-            "end": {
-              "line": 36,
-              "column": 79
-            }
-          },
-          "moduleName": "student-org-site/templates/components/nav-bar.hbs"
-        },
-        arity: 0,
-        cachedFragment: null,
-        hasRendered: false,
-        buildFragment: function buildFragment(dom) {
-          var el0 = dom.createDocumentFragment();
-          var el1 = dom.createElement("a");
-          dom.setAttribute(el1,"href","/auth");
-          var el2 = dom.createElement("i");
-          dom.setAttribute(el2,"class","fa fa-user");
-          dom.appendChild(el1, el2);
-          dom.appendChild(el0, el1);
-          return el0;
-        },
-        buildRenderNodes: function buildRenderNodes() { return []; },
-        statements: [
-
-        ],
-        locals: [],
-        templates: []
       };
     }());
     return {
@@ -4733,11 +4705,7 @@ define('student-org-site/templates/components/nav-bar', ['exports'], function (e
         dom.appendChild(el4, el5);
         var el5 = dom.createComment("");
         dom.appendChild(el4, el5);
-        var el5 = dom.createTextNode("\n	");
-        dom.appendChild(el4, el5);
-        var el5 = dom.createComment("");
-        dom.appendChild(el4, el5);
-        var el5 = dom.createTextNode("	\n");
+        var el5 = dom.createTextNode("\n");
         dom.appendChild(el4, el5);
         var el5 = dom.createTextNode("	");
         dom.appendChild(el4, el5);
@@ -4790,15 +4758,15 @@ define('student-org-site/templates/components/nav-bar', ['exports'], function (e
         dom.setAttribute(el4,"class","nav navbar-nav navbar-right");
         var el5 = dom.createTextNode("\n\n");
         dom.appendChild(el4, el5);
-        var el5 = dom.createTextNode("		\n");
-        dom.appendChild(el4, el5);
-        var el5 = dom.createComment("");
-        dom.appendChild(el4, el5);
-        var el5 = dom.createTextNode("	\n	");
+        var el5 = dom.createTextNode("	");
         dom.appendChild(el4, el5);
         var el5 = dom.createComment("");
         dom.appendChild(el4, el5);
         var el5 = dom.createTextNode("\n");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createComment("");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode("	\n");
         dom.appendChild(el4, el5);
         dom.appendChild(el3, el4);
         var el4 = dom.createTextNode("\n");
@@ -4817,14 +4785,13 @@ define('student-org-site/templates/components/nav-bar', ['exports'], function (e
         var element1 = dom.childAt(element0, [3]);
         var element2 = dom.childAt(element1, [1]);
         var element3 = dom.childAt(element1, [3]);
-        var morphs = new Array(7);
+        var morphs = new Array(6);
         morphs[0] = dom.createMorphAt(dom.childAt(element0, [1]),1,1);
         morphs[1] = dom.createMorphAt(element2,1,1);
         morphs[2] = dom.createMorphAt(element2,3,3);
         morphs[3] = dom.createMorphAt(element2,5,5);
-        morphs[4] = dom.createMorphAt(element2,7,7);
-        morphs[5] = dom.createMorphAt(element3,2,2);
-        morphs[6] = dom.createMorphAt(element3,4,4);
+        morphs[4] = dom.createMorphAt(element3,2,2);
+        morphs[5] = dom.createMorphAt(element3,4,4);
         return morphs;
       },
       statements: [
@@ -4832,12 +4799,11 @@ define('student-org-site/templates/components/nav-bar', ['exports'], function (e
         ["block","link-to",["posts"],["tagName","li"],1,null,["loc",[null,[8,1],[8,72]]]],
         ["block","link-to",["calendar"],["tagName","li"],2,null,["loc",[null,[9,1],[9,81]]]],
         ["block","link-to",["about"],["tagName","li"],3,null,["loc",[null,[10,1],[10,72]]]],
-        ["block","link-to",["admin"],["tagName","li"],4,null,["loc",[null,[11,1],[11,72]]]],
-        ["block","if",[["get","authControllerChild.loggedIn",["loc",[null,[27,7],[27,35]]]]],[],5,6,["loc",[null,[27,1],[34,8]]]],
-        ["block","link-to",["auth"],["tagName","li"],7,null,["loc",[null,[36,1],[36,91]]]]
+        ["inline","log",[["get","authControllerChild.isLoggedIn",["loc",[null,[26,7],[26,37]]]]],[],["loc",[null,[26,1],[26,39]]]],
+        ["block","if",[["get","authControllerChild.isLoggedIn",["loc",[null,[27,7],[27,37]]]]],[],4,5,["loc",[null,[27,1],[35,8]]]]
       ],
       locals: [],
-      templates: [child0, child1, child2, child3, child4, child5, child6, child7]
+      templates: [child0, child1, child2, child3, child4, child5]
     };
   }()));
 
@@ -5029,11 +4995,11 @@ define('student-org-site/templates/index', ['exports'], function (exports) {
             "loc": {
               "source": null,
               "start": {
-                "line": 19,
+                "line": 15,
                 "column": 30
               },
               "end": {
-                "line": 19,
+                "line": 15,
                 "column": 68
               }
             },
@@ -5056,7 +5022,7 @@ define('student-org-site/templates/index', ['exports'], function (exports) {
             return morphs;
           },
           statements: [
-            ["content","post.title",["loc",[null,[19,54],[19,68]]]]
+            ["content","post.title",["loc",[null,[15,54],[15,68]]]]
           ],
           locals: [],
           templates: []
@@ -5068,11 +5034,11 @@ define('student-org-site/templates/index', ['exports'], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 11,
+              "line": 7,
               "column": 3
             },
             "end": {
-              "line": 30,
+              "line": 26,
               "column": 3
             }
           },
@@ -5191,13 +5157,13 @@ define('student-org-site/templates/index', ['exports'], function (exports) {
           return morphs;
         },
         statements: [
-          ["inline","date-formatter",["DD",["get","post.datePublished",["loc",[null,[15,53],[15,71]]]]],[],["loc",[null,[15,31],[15,73]]]],
-          ["inline","date-formatter",["MMMM",["get","post.datePublished",["loc",[null,[16,58],[16,76]]]]],[],["loc",[null,[16,34],[16,78]]]],
-          ["block","link-to",["post",["get","post",["loc",[null,[19,48],[19,52]]]]],[],0,null,["loc",[null,[19,30],[19,80]]]],
-          ["content","post.subtitle",["loc",[null,[20,33],[20,50]]]],
-          ["inline","text-preview",[["get","post.content",["loc",[null,[21,48],[21,60]]]],200,250],[],["loc",[null,[21,33],[21,70]]]],
+          ["inline","date-formatter",["DD",["get","post.datePublished",["loc",[null,[11,53],[11,71]]]]],[],["loc",[null,[11,31],[11,73]]]],
+          ["inline","date-formatter",["MMMM",["get","post.datePublished",["loc",[null,[12,58],[12,76]]]]],[],["loc",[null,[12,34],[12,78]]]],
+          ["block","link-to",["post",["get","post",["loc",[null,[15,48],[15,52]]]]],[],0,null,["loc",[null,[15,30],[15,80]]]],
+          ["content","post.subtitle",["loc",[null,[16,33],[16,50]]]],
+          ["inline","text-preview",[["get","post.content",["loc",[null,[17,48],[17,60]]]],200,250],[],["loc",[null,[17,33],[17,70]]]],
           ["attribute","src",["get","post.author.profileImageUrl",[]]],
-          ["content","post.author.name",["loc",[null,[24,109],[24,129]]]]
+          ["content","post.author.name",["loc",[null,[20,109],[20,129]]]]
         ],
         locals: ["post"],
         templates: [child0]
@@ -5210,11 +5176,11 @@ define('student-org-site/templates/index', ['exports'], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 37,
+              "line": 33,
               "column": 4
             },
             "end": {
-              "line": 42,
+              "line": 38,
               "column": 4
             }
           },
@@ -5257,8 +5223,8 @@ define('student-org-site/templates/index', ['exports'], function (exports) {
           return morphs;
         },
         statements: [
-          ["content","event.title",["loc",[null,[39,31],[39,46]]]],
-          ["inline","date-formatter",["MMMM DD, YYYY",["get","event.start",["loc",[null,[40,63],[40,74]]]]],[],["loc",[null,[40,30],[40,76]]]]
+          ["content","event.title",["loc",[null,[35,31],[35,46]]]],
+          ["inline","date-formatter",["MMMM DD, YYYY",["get","event.start",["loc",[null,[36,63],[36,74]]]]],[],["loc",[null,[36,30],[36,76]]]]
         ],
         locals: ["event"],
         templates: []
@@ -5274,7 +5240,7 @@ define('student-org-site/templates/index', ['exports'], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 50,
+            "line": 46,
             "column": 0
           }
         },
@@ -5286,12 +5252,6 @@ define('student-org-site/templates/index', ['exports'], function (exports) {
       buildFragment: function buildFragment(dom) {
         var el0 = dom.createDocumentFragment();
         var el1 = dom.createComment("");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createElement("p");
-        var el2 = dom.createTextNode("\nThis is the Home page\n");
-        dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n");
         dom.appendChild(el0, el1);
@@ -5369,20 +5329,20 @@ define('student-org-site/templates/index', ['exports'], function (exports) {
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var element6 = dom.childAt(fragment, [4, 1]);
+        var element6 = dom.childAt(fragment, [2, 1]);
         var morphs = new Array(4);
         morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
         morphs[1] = dom.createMorphAt(dom.childAt(element6, [1]),3,3);
         morphs[2] = dom.createMorphAt(dom.childAt(element6, [3, 3, 1]),1,1);
-        morphs[3] = dom.createMorphAt(fragment,6,6,contextualElement);
+        morphs[3] = dom.createMorphAt(fragment,4,4,contextualElement);
         dom.insertBoundary(fragment, 0);
         return morphs;
       },
       statements: [
         ["inline","page-title",[],["title","Cool Organization Name"],["loc",[null,[1,0],[1,45]]]],
-        ["block","each",[["get","model.posts",["loc",[null,[11,19],[11,30]]]]],[],0,null,["loc",[null,[11,3],[30,12]]]],
-        ["block","each",[["get","model.events",["loc",[null,[37,21],[37,33]]]]],[],1,null,["loc",[null,[37,4],[42,13]]]],
-        ["content","outlet",["loc",[null,[49,0],[49,10]]]]
+        ["block","each",[["get","model.posts",["loc",[null,[7,19],[7,30]]]]],[],0,null,["loc",[null,[7,3],[26,12]]]],
+        ["block","each",[["get","model.events",["loc",[null,[33,21],[33,33]]]]],[],1,null,["loc",[null,[33,4],[38,13]]]],
+        ["content","outlet",["loc",[null,[45,0],[45,10]]]]
       ],
       locals: [],
       templates: [child0, child1]
@@ -6872,7 +6832,7 @@ define('student-org-site/tests/controllers/auth.jshint', function () {
 
   module('JSHint - controllers');
   test('controllers/auth.js should pass jshint', function() { 
-    ok(false, 'controllers/auth.js should pass jshint.\ncontrollers/auth.js: line 33, col 49, Unnecessary semicolon.\ncontrollers/auth.js: line 47, col 15, Missing semicolon.\ncontrollers/auth.js: line 13, col 17, \'remember\' is defined but never used.\ncontrollers/auth.js: line 36, col 22, \'response\' is defined but never used.\n\n4 errors'); 
+    ok(false, 'controllers/auth.js should pass jshint.\ncontrollers/auth.js: line 13, col 17, \'remember\' is defined but never used.\ncontrollers/auth.js: line 37, col 22, \'response\' is defined but never used.\n\n2 errors'); 
   });
 
 });
@@ -8082,7 +8042,7 @@ catch(err) {
 if (runningTests) {
   require("student-org-site/tests/test-helper");
 } else {
-  require("student-org-site/app")["default"].create({"API_HOST":"http://localhost:8000","name":"student-org-site","version":"0.0.0+db1556fd","API_NAMESPACE":"api","API_ADD_TRAILING_SLASHES":true});
+  require("student-org-site/app")["default"].create({"API_HOST":"http://localhost:8000","name":"student-org-site","version":"0.0.0+fe0fc652","API_NAMESPACE":"api","API_ADD_TRAILING_SLASHES":true});
 }
 
 /* jshint ignore:end */
