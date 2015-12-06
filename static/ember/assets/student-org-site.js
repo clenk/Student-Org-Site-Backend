@@ -58,6 +58,20 @@ define('student-org-site/components/app-version', ['exports', 'ember-cli-app-ver
   });
 
 });
+define('student-org-site/components/bootstrap-datepicker-inline', ['exports', 'ember', 'ember-cli-bootstrap-datepicker/components/bootstrap-datepicker-inline'], function (exports, Ember, BootstrapDatepickerInlineComponent) {
+
+	'use strict';
+
+	exports['default'] = BootstrapDatepickerInlineComponent['default'];
+
+});
+define('student-org-site/components/bootstrap-datepicker', ['exports', 'ember', 'ember-cli-bootstrap-datepicker/components/bootstrap-datepicker'], function (exports, Ember, BootstrapDatepickerComponent) {
+
+	'use strict';
+
+	exports['default'] = BootstrapDatepickerComponent['default'];
+
+});
 define('student-org-site/components/bs-accordion-item', ['exports', 'ember', 'ember-bootstrap/components/bs-accordion-item'], function (exports, Ember, component) {
 
 	'use strict';
@@ -219,6 +233,9 @@ define('student-org-site/components/full-calendar', ['exports', 'ember'], functi
 
   'use strict';
 
+  //Thanks to https://github.com/jrue3084/amca/ for the code for this page.
+  //It really helps with creating the full-calendar without having to use ember-full-calendar
+
   exports['default'] = Ember['default'].Component.extend({
     actions: {
 
@@ -298,16 +315,65 @@ define('student-org-site/controllers/add-event', ['exports', 'ember'], function 
       addEvent: function addEvent() {
         //TODO: add account to database
         var title = this.get('title');
-        var eventDate = this.get('eventDate');
-        this.store.createRecord('event', {
-          title: title,
-          start: eventDate
-        });
+        var startDate = '';
+        startDate = this.get('startDate ');
+        var endDate = this.get('endDate');
+        /*this.store.createRecord('event',{
+        	title: title,
+        	start: startDate
+        });*/
         //users.save();
-        this.set('title', '');
-        this.set('eventDate', '');
 
-        alert(title + " was added.");
+        //Ember.$.post( "/api/events", { title: "codePushEvent", start: "2015-12-20", end: "2015-12-22" } );
+        var ev = this.store.createRecord('event', {
+          title: title,
+          start: startDate,
+          end: endDate
+        });
+        ev.save();
+
+        alert(title + " was added for dates " + startDate + " - " + endDate);
+        this.set('title', '');
+        this.set('startDate', '');
+        this.set('endDate', '');
+        this.transitionToRoute('calendar');
+      }
+    }
+
+  });
+
+});
+define('student-org-site/controllers/add-post', ['exports', 'ember'], function (exports, Ember) {
+
+  'use strict';
+
+  exports['default'] = Ember['default'].Controller.extend({
+
+    actions: {
+      addPost: function addPost() {
+        //TODO: add post to database
+        var title = this.get('title');
+        var subtitle = this.get('subtitle');
+        var image = this.get('image');
+        var content = this.get('content2');
+
+        //Ember.$.post( "/api/posts", { title: title, subtitle: subtitle, image: image, content: content } );
+        var po = this.store.createRecord('post', {
+          title: title,
+          subtitle: subtitle,
+          image: image,
+          content: content
+          //TODO: get the current date, the author name, and tags
+        });
+        po.save();
+
+        alert(title + " / " + subtitle + " with the image at " + image + " and content " + content + " is saved.");
+
+        this.set('title', '');
+        this.set('subtitle', '');
+        this.set('image', '');
+        this.set('content2', '');
+        this.transitionToRoute('posts');
       }
     }
 
@@ -412,7 +478,6 @@ define('student-org-site/controllers/create-account', ['exports', 'ember'], func
   'use strict';
 
   exports['default'] = Ember['default'].Controller.extend({
-
     actions: {
       createAccount: function createAccount(name) {
         //TODO: add account to database
@@ -843,6 +908,7 @@ define('student-org-site/router', ['exports', 'ember', 'student-org-site/config/
     this.route('addEvent', {});
     // Catch unrecognized URLs
     this.route('bad-url', { path: '/*badurl' });
+    this.route('addPost', {});
   });
 
   exports['default'] = Router;
@@ -856,6 +922,13 @@ define('student-org-site/routes/about', ['exports', 'ember'], function (exports,
 
 });
 define('student-org-site/routes/add-event', ['exports', 'ember'], function (exports, Ember) {
+
+	'use strict';
+
+	exports['default'] = Ember['default'].Route.extend({});
+
+});
+define('student-org-site/routes/add-post', ['exports', 'ember'], function (exports, Ember) {
 
 	'use strict';
 
@@ -1160,7 +1233,7 @@ define('student-org-site/templates/add-event', ['exports'], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 12,
+            "line": 19,
             "column": 0
           }
         },
@@ -1179,11 +1252,12 @@ define('student-org-site/templates/add-event', ['exports'], function (exports) {
         var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("label");
-        dom.setAttribute(el3,"for","title");
         var el4 = dom.createTextNode("Name The Event");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n    ");
+        var el3 = dom.createTextNode("\n");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createComment("");
         dom.appendChild(el2, el3);
@@ -1197,15 +1271,35 @@ define('student-org-site/templates/add-event', ['exports'], function (exports) {
         var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("label");
-        dom.setAttribute(el3,"for","eventDate");
-        var el4 = dom.createTextNode("Date");
+        var el4 = dom.createTextNode("Start Date");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
         var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createComment("");
         dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n  ");
+        var el3 = dom.createTextNode("\n");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2,"class","form-group");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createTextNode("End Date");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("  ");
         dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
         var el2 = dom.createTextNode("\n  ");
@@ -1225,16 +1319,159 @@ define('student-org-site/templates/add-event', ['exports'], function (exports) {
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var element0 = dom.childAt(fragment, [0]);
-        var morphs = new Array(3);
+        var morphs = new Array(4);
         morphs[0] = dom.createElementMorph(element0);
-        morphs[1] = dom.createMorphAt(dom.childAt(element0, [1]),3,3);
+        morphs[1] = dom.createMorphAt(dom.childAt(element0, [1]),4,4);
         morphs[2] = dom.createMorphAt(dom.childAt(element0, [3]),3,3);
+        morphs[3] = dom.createMorphAt(dom.childAt(element0, [5]),3,3);
         return morphs;
       },
       statements: [
-        ["element","action",["addEvent",["get","identification",["loc",[null,[1,26],[1,40]]]]],["on","submit"],["loc",[null,[1,6],[1,54]]]],
-        ["inline","input",[],["value",["subexpr","@mut",[["get","title",["loc",[null,[4,18],[4,23]]]]],[],[]],"placeholder","Event Name","class","form-control"],["loc",[null,[4,4],[4,71]]]],
-        ["inline","input",[],["value",["subexpr","@mut",[["get","eventDate",["loc",[null,[8,18],[8,27]]]]],[],[]],"placeholder","YYYY-MM-DD","class","form-control"],["loc",[null,[8,4],[8,75]]]]
+        ["element","action",["addEvent"],["on","submit"],["loc",[null,[1,6],[1,39]]]],
+        ["inline","input",[],["value",["subexpr","@mut",[["get","title",["loc",[null,[5,18],[5,23]]]]],[],[]],"placeholder","Event Name","class","form-control"],["loc",[null,[5,4],[5,71]]]],
+        ["inline","bootstrap-datepicker",[],["autoclose",true,"placeholder","Start Date","class","form-control","value",["subexpr","@mut",[["get","startDate",["loc",[null,[9,94],[9,103]]]]],[],[]]],["loc",[null,[9,4],[9,105]]]],
+        ["inline","bootstrap-datepicker",[],["autoclose",true,"placeholder","End Date","class","form-control","value",["subexpr","@mut",[["get","endDate",["loc",[null,[14,92],[14,99]]]]],[],[]]],["loc",[null,[14,4],[14,101]]]]
+      ],
+      locals: [],
+      templates: []
+    };
+  }()));
+
+});
+define('student-org-site/templates/add-post', ['exports'], function (exports) {
+
+  'use strict';
+
+  exports['default'] = Ember.HTMLBars.template((function() {
+    return {
+      meta: {
+        "revision": "Ember@1.13.7",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 24,
+            "column": 0
+          }
+        },
+        "moduleName": "student-org-site/templates/add-post.hbs"
+      },
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("form");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2,"class","form-group");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createTextNode("Title of Post");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2,"class","form-group");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createTextNode("Subtitle");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2,"class","form-group");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createTextNode("Upload an Image");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2,"class","form-group");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        var el4 = dom.createTextNode("Content");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("button");
+        dom.setAttribute(el2,"type","submit");
+        dom.setAttribute(el2,"class","btn btn-default");
+        var el3 = dom.createTextNode("Create Post");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var element0 = dom.childAt(fragment, [0]);
+        var morphs = new Array(5);
+        morphs[0] = dom.createElementMorph(element0);
+        morphs[1] = dom.createMorphAt(dom.childAt(element0, [1]),4,4);
+        morphs[2] = dom.createMorphAt(dom.childAt(element0, [3]),4,4);
+        morphs[3] = dom.createMorphAt(dom.childAt(element0, [5]),4,4);
+        morphs[4] = dom.createMorphAt(dom.childAt(element0, [7]),4,4);
+        return morphs;
+      },
+      statements: [
+        ["element","action",["addPost"],["on","submit"],["loc",[null,[1,6],[1,38]]]],
+        ["inline","input",[],["value",["subexpr","@mut",[["get","title",["loc",[null,[5,18],[5,23]]]]],[],[]],"placeholder","Title","class","form-control"],["loc",[null,[5,4],[5,66]]]],
+        ["inline","input",[],["value",["subexpr","@mut",[["get","subtitle",["loc",[null,[10,18],[10,26]]]]],[],[]],"placeholder","Subtitle","class","form-control"],["loc",[null,[10,4],[10,72]]]],
+        ["inline","input",[],["value",["subexpr","@mut",[["get","image",["loc",[null,[15,18],[15,23]]]]],[],[]],"placeholder","Paste image URL here","class","form-control"],["loc",[null,[15,4],[15,81]]]],
+        ["inline","input",[],["value",["subexpr","@mut",[["get","content2",["loc",[null,[20,18],[20,26]]]]],[],[]],"placeholder","Content","class","form-control"],["loc",[null,[20,4],[20,71]]]]
       ],
       locals: [],
       templates: []
@@ -1908,17 +2145,7 @@ define('student-org-site/templates/calendar', ['exports'], function (exports) {
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n");
         dom.appendChild(el0, el1);
-        var el1 = dom.createComment("");
-        dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createComment("");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createComment("");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n");
         dom.appendChild(el0, el1);
         var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
@@ -1929,21 +2156,15 @@ define('student-org-site/templates/calendar', ['exports'], function (exports) {
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(6);
+        var morphs = new Array(3);
         morphs[0] = dom.createMorphAt(fragment,1,1,contextualElement);
-        morphs[1] = dom.createMorphAt(fragment,3,3,contextualElement);
-        morphs[2] = dom.createMorphAt(fragment,5,5,contextualElement);
-        morphs[3] = dom.createMorphAt(fragment,7,7,contextualElement);
-        morphs[4] = dom.createMorphAt(fragment,9,9,contextualElement);
-        morphs[5] = dom.createMorphAt(fragment,11,11,contextualElement);
+        morphs[1] = dom.createMorphAt(fragment,4,4,contextualElement);
+        morphs[2] = dom.createMorphAt(fragment,6,6,contextualElement);
         dom.insertBoundary(fragment, null);
         return morphs;
       },
       statements: [
         ["block","link-to",["addEvent"],["tagName","button","class","btn btn-default pull-right"],0,null,["loc",[null,[2,0],[2,133]]]],
-        ["inline","log",["event stuff"],[],["loc",[null,[4,0],[4,21]]]],
-        ["inline","log",[["get","eventContent",["loc",[null,[5,6],[5,18]]]]],[],["loc",[null,[5,0],[5,20]]]],
-        ["inline","log",[["get","eventContent.events",["loc",[null,[6,6],[6,25]]]]],[],["loc",[null,[6,0],[6,27]]]],
         ["block","full-calendar",[],[],1,null,["loc",[null,[13,0],[15,18]]]],
         ["content","outlet",["loc",[null,[18,0],[18,10]]]]
       ],
@@ -5035,7 +5256,6 @@ define('student-org-site/templates/create-account', ['exports'], function (expor
         var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("label");
-        dom.setAttribute(el3,"for","identification");
         var el4 = dom.createTextNode("Create A Username");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
@@ -5053,7 +5273,6 @@ define('student-org-site/templates/create-account', ['exports'], function (expor
         var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("label");
-        dom.setAttribute(el3,"for","password");
         var el4 = dom.createTextNode("Password");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
@@ -5071,7 +5290,6 @@ define('student-org-site/templates/create-account', ['exports'], function (expor
         var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("label");
-        dom.setAttribute(el3,"for","password2");
         var el4 = dom.createTextNode("Password Again");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
@@ -5107,7 +5325,7 @@ define('student-org-site/templates/create-account', ['exports'], function (expor
         return morphs;
       },
       statements: [
-        ["element","action",["createAccount",["get","identification",["loc",[null,[1,31],[1,45]]]]],["on","submit"],["loc",[null,[1,6],[1,59]]]],
+        ["element","action",["createAccount"],["on","submit"],["loc",[null,[1,6],[1,44]]]],
         ["inline","input",[],["value",["subexpr","@mut",[["get","identification",["loc",[null,[4,18],[4,32]]]]],[],[]],"placeholder","Enter Username","class","form-control"],["loc",[null,[4,4],[4,84]]]],
         ["inline","input",[],["value",["subexpr","@mut",[["get","password",["loc",[null,[8,18],[8,26]]]]],[],[]],"placeholder","Enter Password","class","form-control","type","password"],["loc",[null,[8,4],[8,94]]]],
         ["inline","input",[],["value",["subexpr","@mut",[["get","password2",["loc",[null,[12,18],[12,27]]]]],[],[]],"placeholder","Enter Password Again","class","form-control","type","password"],["loc",[null,[12,4],[12,101]]]]
@@ -6255,6 +6473,43 @@ define('student-org-site/templates/posts', ['exports'], function (exports) {
 
   exports['default'] = Ember.HTMLBars.template((function() {
     var child0 = (function() {
+      return {
+        meta: {
+          "revision": "Ember@1.13.7",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 1,
+              "column": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 119
+            }
+          },
+          "moduleName": "student-org-site/templates/posts.hbs"
+        },
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createElement("i");
+          dom.setAttribute(el1,"class","fa fa-calendar-plus-o");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("Add Post");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() { return []; },
+        statements: [
+
+        ],
+        locals: [],
+        templates: []
+      };
+    }());
+    var child1 = (function() {
       var child0 = (function() {
         return {
           meta: {
@@ -6262,11 +6517,11 @@ define('student-org-site/templates/posts', ['exports'], function (exports) {
             "loc": {
               "source": null,
               "start": {
-                "line": 12,
+                "line": 13,
                 "column": 28
               },
               "end": {
-                "line": 12,
+                "line": 13,
                 "column": 66
               }
             },
@@ -6289,7 +6544,7 @@ define('student-org-site/templates/posts', ['exports'], function (exports) {
             return morphs;
           },
           statements: [
-            ["content","post.title",["loc",[null,[12,52],[12,66]]]]
+            ["content","post.title",["loc",[null,[13,52],[13,66]]]]
           ],
           locals: [],
           templates: []
@@ -6301,11 +6556,11 @@ define('student-org-site/templates/posts', ['exports'], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 4,
+              "line": 5,
               "column": 1
             },
             "end": {
-              "line": 23,
+              "line": 24,
               "column": 1
             }
           },
@@ -6424,30 +6679,30 @@ define('student-org-site/templates/posts', ['exports'], function (exports) {
           return morphs;
         },
         statements: [
-          ["inline","date-formatter",["DD",["get","post.datePublished",["loc",[null,[8,51],[8,69]]]]],[],["loc",[null,[8,29],[8,71]]]],
-          ["inline","date-formatter",["MMMM",["get","post.datePublished",["loc",[null,[9,56],[9,74]]]]],[],["loc",[null,[9,32],[9,76]]]],
-          ["block","link-to",["post",["get","post",["loc",[null,[12,46],[12,50]]]]],[],0,null,["loc",[null,[12,28],[12,78]]]],
-          ["content","post.subtitle",["loc",[null,[13,31],[13,48]]]],
-          ["inline","text-preview",[["get","post.content",["loc",[null,[14,46],[14,58]]]],200,250],[],["loc",[null,[14,31],[14,68]]]],
+          ["inline","date-formatter",["DD",["get","post.datePublished",["loc",[null,[9,51],[9,69]]]]],[],["loc",[null,[9,29],[9,71]]]],
+          ["inline","date-formatter",["MMMM",["get","post.datePublished",["loc",[null,[10,56],[10,74]]]]],[],["loc",[null,[10,32],[10,76]]]],
+          ["block","link-to",["post",["get","post",["loc",[null,[13,46],[13,50]]]]],[],0,null,["loc",[null,[13,28],[13,78]]]],
+          ["content","post.subtitle",["loc",[null,[14,31],[14,48]]]],
+          ["inline","text-preview",[["get","post.content",["loc",[null,[15,46],[15,58]]]],200,250],[],["loc",[null,[15,31],[15,68]]]],
           ["attribute","src",["get","post.author.profileImageUrl",[]]],
-          ["content","post.author.name",["loc",[null,[17,107],[17,127]]]]
+          ["content","post.author.name",["loc",[null,[18,107],[18,127]]]]
         ],
         locals: ["post"],
         templates: [child0]
       };
     }());
-    var child1 = (function() {
+    var child2 = (function() {
       return {
         meta: {
           "revision": "Ember@1.13.7",
           "loc": {
             "source": null,
             "start": {
-              "line": 104,
+              "line": 105,
               "column": 4
             },
             "end": {
-              "line": 106,
+              "line": 107,
               "column": 4
             }
           },
@@ -6476,7 +6731,7 @@ define('student-org-site/templates/posts', ['exports'], function (exports) {
           return morphs;
         },
         statements: [
-          ["content","tag.name",["loc",[null,[105,39],[105,51]]]]
+          ["content","tag.name",["loc",[null,[106,39],[106,51]]]]
         ],
         locals: ["tag"],
         templates: []
@@ -6492,7 +6747,7 @@ define('student-org-site/templates/posts', ['exports'], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 114,
+            "line": 115,
             "column": 0
           }
         },
@@ -6503,6 +6758,10 @@ define('student-org-site/templates/posts', ['exports'], function (exports) {
       hasRendered: false,
       buildFragment: function buildFragment(dom) {
         var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
         var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n");
@@ -6811,22 +7070,24 @@ define('student-org-site/templates/posts', ['exports'], function (exports) {
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(4);
+        var morphs = new Array(5);
         morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
-        morphs[1] = dom.createMorphAt(dom.childAt(fragment, [2]),1,1);
-        morphs[2] = dom.createMorphAt(dom.childAt(fragment, [4, 1, 1, 5, 3]),1,1);
-        morphs[3] = dom.createMorphAt(fragment,6,6,contextualElement);
+        morphs[1] = dom.createMorphAt(fragment,2,2,contextualElement);
+        morphs[2] = dom.createMorphAt(dom.childAt(fragment, [4]),1,1);
+        morphs[3] = dom.createMorphAt(dom.childAt(fragment, [6, 1, 1, 5, 3]),1,1);
+        morphs[4] = dom.createMorphAt(fragment,8,8,contextualElement);
         dom.insertBoundary(fragment, 0);
         return morphs;
       },
       statements: [
-        ["inline","page-title",[],["title","Posts, Articles, & Writeups"],["loc",[null,[1,0],[1,50]]]],
-        ["block","each",[["get","model.posts",["loc",[null,[4,17],[4,28]]]]],[],0,null,["loc",[null,[4,1],[23,10]]]],
-        ["block","each",[["get","model.tags",["loc",[null,[104,19],[104,29]]]]],[],1,null,["loc",[null,[104,4],[106,13]]]],
-        ["content","outlet",["loc",[null,[113,0],[113,10]]]]
+        ["block","link-to",["addPost"],["tagName","button","class","btn btn-default pull-right"],0,null,["loc",[null,[1,0],[1,131]]]],
+        ["inline","page-title",[],["title","Posts, Articles, & Writeups"],["loc",[null,[2,0],[2,50]]]],
+        ["block","each",[["get","model.posts",["loc",[null,[5,17],[5,28]]]]],[],1,null,["loc",[null,[5,1],[24,10]]]],
+        ["block","each",[["get","model.tags",["loc",[null,[105,19],[105,29]]]]],[],2,null,["loc",[null,[105,4],[107,13]]]],
+        ["content","outlet",["loc",[null,[114,0],[114,10]]]]
       ],
       locals: [],
-      templates: [child0, child1]
+      templates: [child0, child1, child2]
     };
   }()));
 
@@ -6945,6 +7206,16 @@ define('student-org-site/tests/controllers/add-event.jshint', function () {
   module('JSHint - controllers');
   test('controllers/add-event.js should pass jshint', function() { 
     ok(true, 'controllers/add-event.js should pass jshint.'); 
+  });
+
+});
+define('student-org-site/tests/controllers/add-post.jshint', function () {
+
+  'use strict';
+
+  module('JSHint - controllers');
+  test('controllers/add-post.js should pass jshint', function() { 
+    ok(true, 'controllers/add-post.js should pass jshint.'); 
   });
 
 });
@@ -7373,6 +7644,16 @@ define('student-org-site/tests/routes/add-event.jshint', function () {
   });
 
 });
+define('student-org-site/tests/routes/add-post.jshint', function () {
+
+  'use strict';
+
+  module('JSHint - routes');
+  test('routes/add-post.js should pass jshint', function() { 
+    ok(true, 'routes/add-post.js should pass jshint.'); 
+  });
+
+});
 define('student-org-site/tests/routes/admin.jshint', function () {
 
   'use strict';
@@ -7638,6 +7919,32 @@ define('student-org-site/tests/unit/controllers/add-event-test.jshint', function
   module('JSHint - unit/controllers');
   test('unit/controllers/add-event-test.js should pass jshint', function() { 
     ok(true, 'unit/controllers/add-event-test.js should pass jshint.'); 
+  });
+
+});
+define('student-org-site/tests/unit/controllers/add-post-test', ['ember-qunit'], function (ember_qunit) {
+
+  'use strict';
+
+  ember_qunit.moduleFor('controller:add-post', {
+    // Specify the other units that are required for this test.
+    // needs: ['controller:foo']
+  });
+
+  // Replace this with your real tests.
+  ember_qunit.test('it exists', function (assert) {
+    var controller = this.subject();
+    assert.ok(controller);
+  });
+
+});
+define('student-org-site/tests/unit/controllers/add-post-test.jshint', function () {
+
+  'use strict';
+
+  module('JSHint - unit/controllers');
+  test('unit/controllers/add-post-test.js should pass jshint', function() { 
+    ok(true, 'unit/controllers/add-post-test.js should pass jshint.'); 
   });
 
 });
@@ -8049,6 +8356,31 @@ define('student-org-site/tests/unit/routes/add-event-test.jshint', function () {
   });
 
 });
+define('student-org-site/tests/unit/routes/add-post-test', ['ember-qunit'], function (ember_qunit) {
+
+  'use strict';
+
+  ember_qunit.moduleFor('route:add-post', 'Unit | Route | add post', {
+    // Specify the other units that are required for this test.
+    // needs: ['controller:foo']
+  });
+
+  ember_qunit.test('it exists', function (assert) {
+    var route = this.subject();
+    assert.ok(route);
+  });
+
+});
+define('student-org-site/tests/unit/routes/add-post-test.jshint', function () {
+
+  'use strict';
+
+  module('JSHint - unit/routes');
+  test('unit/routes/add-post-test.js should pass jshint', function() { 
+    ok(true, 'unit/routes/add-post-test.js should pass jshint.'); 
+  });
+
+});
 define('student-org-site/tests/unit/routes/admin-test', ['ember-qunit'], function (ember_qunit) {
 
   'use strict';
@@ -8363,7 +8695,7 @@ catch(err) {
 if (runningTests) {
   require("student-org-site/tests/test-helper");
 } else {
-  require("student-org-site/app")["default"].create({"API_HOST":"http://localhost:8000","name":"student-org-site","version":"0.0.0+fe0fc652","API_NAMESPACE":"api","API_ADD_TRAILING_SLASHES":true});
+  require("student-org-site/app")["default"].create({"API_HOST":"http://localhost:8000","name":"student-org-site","version":"0.0.0+6ecdbf5c","API_NAMESPACE":"api","API_ADD_TRAILING_SLASHES":true});
 }
 
 /* jshint ignore:end */
