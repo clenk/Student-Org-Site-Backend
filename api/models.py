@@ -33,7 +33,7 @@ class Event(models.Model):
     #allday = models.BooleanField(unique=True)
     tags = models.ManyToManyField('tag', blank=True)
     def __str__(self):
-        return str(self.id)+":"+self.name
+        return str(self.id)+":"+self.title
 
     class Meta:
         verbose_name_plural = "Events"

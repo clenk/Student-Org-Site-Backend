@@ -7,7 +7,7 @@ from Student_Org_Site_Backend.api.models import *
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
-        fields = ('id','title', 'start', 'end', 'allday', 'tags')
+        fields = ('id','title', 'start', 'end', 'tags')
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:

@@ -215,11 +215,54 @@ define('student-org-site/components/fa-stack', ['exports', 'ember-cli-font-aweso
 	exports['default'] = fa_stack['default'];
 
 });
-define('student-org-site/components/full-calendar', ['exports', 'ember', 'ember-cli-full-calendar/components/full-calendar'], function (exports, Ember, FullCalendar) {
+define('student-org-site/components/full-calendar', ['exports', 'ember'], function (exports, Ember) {
 
-	'use strict';
+  'use strict';
 
-	exports['default'] = FullCalendar['default'];
+  exports['default'] = Ember['default'].Component.extend({
+    actions: {
+
+      test: function test() {
+        var auth = this.get('authControllerChild');
+        console.log('in nav bar sending login to auth controller');
+        auth.send('logout');
+      }
+    },
+
+    didInsertElement: function didInsertElement() {
+      this._super();
+
+      Ember['default'].run.scheduleOnce('afterRender', this, function () {
+        // some jQuery UI stuff
+        console.log('afterRender ran');
+        this.$('.calendar').fullCalendar({
+          header: {
+            left: 'title',
+            center: '',
+            right: 'today prev,next'
+          },
+          //defaultDate: '2015-10-12',
+          editable: false,
+          eventLimit: true, // allow "more" link when too many events
+
+          /* jshint ignore:start */
+          /*eventClick: function(calEvent, jsEvent, view) {
+             $('.modal-title').text(calEvent.title);
+            $('#modalStartTime').text('Start Time: ' + moment(calEvent.start).format("h:mm A"));
+            $('#modalDescription').text(calEvent.description);
+            $('#myModal').modal('show');
+          },*/
+          /* jshint ignore:end */
+          eventRender: function eventRender(event, element) {
+            element.css("font-size", "1.1em");
+            element.css("cursor", "pointer");
+            //element.css("word-wrap","normal");
+          },
+          events: 'api/events/'
+        });
+      });
+    }
+  });
 
 });
 define('student-org-site/components/nav-bar', ['exports', 'ember'], function (exports, Ember) {
@@ -388,6 +431,16 @@ define('student-org-site/controllers/create-account', ['exports', 'ember'], func
     }
 
   });
+
+});
+define('student-org-site/controllers/event', ['exports', 'ember'], function (exports, Ember) {
+
+	'use strict';
+
+	exports['default'] = Ember['default'].Controller.extend({
+		eventContent: null,
+		events: Ember['default'].computed.alias('controllers.application.events')
+	});
 
 });
 define('student-org-site/controllers/object', ['exports', 'ember'], function (exports, Ember) {
@@ -634,20 +687,20 @@ define('student-org-site/models/event', ['exports', 'ember-data'], function (exp
         FIXTURES: [
         {
         id: 1,
-        title: 'super fun thing',
-        start: '2015-10-11',
+        title: 'super fun thing2',
+        start: '2015-12-12',
         tags: [2,3]
         },
         {
         id: 2,
-        title: 'not so fun thing',
-        start: '2015-10-13',
+        title: 'not so fun thing2',
+        start: '2015-12-14',
         tags: [3]
         },
         {
         id: 3,
-                 title  : 'this event shows time',
-                 start  : '2015-10-09T12:30:00',
+                 title  : 'this event shows time2',
+                 start  : '2015-12-10T12:30:00',
                  allDay : false, // will make the time show
                  tags: [1,2]
              }
@@ -788,7 +841,8 @@ define('student-org-site/router', ['exports', 'ember', 'student-org-site/config/
     this.route('auth', {});
     this.route('search', {});
     this.route('addEvent', {});
-    this.route('bad-url', { path: '/*badurl' }); // Catch unrecognized URLs
+    // Catch unrecognized URLs
+    this.route('bad-url', { path: '/*badurl' });
   });
 
   exports['default'] = Router;
@@ -900,32 +954,10 @@ define('student-org-site/routes/calendar', ['exports', 'ember'], function (expor
 
 	exports['default'] = Ember['default'].Route.extend({
 		model: function model() {
-			console.log("event info from routes calendar");
-			var eventStuff = this.store.all('event');
-			console.log("about to show eventStuff");
-			console.log(eventStuff);
-			console.log(eventStuff.content);
-			//console.log(eventStuff.content.content);
-			//return this.store.find('event');
-			//return eventStuff.content;
-			return [{
-				id: 1,
-				title: 'super fun thing',
-				start: '2015-10-11'
-			}, {
-				id: 2,
-				title: 'not so fun thing',
-				start: '2015-10-13'
-
-			}, {
-				id: 3,
-				title: 'this event shows time',
-				start: '2015-10-09T12:30:00',
-				allDay: false // will make the time show
-			}];
+			return this.modelFor('application');
 		},
 		setupController: function setupController(controller, model) {
-			controller.set('events', model);
+			controller.set('eventContent', model);
 		}
 	});
 
@@ -1810,6 +1842,45 @@ define('student-org-site/templates/calendar', ['exports'], function (exports) {
         templates: []
       };
     }());
+    var child1 = (function() {
+      return {
+        meta: {
+          "revision": "Ember@1.13.7",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 13,
+              "column": 0
+            },
+            "end": {
+              "line": 15,
+              "column": 0
+            }
+          },
+          "moduleName": "student-org-site/templates/calendar.hbs"
+        },
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("	");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("div");
+          dom.setAttribute(el1,"class","calendar");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes() { return []; },
+        statements: [
+
+        ],
+        locals: [],
+        templates: []
+      };
+    }());
     return {
       meta: {
         "revision": "Ember@1.13.7",
@@ -1820,7 +1891,7 @@ define('student-org-site/templates/calendar', ['exports'], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 10,
+            "line": 18,
             "column": 10
           }
         },
@@ -1839,27 +1910,45 @@ define('student-org-site/templates/calendar', ['exports'], function (exports) {
         dom.appendChild(el0, el1);
         var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n\n");
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
         dom.appendChild(el0, el1);
         var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(3);
+        var morphs = new Array(6);
         morphs[0] = dom.createMorphAt(fragment,1,1,contextualElement);
         morphs[1] = dom.createMorphAt(fragment,3,3,contextualElement);
         morphs[2] = dom.createMorphAt(fragment,5,5,contextualElement);
+        morphs[3] = dom.createMorphAt(fragment,7,7,contextualElement);
+        morphs[4] = dom.createMorphAt(fragment,9,9,contextualElement);
+        morphs[5] = dom.createMorphAt(fragment,11,11,contextualElement);
         dom.insertBoundary(fragment, null);
         return morphs;
       },
       statements: [
         ["block","link-to",["addEvent"],["tagName","button","class","btn btn-default pull-right"],0,null,["loc",[null,[2,0],[2,133]]]],
-        ["inline","full-calendar",[],["events",["subexpr","@mut",[["get","events",["loc",[null,[7,23],[7,29]]]]],[],[]]],["loc",[null,[7,0],[7,31]]]],
-        ["content","outlet",["loc",[null,[10,0],[10,10]]]]
+        ["inline","log",["event stuff"],[],["loc",[null,[4,0],[4,21]]]],
+        ["inline","log",[["get","eventContent",["loc",[null,[5,6],[5,18]]]]],[],["loc",[null,[5,0],[5,20]]]],
+        ["inline","log",[["get","eventContent.events",["loc",[null,[6,6],[6,25]]]]],[],["loc",[null,[6,0],[6,27]]]],
+        ["block","full-calendar",[],[],1,null,["loc",[null,[13,0],[15,18]]]],
+        ["content","outlet",["loc",[null,[18,0],[18,10]]]]
       ],
       locals: [],
-      templates: [child0]
+      templates: [child0, child1]
     };
   }()));
 
@@ -4327,6 +4416,53 @@ define('student-org-site/templates/components/form-element/vertical/textarea', [
   }()));
 
 });
+define('student-org-site/templates/components/full-calendar', ['exports'], function (exports) {
+
+  'use strict';
+
+  exports['default'] = Ember.HTMLBars.template((function() {
+    return {
+      meta: {
+        "revision": "Ember@1.13.7",
+        "loc": {
+          "source": null,
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 0
+          }
+        },
+        "moduleName": "student-org-site/templates/components/full-calendar.hbs"
+      },
+      arity: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      buildFragment: function buildFragment(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+        var morphs = new Array(1);
+        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
+        dom.insertBoundary(fragment, 0);
+        return morphs;
+      },
+      statements: [
+        ["content","yield",["loc",[null,[1,0],[1,9]]]]
+      ],
+      locals: [],
+      templates: []
+    };
+  }()));
+
+});
 define('student-org-site/templates/components/nav-bar', ['exports'], function (exports) {
 
   'use strict';
@@ -5593,7 +5729,7 @@ define('student-org-site/templates/post', ['exports'], function (exports) {
           return morphs;
         },
         statements: [
-          ["content","tag.name",["loc",[null,[53,39],[53,51]]]]
+          ["content","tag.id",["loc",[null,[53,39],[53,49]]]]
         ],
         locals: ["tag"],
         templates: []
@@ -6307,11 +6443,11 @@ define('student-org-site/templates/posts', ['exports'], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 124,
+              "line": 104,
               "column": 4
             },
             "end": {
-              "line": 126,
+              "line": 106,
               "column": 4
             }
           },
@@ -6340,7 +6476,7 @@ define('student-org-site/templates/posts', ['exports'], function (exports) {
           return morphs;
         },
         statements: [
-          ["content","tag.name",["loc",[null,[125,39],[125,51]]]]
+          ["content","tag.name",["loc",[null,[105,39],[105,51]]]]
         ],
         locals: ["tag"],
         templates: []
@@ -6356,7 +6492,7 @@ define('student-org-site/templates/posts', ['exports'], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 134,
+            "line": 114,
             "column": 0
           }
         },
@@ -6621,10 +6757,6 @@ define('student-org-site/templates/posts', ['exports'], function (exports) {
         var el8 = dom.createTextNode("\n						");
         dom.appendChild(el7, el8);
         dom.appendChild(el6, el7);
-        var el7 = dom.createTextNode("\n						");
-        dom.appendChild(el6, el7);
-        var el7 = dom.createComment("<li class=\"table\">\n							<a href=\"#\" class=\"table-row\">\n								<div class=\"vertical-center\">\n									<img src=\"http://s3.amazonaws.com/uifaces/faces/twitter/thisisvandie/73.jpg\" class=\"author-image\">\n								</div>\n								<div class=\"vertical-center article-title\">\n									Seven Sweet Skyline Stays\n								</div>\n							</a>\n						</li>\n						<li class=\"table\">\n							<a href=\"#\" class=\"table-row\">\n								<div class=\"vertical-center\">\n									<img src=\"http://s3.amazonaws.com/uifaces/faces/twitter/lukekndy/73.jpg\" class=\"author-image\">\n								</div>\n								<div class=\"vertical-center article-title\">\n									The Best Small Towns\n								</div>\n							</a>\n						</li>");
-        dom.appendChild(el6, el7);
         var el7 = dom.createTextNode("\n					");
         dom.appendChild(el6, el7);
         dom.appendChild(el5, el6);
@@ -6690,8 +6822,8 @@ define('student-org-site/templates/posts', ['exports'], function (exports) {
       statements: [
         ["inline","page-title",[],["title","Posts, Articles, & Writeups"],["loc",[null,[1,0],[1,50]]]],
         ["block","each",[["get","model.posts",["loc",[null,[4,17],[4,28]]]]],[],0,null,["loc",[null,[4,1],[23,10]]]],
-        ["block","each",[["get","model.tags",["loc",[null,[124,19],[124,29]]]]],[],1,null,["loc",[null,[124,4],[126,13]]]],
-        ["content","outlet",["loc",[null,[133,0],[133,10]]]]
+        ["block","each",[["get","model.tags",["loc",[null,[104,19],[104,29]]]]],[],1,null,["loc",[null,[104,4],[106,13]]]],
+        ["content","outlet",["loc",[null,[113,0],[113,10]]]]
       ],
       locals: [],
       templates: [child0, child1]
@@ -6776,6 +6908,16 @@ define('student-org-site/tests/components/calendar-event.jshint', function () {
   });
 
 });
+define('student-org-site/tests/components/full-calendar.jshint', function () {
+
+  'use strict';
+
+  module('JSHint - components');
+  test('components/full-calendar.js should pass jshint', function() { 
+    ok(true, 'components/full-calendar.js should pass jshint.'); 
+  });
+
+});
 define('student-org-site/tests/components/nav-bar.jshint', function () {
 
   'use strict';
@@ -6853,6 +6995,16 @@ define('student-org-site/tests/controllers/create-account.jshint', function () {
   module('JSHint - controllers');
   test('controllers/create-account.js should pass jshint', function() { 
     ok(true, 'controllers/create-account.js should pass jshint.'); 
+  });
+
+});
+define('student-org-site/tests/controllers/event.jshint', function () {
+
+  'use strict';
+
+  module('JSHint - controllers');
+  test('controllers/event.js should pass jshint', function() { 
+    ok(true, 'controllers/event.js should pass jshint.'); 
   });
 
 });
@@ -7005,6 +7157,149 @@ define('student-org-site/tests/helpers/text-preview.jshint', function () {
   module('JSHint - helpers');
   test('helpers/text-preview.js should pass jshint', function() { 
     ok(true, 'helpers/text-preview.js should pass jshint.'); 
+  });
+
+});
+define('student-org-site/tests/integration/components/full-calendar-test', ['ember-qunit'], function (ember_qunit) {
+
+  'use strict';
+
+  ember_qunit.moduleForComponent('full-calendar', 'Integration | Component | full calendar', {
+    integration: true
+  });
+
+  ember_qunit.test('it renders', function (assert) {
+    assert.expect(2);
+
+    // Set any properties with this.set('myProperty', 'value');
+    // Handle any actions with this.on('myAction', function(val) { ... });
+
+    this.render(Ember.HTMLBars.template((function () {
+      return {
+        meta: {
+          'revision': 'Ember@1.13.7',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 1,
+              'column': 17
+            }
+          }
+        },
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [['content', 'full-calendar', ['loc', [null, [1, 0], [1, 17]]]]],
+        locals: [],
+        templates: []
+      };
+    })()));
+
+    assert.equal(this.$().text().trim(), '');
+
+    // Template block usage:
+    this.render(Ember.HTMLBars.template((function () {
+      var child0 = (function () {
+        return {
+          meta: {
+            'revision': 'Ember@1.13.7',
+            'loc': {
+              'source': null,
+              'start': {
+                'line': 2,
+                'column': 4
+              },
+              'end': {
+                'line': 4,
+                'column': 4
+              }
+            }
+          },
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode('      template block text\n');
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes() {
+            return [];
+          },
+          statements: [],
+          locals: [],
+          templates: []
+        };
+      })();
+
+      return {
+        meta: {
+          'revision': 'Ember@1.13.7',
+          'loc': {
+            'source': null,
+            'start': {
+              'line': 1,
+              'column': 0
+            },
+            'end': {
+              'line': 5,
+              'column': 2
+            }
+          }
+        },
+        arity: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode('\n');
+          dom.appendChild(el0, el1);
+          var el1 = dom.createComment('');
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode('  ');
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+          return morphs;
+        },
+        statements: [['block', 'full-calendar', [], [], 0, null, ['loc', [null, [2, 4], [4, 22]]]]],
+        locals: [],
+        templates: [child0]
+      };
+    })()));
+
+    assert.equal(this.$().text().trim(), 'template block text');
+  });
+
+});
+define('student-org-site/tests/integration/components/full-calendar-test.jshint', function () {
+
+  'use strict';
+
+  module('JSHint - integration/components');
+  test('integration/components/full-calendar-test.js should pass jshint', function() { 
+    ok(true, 'integration/components/full-calendar-test.js should pass jshint.'); 
   });
 
 });
@@ -7473,6 +7768,32 @@ define('student-org-site/tests/unit/controllers/create-account-test.jshint', fun
   module('JSHint - unit/controllers');
   test('unit/controllers/create-account-test.js should pass jshint', function() { 
     ok(true, 'unit/controllers/create-account-test.js should pass jshint.'); 
+  });
+
+});
+define('student-org-site/tests/unit/controllers/event-test', ['ember-qunit'], function (ember_qunit) {
+
+  'use strict';
+
+  ember_qunit.moduleFor('controller:event', {
+    // Specify the other units that are required for this test.
+    // needs: ['controller:foo']
+  });
+
+  // Replace this with your real tests.
+  ember_qunit.test('it exists', function (assert) {
+    var controller = this.subject();
+    assert.ok(controller);
+  });
+
+});
+define('student-org-site/tests/unit/controllers/event-test.jshint', function () {
+
+  'use strict';
+
+  module('JSHint - unit/controllers');
+  test('unit/controllers/event-test.js should pass jshint', function() { 
+    ok(true, 'unit/controllers/event-test.js should pass jshint.'); 
   });
 
 });
