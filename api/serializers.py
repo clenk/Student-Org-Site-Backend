@@ -54,11 +54,11 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'password', 'email',)
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    profileImageUrl = serializers.CharField(source='myuser.profileImageUrl')
-    posts = serializers.Field(source='myuser.posts')
+    # profileImageUrl = serializers.CharField(source='myuser.profileImageUrl')
+    # posts = serializers.Field(source='myuser.posts')
     class Meta:
         model = UserProfile
-        fields = ('user', 'profileImageUrl', 'posts')
+        fields = ('id', 'user', 'profileImageUrl', 'posts')
 
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())
