@@ -69692,7 +69692,7 @@ define("ember/load-initializers",
 })();
 
 ;/* ========================================================================
- * Bootstrap: transition.js v3.3.5
+ * Bootstrap: transition.js v3.3.6
  * http://getbootstrap.com/javascript/#transitions
  * ========================================================================
  * Copyright 2011-2015 Twitter, Inc.
@@ -88650,11 +88650,23 @@ unlimitRow:function(a){var b=this.rowStructs[a];b.moreEls&&(b.moreEls.remove(),b
 
 ;Ember.libraries.register('Ember Simple Auth', '1.0.0');
 
-;define('ember-bootstrap/components/bs-accordion-item', ['exports', 'ember', 'ember-bootstrap/mixins/type-class', 'ember-bootstrap/mixins/sub-component', 'ember-bootstrap/mixins/i18n-support'], function (exports, Ember, TypeClass, SubComponent, I18nSupport) {
-
+;define('ember-bootstrap/components/bs-accordion-item', ['exports', 'ember', 'ember-bootstrap/mixins/type-class', 'ember-bootstrap/mixins/sub-component', 'ember-bootstrap/mixins/i18n-support'], function (exports, _ember, _emberBootstrapMixinsTypeClass, _emberBootstrapMixinsSubComponent, _emberBootstrapMixinsI18nSupport) {
   'use strict';
 
-  exports['default'] = Ember['default'].Component.extend(TypeClass['default'], SubComponent['default'], I18nSupport['default'], {
+  /**
+   A collapsible/expandable item within an accordion
+  
+   See {{#crossLink "Components.Accordion"}}{{/crossLink}} for examples.
+  
+  
+   @class AccordionItem
+   @namespace Components
+   @extends Ember.Component
+   @uses Mixins.TypeClass
+   @uses Mixins.SubComponent
+   @uses Mixins.I18nSupport
+   */
+  exports['default'] = _ember['default'].Component.extend(_emberBootstrapMixinsTypeClass['default'], _emberBootstrapMixinsSubComponent['default'], _emberBootstrapMixinsI18nSupport['default'], {
     classNames: ['panel'],
 
     /**
@@ -88680,11 +88692,11 @@ unlimitRow:function(a){var b=this.rowStructs[a];b.moreEls&&(b.moreEls.remove(),b
      * @property value
      * @public
      */
-    value: Ember['default'].computed.oneWay('elementId'),
+    value: _ember['default'].computed.oneWay('elementId'),
 
-    selected: Ember['default'].computed.alias('parentView.selected'),
+    selected: _ember['default'].computed.alias('parentView.selected'),
 
-    collapsed: Ember['default'].computed('value', 'selected', function () {
+    collapsed: _ember['default'].computed('value', 'selected', function () {
       return this.get('value') !== this.get('selected');
     }),
 
@@ -88706,13 +88718,38 @@ unlimitRow:function(a){var b=this.rowStructs[a];b.moreEls&&(b.moreEls.remove(),b
     }
 
   });
-
 });
-define('ember-bootstrap/components/bs-accordion', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-bootstrap/components/bs-accordion', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
-  exports['default'] = Ember['default'].Component.extend({
+  /**
+   Bootstrap-style accordion group, with collapsible/expandable items.
+   See http://getbootstrap.com/components/#btn-groups
+  
+   Use as a block level component with any number of {{#crossLink "Components.AccordionItem"}}{{/crossLink}} components as children:
+  
+   ```handlebars
+    \{{#bs-accordion selected=selected}}
+        \{{#bs-accordion-item value="1" title="First item"}}
+          <p>Lorem ipsum...</p>
+        \{{/bs-accordion-item}}
+        \{{#bs-accordion-item value="2" title="Second item"}}
+          <p>Lorem ipsum...</p>
+        \{{/bs-accordion-item}}
+        \{{#bs-accordion-item value="3" title="Third item"}}
+          <p>Lorem ipsum...</p>
+        \{{/bs-accordion-item}}
+    \{{/bs-accordion}}
+  
+    <p>Selected accordion item: \{{selected}}</p>
+   ```
+  
+  
+   @class Accordion
+   @namespace Components
+   @extends Ember.Component
+   */
+  exports['default'] = _ember['default'].Component.extend({
     classNames: ['panel-group'],
     ariaRole: 'tablist',
 
@@ -88731,13 +88768,28 @@ define('ember-bootstrap/components/bs-accordion', ['exports', 'ember'], function
     }
 
   });
-
 });
-define('ember-bootstrap/components/bs-alert', ['exports', 'ember', 'ember-bootstrap/mixins/type-class'], function (exports, Ember, TypeClass) {
-
+define('ember-bootstrap/components/bs-alert', ['exports', 'ember', 'ember-bootstrap/mixins/type-class'], function (exports, _ember, _emberBootstrapMixinsTypeClass) {
     'use strict';
 
-    exports['default'] = Ember['default'].Component.extend(TypeClass['default'], {
+    /**
+     Implements Bootstrap alerts, see http://getbootstrap.com/components/#alerts
+    
+     By default it is a user dismissible alert with a fade out animation, both of which can be disabled. Be sure to set the
+     `type` property for proper styling.
+    
+     ```hbs
+     {{#bs-alert type="success"}}
+        <strong>Well done!</strong> You successfully read this important alert message.
+     {{/bs-alert}}
+     ```
+    
+     @class Alert
+     @namespace Components
+     @extends Ember.Component
+     @uses Mixins.TypeClass
+     */
+    exports['default'] = _ember['default'].Component.extend(_emberBootstrapMixinsTypeClass['default'], {
         classNameBindings: ['alert', 'fade', 'in'],
 
         /**
@@ -88791,8 +88843,8 @@ define('ember-bootstrap/components/bs-alert', ['exports', 'ember', 'ember-bootst
          * @type boolean
          * @private
          */
-        alert: Ember['default'].computed.not('dismissed'),
-        'in': Ember['default'].computed.and('visible', 'fade'),
+        alert: _ember['default'].computed.not('dismissed'),
+        'in': _ember['default'].computed.and('visible', 'fade'),
 
         /**
          * @property classTypePrefix
@@ -88818,7 +88870,7 @@ define('ember-bootstrap/components/bs-alert', ['exports', 'ember', 'ember-bootst
             }
         },
 
-        _onVisibleChange: Ember['default'].observer('visible', function () {
+        _onVisibleChange: _ember['default'].observer('visible', function () {
             if (this.get('visible')) {
                 this.show();
             } else {
@@ -88849,7 +88901,7 @@ define('ember-bootstrap/components/bs-alert', ['exports', 'ember', 'ember-bootst
         hide: function hide() {
             if (this.get('fade')) {
                 this.set('visible', false);
-                Ember['default'].run.later(this, function () {
+                _ember['default'].run.later(this, function () {
                     if (!this.get('isDestroyed')) {
                         this.set('dismissed', true);
                     }
@@ -88863,13 +88915,66 @@ define('ember-bootstrap/components/bs-alert', ['exports', 'ember', 'ember-bootst
         }
 
     });
-
 });
-define('ember-bootstrap/components/bs-button-group', ['exports', 'ember', 'ember-bootstrap/mixins/size-class', 'ember-bootstrap/mixins/component-parent'], function (exports, Ember, SizeClass, ComponentParent) {
-
+define('ember-bootstrap/components/bs-button-group', ['exports', 'ember', 'ember-bootstrap/mixins/size-class', 'ember-bootstrap/mixins/component-parent'], function (exports, _ember, _emberBootstrapMixinsSizeClass, _emberBootstrapMixinsComponentParent) {
     'use strict';
 
-    exports['default'] = Ember['default'].Component.extend(ComponentParent['default'], SizeClass['default'], {
+    /**
+     Bootstrap-style button group, that visually groups buttons, and optionally adds radio/checkbox like behaviour.
+     See http://getbootstrap.com/components/#btn-groups
+    
+     Use as a block level component with any number of {{#crossLink "Components.Button"}}{{/crossLink}} components as children:
+    
+     ```handlebars
+     {{#bs-button-group}}
+        {{#bs-button}}1{{/bs-button}}
+        {{#bs-button}}2{{/bs-button}}
+        {{#bs-button}}3{{/bs-button}}
+     {{/bs-button-group}}
+     ```
+    
+     ### Radio-like behaviour
+    
+     Use the `type` property set to "radio" to make the child buttons toggle like radio buttons, i.e. only one button can be active.
+     Set the `value` property of the buttons to something meaningful. The `value` property of the button group will then reflect
+     the value of the active button:
+    
+     ```handlebars
+     {{#bs-button-group value=buttonGroupValue type="radio"}}
+        {{#bs-button value=1}}1{{/bs-button}}
+        {{#bs-button value=2}}2{{/bs-button}}
+        {{#bs-button value=3}}3{{/bs-button}}
+     {{/bs-button-group}}
+    
+     You selected: {{buttonGroupValue}}!
+     ```
+    
+     ### Checkbox-like behaviour
+    
+     Set `type` to "checkbox" to make any number of child buttons selectable. The `value` property will be an array
+     of all the values of the active buttons:
+    
+     ```handlebars
+     {{#bs-button-group value=buttonGroupValue type="checkbox"}}
+        {{#bs-button value=1}}1{{/bs-button}}
+        {{#bs-button value=2}}2{{/bs-button}}
+        {{#bs-button value=3}}3{{/bs-button}}
+     {{/bs-button-group}}
+    
+     You selected:
+     <ul>
+     {{#each value in buttonGroupValue}}
+        <li>{{value}}</li>
+     {{/each}}
+     </ul>
+     ```
+    
+     @class ButtonGroup
+     @namespace Components
+     @extends Ember.Component
+     @uses Mixins.SizeClass
+     */
+    exports['default'] = _ember['default'].Component.extend(_emberBootstrapMixinsComponentParent['default'], _emberBootstrapMixinsSizeClass['default'], {
 
         /**
          * @type string
@@ -88971,12 +89076,12 @@ define('ember-bootstrap/components/bs-button-group', ['exports', 'ember', 'ember
          */
         value: undefined,
 
-        _syncValueToActiveButtons: Ember['default'].observer('value', 'children.@each.value', '_inDOM', function () {
+        _syncValueToActiveButtons: _ember['default'].observer('value', 'children.@each.value', '_inDOM', function () {
             if (!this._inDOM) {
                 return;
             }
             var value = this.get('value'),
-                values = Ember['default'].A(!Ember['default'].isArray(value) ? [value] : value);
+                values = _ember['default'].A(!_ember['default'].isArray(value) ? [value] : value);
             this.get('children').forEach(function (button) {
                 button.set('active', values.contains(button.get('value')));
             });
@@ -88988,11 +89093,11 @@ define('ember-bootstrap/components/bs-button-group', ['exports', 'ember', 'ember
          * @type array
          * @protected
          */
-        activeChildren: Ember['default'].computed.filterBy('children', 'active', true),
+        activeChildren: _ember['default'].computed.filterBy('children', 'active', true),
 
         lastActiveChildren: null,
-        newActiveChildren: Ember['default'].computed.setDiff('activeChildren', 'lastActiveChildren'),
-        _observeButtons: Ember['default'].observer('activeChildren.[]', 'type', function () {
+        newActiveChildren: _ember['default'].computed.setDiff('activeChildren', 'lastActiveChildren'),
+        _observeButtons: _ember['default'].observer('activeChildren.[]', 'type', function () {
             var type = this.get('type');
 
             if (!this._inDOM || type !== 'radio' && type !== 'checkbox') {
@@ -89001,13 +89106,13 @@ define('ember-bootstrap/components/bs-button-group', ['exports', 'ember', 'ember
 
             //var lastActiveChild = this.get('lastActiveChildren.firstObject')
 
-            Ember['default'].run.scheduleOnce('actions', this, function () {
+            _ember['default'].run.scheduleOnce('actions', this, function () {
                 // the button that just became active
                 var newActive, lastActive, value;
 
                 switch (type) {
                     case 'radio':
-                        newActive = Ember['default'].A(this.get('newActiveChildren')).objectAt(0);
+                        newActive = _ember['default'].A(this.get('newActiveChildren')).objectAt(0);
                         if (newActive) {
                             value = newActive.get('value');
                         } else {
@@ -89025,11 +89130,11 @@ define('ember-bootstrap/components/bs-button-group', ['exports', 'ember', 'ember
                     this.set('value', value);
                 }
                 // remember activeChildren, used as a replacement for a before observer as they will be deprecated in the future...
-                this.set('lastActiveChildren', Ember['default'].A(this.get('activeChildren').slice()));
+                this.set('lastActiveChildren', _ember['default'].A(this.get('activeChildren').slice()));
             });
         }),
 
-        _observeType: Ember['default'].observer('type', 'children.[]', function () {
+        _observeType: _ember['default'].observer('type', 'children.[]', function () {
             if (this.get('type') === 'radio' || this.get('type') === 'checkbox') {
                 // set all child buttons to toggle
                 this.get('children').forEach(function (button) {
@@ -89040,7 +89145,7 @@ define('ember-bootstrap/components/bs-button-group', ['exports', 'ember', 'ember
 
         init: function init() {
             this._super();
-            this.set('lastActiveChildren', Ember['default'].A());
+            this.set('lastActiveChildren', _ember['default'].A());
         },
 
         _inDOM: false,
@@ -89050,13 +89155,90 @@ define('ember-bootstrap/components/bs-button-group', ['exports', 'ember', 'ember
             this.get('activeChildren');
         }
     });
-
 });
-define('ember-bootstrap/components/bs-button', ['exports', 'ember', 'ember-bootstrap/mixins/type-class', 'ember-bootstrap/mixins/size-class', 'ember-bootstrap/mixins/i18n-support', 'ember-bootstrap/mixins/component-child'], function (exports, Ember, TypeClass, SizeClass, I18nSupport, ComponentChild) {
-
+define('ember-bootstrap/components/bs-button', ['exports', 'ember', 'ember-bootstrap/mixins/type-class', 'ember-bootstrap/mixins/size-class', 'ember-bootstrap/mixins/i18n-support', 'ember-bootstrap/mixins/component-child'], function (exports, _ember, _emberBootstrapMixinsTypeClass, _emberBootstrapMixinsSizeClass, _emberBootstrapMixinsI18nSupport, _emberBootstrapMixinsComponentChild) {
   'use strict';
 
-  exports['default'] = Ember['default'].Component.extend(ComponentChild['default'], TypeClass['default'], SizeClass['default'], I18nSupport['default'], {
+  /**
+   Implements a HTML button element, with support for all [Bootstrap button CSS styles](http://getbootstrap.com/css/#buttons)
+   as well as advanced functionality such as button states.
+  
+   ### Basic Usage
+  
+   ```hbs
+   \{{#bs-button type="primary" icon="glyphicon glyphicon-download"}}
+      Downloads
+   \{{/bs-button}}
+   ```
+  
+   ### Actions
+  
+   Set the action property of the component to send an action to your controller. The following parameters will be sent:
+   * value: the button's value, see the `value` property
+   * event: the browsers event object
+   * callback: a function that may be called from the action handler to supply a Promise to the button component for automatic state handling
+  
+   ```hbs
+   \{{#bs-button type="primary" icon="glyphicon glyphicon-download" action="download"}}
+      Download
+   \{{/bs-button}}
+   ```
+  
+   ### States
+  
+   Use the `textState` property to change the label of the button. You can bind it to a controller property to set a "loading" state for example.
+   The label of the button will be taken from the `<state>Text` property.
+  
+   ```hbs
+   \{{bs-button type="primary" icon="glyphicon glyphicon-download" textState=buttonState defaultText="Download" loadingText="Loading..." action="download"}}
+   ```
+  
+   ```js
+   App.ApplicationController = Ember.Controller.extend({
+     buttonState: "default"
+     actions: {
+       download: function() {
+         this.set("buttonState", "loading");
+       }
+     }
+   });
+   ```
+  
+   ### Promise support for automatic state change
+  
+   When using the callback function of the click action to supply a Promise for any asynchronous operation the button will
+   manage its `textState` property automatically, changing its value according to the state of the promise:
+   "default" > "pending" > "resolved"/"rejected"
+  
+   ```hbs
+   \{{bs-button type="primary" icon="glyphicon glyphicon-download" defaultText="Download" pendingText="Loading..." resolvedText="Completed!" rejectedText="Oups!?" action="download"}}
+   ```
+  
+   ```js
+   App.ApplicationController = Ember.Controller.extend({
+     actions: {
+       download: function(actionParam, evt, cb) {
+         promise = new Ember.RSVP.Promise(...);
+         cb(promise);
+       }
+     }
+   });
+   ```
+  
+   ### I18n support
+  
+   Supports translateable properties if [ember-i18n](https://github.com/jamesarosen/ember-i18n) is present.
+   See {{#crossLink "Mixins.I18nSupport"}}{{/crossLink}}
+  
+  
+   @class Button
+   @namespace Components
+   @extends Ember.Component
+   @uses Mixins.TypeClass
+   @uses Mixins.SizeClass
+   @uses Mixins.I18nSupport
+  */
+  exports['default'] = _ember['default'].Component.extend(_emberBootstrapMixinsComponentChild['default'], _emberBootstrapMixinsTypeClass['default'], _emberBootstrapMixinsSizeClass['default'], _emberBootstrapMixinsI18nSupport['default'], {
     tagName: 'button',
     classNames: ['btn'],
     classNameBindings: ['active', 'block:btn-block'],
@@ -89158,7 +89340,7 @@ define('ember-bootstrap/components/bs-button', ['exports', 'ember', 'ember-boots
      * @readonly
      * @protected
      */
-    icon: Ember['default'].computed('active', function () {
+    icon: _ember['default'].computed('active', function () {
       if (this.get('active')) {
         return this.get('iconActive');
       } else {
@@ -89207,15 +89389,15 @@ define('ember-bootstrap/components/bs-button', ['exports', 'ember', 'ember-boots
       this.set('textState', 'default');
     },
 
-    resetObserver: Ember['default'].observer('reset', function () {
+    resetObserver: _ember['default'].observer('reset', function () {
       if (this.get('reset')) {
-        Ember['default'].run.scheduleOnce('actions', this, function () {
+        _ember['default'].run.scheduleOnce('actions', this, function () {
           this.set('textState', 'default');
         });
       }
     }),
 
-    text: Ember['default'].computed('textState', 'defaultText', 'pendingText', 'resolvedText', 'rejectedText', function () {
+    text: _ember['default'].computed('textState', 'defaultText', 'pendingText', 'resolvedText', 'rejectedText', function () {
       return this.getWithDefault(this.get('textState') + 'Text', this.get('defaultText'));
     }),
 
@@ -89257,13 +89439,11 @@ define('ember-bootstrap/components/bs-button', ['exports', 'ember', 'ember-boots
     }
 
   });
-
 });
-define('ember-bootstrap/components/bs-collapse', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-bootstrap/components/bs-collapse', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
-  exports['default'] = Ember['default'].Component.extend({
+  exports['default'] = _ember['default'].Component.extend({
 
     classNameBindings: ['collapse', 'in', 'collapsing'],
     attributeBindings: ['style'],
@@ -89286,9 +89466,9 @@ define('ember-bootstrap/components/bs-collapse', ['exports', 'ember'], function 
      */
     active: false,
 
-    collapse: Ember['default'].computed.not('transitioning'),
-    collapsing: Ember['default'].computed.alias('transitioning'),
-    'in': Ember['default'].computed.and('collapse', 'active'),
+    collapse: _ember['default'].computed.not('transitioning'),
+    collapsing: _ember['default'].computed.alias('transitioning'),
+    'in': _ember['default'].computed.and('collapse', 'active'),
 
     /**
      * true if the component is currently transitioning
@@ -89348,13 +89528,13 @@ define('ember-bootstrap/components/bs-collapse', ['exports', 'ember'], function 
      */
     collapseDimension: 'height',
 
-    style: Ember['default'].computed('collapseSize', function () {
+    style: _ember['default'].computed('collapseSize', function () {
       var size = this.get('collapseSize'),
           dimension = this.get('collapseDimension');
-      if (Ember['default'].isEmpty(size)) {
-        return new Ember['default'].Handlebars.SafeString('');
+      if (_ember['default'].isEmpty(size)) {
+        return new _ember['default'].Handlebars.SafeString('');
       }
-      return new Ember['default'].Handlebars.SafeString(dimension + ': ' + size + 'px');
+      return new _ember['default'].Handlebars.SafeString(dimension + ': ' + size + 'px');
     }),
 
     /**
@@ -89380,15 +89560,15 @@ define('ember-bootstrap/components/bs-collapse', ['exports', 'ember'], function 
         active: true
       });
 
-      if (!Ember['default'].$.support.transition) {
+      if (!_ember['default'].$.support.transition) {
         return complete.call(this);
       }
 
-      this.$().one('bsTransitionEnd', Ember['default'].run.bind(this, complete))
+      this.$().one('bsTransitionEnd', _ember['default'].run.bind(this, complete))
       // @todo: make duration configurable
       .emulateTransitionEnd(350);
 
-      Ember['default'].run.next(this, function () {
+      _ember['default'].run.next(this, function () {
         if (!this.get('isDestroyed')) {
           this.set('collapseSize', this.getExpandedSize('show'));
         }
@@ -89405,13 +89585,13 @@ define('ember-bootstrap/components/bs-collapse', ['exports', 'ember'], function 
      */
     getExpandedSize: function getExpandedSize($action) {
       var expandedSize = this.get('expandedSize');
-      if (Ember['default'].isPresent(expandedSize)) {
+      if (_ember['default'].isPresent(expandedSize)) {
         return expandedSize;
       }
 
       var collapseElement = this.$(),
           prefix = $action === 'show' ? 'scroll' : 'offset',
-          measureProperty = Ember['default'].String.camelize(prefix + '-' + this.get('collapseDimension'));
+          measureProperty = _ember['default'].String.camelize(prefix + '-' + this.get('collapseDimension'));
       return collapseElement[0][measureProperty];
     },
 
@@ -89439,22 +89619,22 @@ define('ember-bootstrap/components/bs-collapse', ['exports', 'ember'], function 
         active: false
       });
 
-      if (!Ember['default'].$.support.transition) {
+      if (!_ember['default'].$.support.transition) {
         return complete.call(this);
       }
 
-      this.$().one('bsTransitionEnd', Ember['default'].run.bind(this, complete))
+      this.$().one('bsTransitionEnd', _ember['default'].run.bind(this, complete))
       // @todo: make duration configurable
       .emulateTransitionEnd(350);
 
-      Ember['default'].run.next(this, function () {
+      _ember['default'].run.next(this, function () {
         if (!this.get('isDestroyed')) {
           this.set('collapseSize', this.get('collapsedSize'));
         }
       });
     },
 
-    _onCollapsedChange: Ember['default'].observer('collapsed', function () {
+    _onCollapsedChange: _ember['default'].observer('collapsed', function () {
       var collapsed = this.get('collapsed'),
           active = this.get('active');
       if (collapsed !== active) {
@@ -89467,37 +89647,52 @@ define('ember-bootstrap/components/bs-collapse', ['exports', 'ember'], function 
       }
     }),
 
-    _onInit: Ember['default'].on('init', function () {
+    _onInit: _ember['default'].on('init', function () {
       this.set('active', !this.get('collapsed'));
     }),
 
-    _updateCollapsedSize: Ember['default'].observer('collapsedSize', function () {
+    _updateCollapsedSize: _ember['default'].observer('collapsedSize', function () {
       if (!this.get('resetSizeWhenNotCollapsing') && this.get('collapsed') && !this.get('collapsing')) {
         this.set('collapseSize', this.get('collapsedSize'));
       }
     }),
 
-    _updateExpandedSize: Ember['default'].observer('expandedSize', function () {
+    _updateExpandedSize: _ember['default'].observer('expandedSize', function () {
       if (!this.get('resetSizeWhenNotCollapsing') && !this.get('collapsed') && !this.get('collapsing')) {
         this.set('collapseSize', this.get('expandedSize'));
       }
     })
 
   });
-
 });
-define('ember-bootstrap/components/bs-dropdown-button', ['exports', 'ember-bootstrap/components/bs-button', 'ember-bootstrap/mixins/dropdown-toggle'], function (exports, Button, DropdownToggle) {
-
-	'use strict';
-
-	exports['default'] = Button['default'].extend(DropdownToggle['default']);
-
-});
-define('ember-bootstrap/components/bs-dropdown-menu', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-bootstrap/components/bs-dropdown-button', ['exports', 'ember-bootstrap/components/bs-button', 'ember-bootstrap/mixins/dropdown-toggle'], function (exports, _emberBootstrapComponentsBsButton, _emberBootstrapMixinsDropdownToggle) {
   'use strict';
 
-  exports['default'] = Ember['default'].Component.extend({
+  /**
+   Button component with that can act as a dropdown toggler.
+  
+   See {{#crossLink "Components.Dropdown"}}{{/crossLink}} for examples.
+  
+   @class DropdownButton
+   @namespace Components
+   @extends Components.Button
+   @uses Mixins.DropdownToggle
+   */
+  exports['default'] = _emberBootstrapComponentsBsButton['default'].extend(_emberBootstrapMixinsDropdownToggle['default']);
+});
+define('ember-bootstrap/components/bs-dropdown-menu', ['exports', 'ember'], function (exports, _ember) {
+  'use strict';
+
+  /**
+   Component for the dropdown menu.
+  
+   See {{#crossLink "Components.Dropdown"}}{{/crossLink}} for examples.
+  
+   @class DropdownMenu
+   @namespace Components
+   @extends Ember.Component
+   */
+  exports['default'] = _ember['default'].Component.extend({
 
     /**
      * Defaults to a `<ul>` tag. Change for other types of dropdown menus.
@@ -89529,20 +89724,30 @@ define('ember-bootstrap/components/bs-dropdown-menu', ['exports', 'ember'], func
      */
     align: 'left',
 
-    alignClass: Ember['default'].computed('align', function () {
+    alignClass: _ember['default'].computed('align', function () {
       if (this.get('align') !== 'left') {
         return 'dropdown-menu-' + this.get('align');
       }
     })
 
   });
-
 });
-define('ember-bootstrap/components/bs-dropdown-toggle', ['exports', 'ember', 'ember-bootstrap/mixins/dropdown-toggle'], function (exports, Ember, DropdownToggle) {
-
+define('ember-bootstrap/components/bs-dropdown-toggle', ['exports', 'ember', 'ember-bootstrap/mixins/dropdown-toggle'], function (exports, _ember, _emberBootstrapMixinsDropdownToggle) {
     'use strict';
 
-    exports['default'] = Ember['default'].Component.extend(DropdownToggle['default'], {
+    /**
+     Anchor element that triggers the parent dropdown to open.
+     Use {{#crossLink "Components.DropdownButton"}}{{/crossLink}} if you want a button instead of an anchor tag.
+    
+     See {{#crossLink "Components.Dropdown"}}{{/crossLink}} for examples.
+    
+    
+     @class DropdownToggle
+     @namespace Components
+     @extends Ember.Component
+     @uses Mixins.DropdownToggle
+     */
+    exports['default'] = _ember['default'].Component.extend(_emberBootstrapMixinsDropdownToggle['default'], {
         /**
          * Defaults to a `<a>` tag. Change for other types of dropdown toggles.
          *
@@ -89563,7 +89768,7 @@ define('ember-bootstrap/components/bs-dropdown-toggle', ['exports', 'ember', 'em
          * @readonly
          * @protected
          */
-        href: Ember['default'].computed('tagName', function () {
+        href: _ember['default'].computed('tagName', function () {
             if (this.get('tagName').toUpperCase() === 'A') {
                 return '#';
             }
@@ -89575,136 +89780,192 @@ define('ember-bootstrap/components/bs-dropdown-toggle', ['exports', 'ember', 'em
         }
 
     });
-
 });
-define('ember-bootstrap/components/bs-dropdown', ['exports', 'ember', 'ember-bootstrap/components/bs-dropdown-button', 'ember-bootstrap/mixins/component-parent'], function (exports, Ember, toggleButton, ComponentParent) {
+define('ember-bootstrap/components/bs-dropdown', ['exports', 'ember', 'ember-bootstrap/components/bs-dropdown-button', 'ember-bootstrap/mixins/component-parent'], function (exports, _ember, _emberBootstrapComponentsBsDropdownButton, _emberBootstrapMixinsComponentParent) {
+    'use strict';
 
-   'use strict';
+    /**
+     Bootstrap style dropdown menus, consisting of a toggle element, and the dropdown menu itself.
+     See http://getbootstrap.com/components/#dropdowns
+    
+     Use this component together with two sub components, a dropdown toggle (`Components.DropdownToggle` or
+     `Components.DropdownButton` component) and a dropdown menu (`Components.DropdownMenu`) component:
+    
+     ```hbs
+     <nav class="navbar navbar-default navbar-static">
+       <div class="container-fluid">
+         <ul class="nav navbar-nav">
+           {{#bs-dropdown tagName="li"}}
+             {{#bs-dropdown-toggle}}Dropdown <span class="caret"></span>{{/bs-dropdown-toggle}}
+             {{#bs-dropdown-menu}}
+               <li>{{#link-to "index"}}Something{{/link-to}}</li>
+               <li>{{#link-to "index"}}Something different{{/link-to}}</li>
+             {{/bs-dropdown-menu}}
+           {{/bs-dropdown}}
+         </ul>
+       </div>
+     </nav>
+     ```
+    
+     ### Button dropdowns
+    
+     To use a button as the dropdown toggle element (see http://getbootstrap.com/components/#btn-dropdowns), use the
+     `Components.DropdownButton` component as the toggle:
+    
+     ```hbs
+     {{#bs-dropdown}}
+       {{#bs-dropdown-button}}Dropdown <span class="caret"></span>{{/bs-dropdown-button}}
+       {{#bs-dropdown-menu}}
+         <li>{{#link-to "index"}}Something{{/link-to}}</li>
+         <li>{{#link-to "index"}}Something different{{/link-to}}</li>
+       {{/bs-dropdown-menu}}
+     {{/bs-dropdown}}
+     ```
+    
+     It has all the functionality of a `Components.Button` with additional dropdown support.
+    
+     ### Split button dropdowns
+    
+     To have a regular button with a dropdown button as in http://getbootstrap.com/components/#btn-dropdowns-split, use a
+     `Components.Button` component and a `Components.DropdownButton`:
+    
+     ```hbs
+     {{#bs-dropdown}}
+       {{#bs-button}}Dropdown{{/bs-button}}
+       {{#bs-dropdown-button}}Dropdown <span class="caret"></span>{{/bs-dropdown-button}}
+       {{#bs-dropdown-menu}}
+         <li>{{#link-to "index"}}Something{{/link-to}}</li>
+         <li>{{#link-to "index"}}Something different{{/link-to}}</li>
+       {{/bs-dropdown-menu}}
+     {{/bs-dropdown}}
+     ```
+    
+     @class Dropdown
+     @namespace Components
+     @extends Ember.Component
+     */
+    exports['default'] = _ember['default'].Component.extend(_emberBootstrapMixinsComponentParent['default'], {
+        classNameBindings: ['open', 'containerClass'],
 
-   exports['default'] = Ember['default'].Component.extend(ComponentParent['default'], {
-       classNameBindings: ['open', 'containerClass'],
+        /**
+         * This property reflects the state of the dropdown, whether it is open or closed.
+         *
+         * @property open
+         * @default false
+         * @type boolean
+         * @public
+         */
+        open: false,
 
-       /**
-        * This property reflects the state of the dropdown, whether it is open or closed.
-        *
-        * @property open
-        * @default false
-        * @type boolean
-        * @public
-        */
-       open: false,
+        /**
+         * By default clicking on an open dropdown menu will close it. Set this property to false for the menu to stay open.
+         *
+         * @property closeOnMenuClick
+         * @default true
+         * @type boolean
+         * @public
+         */
+        closeOnMenuClick: true,
 
-       /**
-        * By default clicking on an open dropdown menu will close it. Set this property to false for the menu to stay open.
-        *
-        * @property closeOnMenuClick
-        * @default true
-        * @type boolean
-        * @public
-        */
-       closeOnMenuClick: true,
+        /**
+         * jQuery click event name, namespaced to this component's instance to prevent interference between multiple dropdowns.
+         *
+         * @property clickEventName
+         * @type string
+         * @private
+         */
+        clickEventName: undefined,
 
-       /**
-        * jQuery click event name, namespaced to this component's instance to prevent interference between multiple dropdowns.
-        *
-        * @property clickEventName
-        * @type string
-        * @private
-        */
-       clickEventName: undefined,
+        /**
+         * A computed property to generate the suiting class for the dropdown container, either "dropdown" or "btn-group".
+         *
+         * @property containerClass
+         * @type string
+         * @readonly
+         * @protected
+         */
+        containerClass: _ember['default'].computed('toggleType', function () {
+            return this.get('toggleType') === 'button' ? 'btn-group' : 'dropdown';
+        }),
 
-       /**
-        * A computed property to generate the suiting class for the dropdown container, either "dropdown" or "btn-group".
-        *
-        * @property containerClass
-        * @type string
-        * @readonly
-        * @protected
-        */
-       containerClass: Ember['default'].computed('toggleType', function () {
-           return this.get('toggleType') === 'button' ? 'btn-group' : 'dropdown';
-       }),
+        /**
+         * This property is "button" if the toggle element is an instance of {{#crossLink "Components.DropdownButton"}}{{/crossLink}}, otherwise "toggle".
+         *
+         * @property toggleType
+         * @type string
+         * @readonly
+         * @protected
+         */
+        toggleType: _ember['default'].computed('children.[]', function () {
+            if (this.get('children').any(function (view) {
+                return view instanceof _emberBootstrapComponentsBsDropdownButton['default'];
+            })) {
+                return 'button';
+            }
+            return 'toggle';
+        }),
 
-       /**
-        * This property is "button" if the toggle element is an instance of {{#crossLink "Components.DropdownButton"}}{{/crossLink}}, otherwise "toggle".
-        *
-        * @property toggleType
-        * @type string
-        * @readonly
-        * @protected
-        */
-       toggleType: Ember['default'].computed('children.[]', function () {
-           if (this.get('children').any(function (view) {
-               return view instanceof toggleButton['default'];
-           })) {
-               return 'button';
-           }
-           return 'toggle';
-       }),
+        actions: {
+            toggleDropdown: function toggleDropdown() {
+                this.toggleProperty('open');
+            },
 
-       actions: {
-           toggleDropdown: function toggleDropdown() {
-               this.toggleProperty('open');
-           },
+            openDropdown: function openDropdown() {
+                this.set('open', true);
+            },
 
-           openDropdown: function openDropdown() {
-               this.set('open', true);
-           },
+            closeDropdown: function closeDropdown() {
+                this.set('open', false);
+            }
+        },
 
-           closeDropdown: function closeDropdown() {
-               this.set('open', false);
-           }
-       },
+        handleClickEvents: _ember['default'].observer('open', function () {
+            if (this.get('open')) {
+                _ember['default'].$(document).on(this.clickEventName, _ember['default'].run.bind(this, this.closeOnClickHandler));
+            } else {
+                _ember['default'].$(document).off(this.clickEventName);
+            }
+        }),
 
-       handleClickEvents: Ember['default'].observer('open', function () {
-           if (this.get('open')) {
-               Ember['default'].$(document).on(this.clickEventName, Ember['default'].run.bind(this, this.closeOnClickHandler));
-           } else {
-               Ember['default'].$(document).off(this.clickEventName);
-           }
-       }),
+        willDestroyElement: function willDestroyElement() {
+            _ember['default'].$(document).off(this.clickEventName);
+        },
 
-       willDestroyElement: function willDestroyElement() {
-           Ember['default'].$(document).off(this.clickEventName);
-       },
+        init: function init() {
+            this._super();
+            // click event name that is namespaced to our component instance, so multiple dropdowns do not interfere
+            // with each other
+            this.clickEventName = 'click.' + this.get('elementId');
+        },
 
-       init: function init() {
-           this._super();
-           // click event name that is namespaced to our component instance, so multiple dropdowns do not interfere
-           // with each other
-           this.clickEventName = 'click.' + this.get('elementId');
-       },
-
-       /**
-        * Handler for click events to close the dropdown
-        *
-        * @method closeOnClickHandler
-        * @param e
-        * @protected
-        */
-       closeOnClickHandler: function closeOnClickHandler(e) {
-           var $target = Ember['default'].$(e.target);
-           if (!this.get('isDestroyed') && $target.closest(this.$().find('.dropdown-toggle')).length === 0 && ($target.closest(this.$().find('.dropdown-menu')).length === 0 || this.get('closeOnMenuClick'))) {
-               this.set('open', false);
-           }
-       }
-   });
-
+        /**
+         * Handler for click events to close the dropdown
+         *
+         * @method closeOnClickHandler
+         * @param e
+         * @protected
+         */
+        closeOnClickHandler: function closeOnClickHandler(e) {
+            var $target = _ember['default'].$(e.target);
+            if (!this.get('isDestroyed') && $target.closest(this.$().find('.dropdown-toggle')).length === 0 && ($target.closest(this.$().find('.dropdown-menu')).length === 0 || this.get('closeOnMenuClick'))) {
+                this.set('open', false);
+            }
+        }
+    });
 });
-define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember-bootstrap/components/bs-form-group', 'ember-bootstrap/components/bs-form', 'ember-bootstrap/mixins/i18n-support'], function (exports, Ember, FormGroup, Form, I18nSupport) {
-
+define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember-bootstrap/components/bs-form-group', 'ember-bootstrap/components/bs-form', 'ember-bootstrap/mixins/i18n-support'], function (exports, _ember, _emberBootstrapComponentsBsFormGroup, _emberBootstrapComponentsBsForm, _emberBootstrapMixinsI18nSupport) {
   'use strict';
 
-  var nonTextFieldControlTypes = Ember['default'].A(['checkbox', 'select', 'select2', 'textarea']);
+  var nonTextFieldControlTypes = _ember['default'].A(['checkbox', 'select', 'select2', 'textarea']);
 
   /**
    Sub class of `Components.FormGroup` that adds automatic form layout markup and form validation features.
-
+  
    ### Form layout
-
+  
    The appropriate Bootstrap markup for the given `formLayout` and `controlType` is automatically generated to easily
    create forms without coding the default Bootstrap form markup by hand:
-
+  
    ```hbs
    \{{#bs-form formLayout="horizontal" action="submit"}}
      \{{bs-form-element controlType="email" label="Email" placeholder="Email" value=email}}
@@ -89713,12 +89974,12 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
      \{{bs-button defaultText="Submit" type="primary" buttonType="submit"}}
    \{{/bs-form}}
    ```
-
+  
    ### Form validation
-
+  
    In the following example the control elements of the three form elements value will be bound to the properties
    (given by `property`) of the form's `model`, which in this case is its controller (see `model=this`):
-
+  
    ```hbs
    \{{#bs-form formLayout="horizontal" model=this action="submit"}}
      \{{bs-form-element controlType="email" label="Email" placeholder="Email" property="email"}}
@@ -89727,17 +89988,17 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
      \{{bs-button defaultText="Submit" type="primary" buttonType="submit"}}
    \{{/bs-form}}
    ```
-
+  
    By using this indirection in comparison to directly binding the `value` property, you get the benefit of automatic
    form validation, given that your `model` is implementing [ember-validations](https://github.com/dockyard/ember-validations).
-
+  
    In the example above the `model` was our controller itself, so the control elements were bound to the appropriate
    properties of our controller. A controller implementing validations on those properties could look like this:
-
+  
    ```js
    import Ember from 'ember';
    import EmberValidations from 'ember-validations';
-
+  
    export default Ember.Controller.extend(EmberValidations,{
      email: null,
      password: null,
@@ -89759,34 +90020,34 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
      }
    });
    ```
-
+  
    If the `showValidation` property is `true` (which is automatically the case if a `focusOut` event is captured from the
    control element or the containing `Components.Form` was submitted with its `model` failing validation) and there are
    validation errors for the `model`'s `property`, the appropriate Bootstrap validation markup (see
    http://getbootstrap.com/css/#forms-control-validation) is applied:
-
+  
    * `validation` is set to 'error', which will set the `has-error` CSS class
    * the `errorIcon` feedback icon is displayed if `controlType` is a text field
    * the validation messages are displayed as Bootstrap `help-block`s
-
+  
    As soon as the validation is successful again...
-
+  
    * `validation` is set to 'success', which will set the `has-success` CSS class
    * the `successIcon` feedback icon is displayed if `controlType` is a text field
    * the validation messages are removed
-
+  
    ### I18n support
-
+  
    Supports translateable properties if [ember-i18n](https://github.com/jamesarosen/ember-i18n) is present.
    See {{#crossLink "Mixins.I18nSupport"}}{{/crossLink}}
-
-
+  
+  
    @class FormElement
    @namespace Components
    @extends Components.FormGroup
    @uses Mixins.I18nSupport
    */
-  exports['default'] = FormGroup['default'].extend(I18nSupport['default'], {
+  exports['default'] = _emberBootstrapComponentsBsFormGroup['default'].extend(_emberBootstrapMixinsI18nSupport['default'], {
     /**
      * Text to display within a `<label>` tag.
      *
@@ -89874,7 +90135,7 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
      * @type array
      * @public
      */
-    choices: Ember['default'].A(),
+    choices: _ember['default'].A(),
 
     /**
      * The property of the `choices` array of objects, containing the value of the choice, e.g. the select box option.
@@ -89919,7 +90180,7 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
      * @property model
      * @public
      */
-    model: Ember['default'].computed.alias('form.model'),
+    model: _ember['default'].computed.alias('form.model'),
 
     /**
      * The array of error messages from the `model`'s validation.
@@ -89936,7 +90197,7 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
      * @readonly
      * @protected
      */
-    hasErrors: Ember['default'].computed.gt('errors.length', 0),
+    hasErrors: _ember['default'].computed.gt('errors.length', 0),
 
     /**
      * @property hasValidator
@@ -89944,7 +90205,7 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
      * @readonly
      * @protected
      */
-    hasValidator: Ember['default'].computed.notEmpty('model.validate'),
+    hasValidator: _ember['default'].computed.notEmpty('model.validate'),
 
     /**
      * If `true` form validation markup is rendered (requires a validatable `model`).
@@ -89962,7 +90223,7 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
      * @readonly
      * @protected
      */
-    showErrors: Ember['default'].computed.and('showValidation', 'hasErrors'),
+    showErrors: _ember['default'].computed.and('showValidation', 'hasErrors'),
 
     /**
      * The validation ("error" or "success") or null if no validation is to be shown. Automatically computed from the
@@ -89973,7 +90234,7 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
      * @type string
      * @protected
      */
-    validation: Ember['default'].computed('hasErrors', 'hasValidator', 'showValidation', function () {
+    validation: _ember['default'].computed('hasErrors', 'hasValidator', 'showValidation', function () {
       if (!this.get('showValidation') || !this.get('hasValidator')) {
         return null;
       }
@@ -89986,7 +90247,7 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
      * @readonly
      * @protected
      */
-    hasLabel: Ember['default'].computed.notEmpty('label'),
+    hasLabel: _ember['default'].computed.notEmpty('label'),
 
     /**
      * True for text field `controlType`s
@@ -89996,7 +90257,7 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
      * @readonly
      * @public
      */
-    useIcons: Ember['default'].computed('controlType', function () {
+    useIcons: _ember['default'].computed('controlType', function () {
       return !nonTextFieldControlTypes.contains(this.get('controlType'));
     }),
 
@@ -90013,7 +90274,7 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
      * @type string
      * @public
      */
-    formLayout: Ember['default'].computed.alias('form.formLayout'),
+    formLayout: _ember['default'].computed.alias('form.formLayout'),
 
     /**
      * @property isVertical
@@ -90021,7 +90282,7 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
      * @readonly
      * @protected
      */
-    isVertical: Ember['default'].computed.equal('formLayout', 'vertical'),
+    isVertical: _ember['default'].computed.equal('formLayout', 'vertical'),
 
     /**
      * @property isHorizontal
@@ -90029,7 +90290,7 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
      * @readonly
      * @protected
      */
-    isHorizontal: Ember['default'].computed.equal('formLayout', 'horizontal'),
+    isHorizontal: _ember['default'].computed.equal('formLayout', 'horizontal'),
 
     /**
      * @property isInline
@@ -90037,7 +90298,7 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
      * @readonly
      * @protected
      */
-    isInline: Ember['default'].computed.equal('formLayout', 'inline'),
+    isInline: _ember['default'].computed.equal('formLayout', 'inline'),
 
     /**
      * The Bootstrap grid class for form labels within a horizontal layout form. Defaults to the value of the same
@@ -90048,7 +90309,7 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
      * @default 'col-md-4'
      * @public
      */
-    horizontalLabelGridClass: Ember['default'].computed.oneWay('form.horizontalLabelGridClass'),
+    horizontalLabelGridClass: _ember['default'].computed.oneWay('form.horizontalLabelGridClass'),
 
     /**
      * Computed property that specifies the Bootstrap grid class for form controls within a horizontal layout form.
@@ -90058,9 +90319,9 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
      * @readonly
      * @protected
      */
-    horizontalInputGridClass: Ember['default'].computed('horizontalLabelGridClass', function () {
+    horizontalInputGridClass: _ember['default'].computed('horizontalLabelGridClass', function () {
       var parts = this.get('horizontalLabelGridClass').split('-');
-      Ember['default'].assert('horizontalInputGridClass must match format bootstrap grid column class', parts.length === 3);
+      _ember['default'].assert('horizontalInputGridClass must match format bootstrap grid column class', parts.length === 3);
       parts[2] = 12 - parts[2];
       return parts.join('-');
     }),
@@ -90074,7 +90335,7 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
      * @readonly
      * @protected
      */
-    horizontalInputOffsetGridClass: Ember['default'].computed('horizontalLabelGridClass', function () {
+    horizontalInputOffsetGridClass: _ember['default'].computed('horizontalLabelGridClass', function () {
       var parts = this.get('horizontalLabelGridClass').split('-');
       parts.splice(2, 0, 'offset');
       return parts.join('-');
@@ -90086,11 +90347,11 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
      * @property form
      * @protected
      */
-    form: Ember['default'].computed(function () {
-      return this.nearestOfType(Form['default']);
+    form: _ember['default'].computed(function () {
+      return this.nearestOfType(_emberBootstrapComponentsBsForm['default']);
     }),
 
-    layoutName: Ember['default'].computed('formLayout', 'controlType', function () {
+    layoutName: _ember['default'].computed('formLayout', 'controlType', function () {
       var formLayout = this.getWithDefault('formLayout', 'vertical'),
           inputLayout,
           controlType = this.get('controlType');
@@ -90106,7 +90367,7 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
       return 'components/form-element/' + formLayout + '/' + inputLayout;
     }),
 
-    _rerender: Ember['default'].observer('layoutName', function () {
+    _rerender: _ember['default'].observer('layoutName', function () {
       this.rerender();
     }),
 
@@ -90122,19 +90383,36 @@ define('ember-bootstrap/components/bs-form-element', ['exports', 'ember', 'ember
 
     init: function init() {
       this._super();
-      if (!Ember['default'].isBlank(this.get('property'))) {
-        Ember['default'].Binding.from("model." + this.get('property')).to('value').connect(this);
-        Ember['default'].Binding.from("model.errors." + this.get('property')).to('errors').connect(this);
+      if (!_ember['default'].isBlank(this.get('property'))) {
+        _ember['default'].Binding.from("model." + this.get('property')).to('value').connect(this);
+        _ember['default'].Binding.from("model.errors." + this.get('property')).to('errors').connect(this);
       }
     }
   });
-
 });
-define('ember-bootstrap/components/bs-form-group', ['exports', 'ember', 'ember-bootstrap/config'], function (exports, Ember, Config) {
-
+define('ember-bootstrap/components/bs-form-group', ['exports', 'ember', 'ember-bootstrap/config'], function (exports, _ember, _emberBootstrapConfig) {
   'use strict';
 
-  exports['default'] = Ember['default'].Component.extend({
+  /**
+   This component renders a `<div class="form-group">` element, with support for validation states and feedback icons.
+   Use as a block level component:
+  
+   ```hbs
+   {{#bs-form-group validation=firstNameValidation}}
+      <label class="control-label">First name</label>
+      {{bs-input type="text" value=firstname}}
+   {{/bs-form-group}}
+   ```
+  
+   If the `validation` property is set to some state (usually Bootstrap's predefined states "success",
+   "warning" or "error"), the appropriate styles will be added, together with a feedback icon.
+   See http://getbootstrap.com/css/#forms-control-validation
+  
+   @class FormGroup
+   @namespace Components
+   @extends Ember.Component
+  */
+  exports['default'] = _ember['default'].Component.extend({
 
     classNames: ['form-group'],
     classNameBindings: ['validationClass', 'hasFeedback'],
@@ -90158,7 +90436,7 @@ define('ember-bootstrap/components/bs-form-group', ['exports', 'ember', 'ember-b
      * @public
      * @readonly
      */
-    hasValidation: Ember['default'].computed.notEmpty('validation'),
+    hasValidation: _ember['default'].computed.notEmpty('validation'),
 
     /**
      * Computed property which is true if the form group is showing a validation icon
@@ -90168,7 +90446,7 @@ define('ember-bootstrap/components/bs-form-group', ['exports', 'ember', 'ember-b
      * @public
      * @readonly
      */
-    hasFeedback: Ember['default'].computed.and('hasValidation', 'useIcons', 'hasIconForValidationState'),
+    hasFeedback: _ember['default'].computed.and('hasValidation', 'useIcons', 'hasIconForValidationState'),
 
     /**
      * The icon classes to be used for a feedback icon in a "success" validation state.
@@ -90190,7 +90468,7 @@ define('ember-bootstrap/components/bs-form-group', ['exports', 'ember', 'ember-b
      * @default 'glyphicon glyphicon-ok'
      * @public
      */
-    successIcon: Config['default'].formValidationSuccessIcon,
+    successIcon: _emberBootstrapConfig['default'].formValidationSuccessIcon,
 
     /**
      * The icon classes to be used for a feedback icon in a "error" validation state.
@@ -90211,7 +90489,7 @@ define('ember-bootstrap/components/bs-form-group', ['exports', 'ember', 'ember-b
      * @type string
      * @public
      */
-    errorIcon: Config['default'].formValidationErrorIcon,
+    errorIcon: _emberBootstrapConfig['default'].formValidationErrorIcon,
 
     /**
      * The icon classes to be used for a feedback icon in a "warning" validation state.
@@ -90232,7 +90510,7 @@ define('ember-bootstrap/components/bs-form-group', ['exports', 'ember', 'ember-b
      * @type string
      * @public
      */
-    warningIcon: Config['default'].formValidationWarningIcon,
+    warningIcon: _emberBootstrapConfig['default'].formValidationWarningIcon,
 
     /**
      * The icon classes to be used for a feedback icon in a "info" validation state.
@@ -90261,14 +90539,14 @@ define('ember-bootstrap/components/bs-form-group', ['exports', 'ember', 'ember-b
      * @type string
      * @public
      */
-    infoIcon: Config['default'].formValidationInfoIcon,
+    infoIcon: _emberBootstrapConfig['default'].formValidationInfoIcon,
 
-    iconName: Ember['default'].computed('validation', function () {
+    iconName: _ember['default'].computed('validation', function () {
       var validation = this.get('validation') || 'success';
       return this.get(validation + 'Icon');
     }),
 
-    hasIconForValidationState: Ember['default'].computed.notEmpty('iconName'),
+    hasIconForValidationState: _ember['default'].computed.notEmpty('iconName'),
 
     /**
      * Set to a validation state to render the form-group with a validation style.
@@ -90284,156 +90562,225 @@ define('ember-bootstrap/components/bs-form-group', ['exports', 'ember', 'ember-b
      */
     validation: null,
 
-    validationClass: Ember['default'].computed('validation', function () {
+    validationClass: _ember['default'].computed('validation', function () {
       var validation = this.get('validation');
-      if (!Ember['default'].isBlank(validation)) {
+      if (!_ember['default'].isBlank(validation)) {
         return 'has-' + this.get('validation');
       }
     })
   });
-
 });
-define('ember-bootstrap/components/bs-form', ['exports', 'ember', 'ember-bootstrap/components/bs-form-element'], function (exports, Ember, FormElement) {
+define('ember-bootstrap/components/bs-form', ['exports', 'ember', 'ember-bootstrap/components/bs-form-element'], function (exports, _ember, _emberBootstrapComponentsBsFormElement) {
+    'use strict';
 
-   'use strict';
+    /**
+     Render a form with the appropriate Bootstrap layout class (see `formLayout`).
+     Allows setting a `model` that nested `Components.FormElement`s can access, and that can provide form validation through
+     [ember-validations](https://github.com/dockyard/ember-validations)
+    
+     You can use whatever markup you like within the form:
+    
+     ```hbs
+     {{#bs-form action="submit"}}
+       {{#bs-form-group validation=firstNameValidation}}
+         <label class="control-label">First name</label>
+         {{bs-input type="text" value=firstname}}
+       {{/bs-form-group}}
+     {{/bs-form}}
+     ```
+    
+     However to benefit from features such as automatic form markup, validations and validation markup, use `Components.FormElement`
+     as nested components. See below for an example.
+    
+     ### Submitting the form
+    
+     When the form is submitted (e.g. by clicking a submit button), the event will be intercepted and the default action
+     will be sent to the controller.
+     When an [ember-validations](https://github.com/dockyard/ember-validations) validated model is supplied, validations
+     rules are evaluated before, and if those fail, the "invalid" action is sent instead of the default "action".
+    
+     ### Use with Components.FormElement
+    
+     When using `Components.FormElement`s with their `property` set to property names of the form's validation enabled
+     `model`, you gain some additional powerful features:
+     * the appropriate Bootstrap markup for the given `formLayout` and the form element's `controlType` is automatically generated
+     * markup for validation states and error messages is generated based on the model's validation, when submitting the form
+     with an invalid validation, or when focusing out of invalid inputs
+    
+     ```hbs
+     {{#bs-form formLayout="horizontal" model=this action="submit"}}
+       {{bs-form-element controlType="email" label="Email" placeholder="Email" property="email"}}
+       {{bs-form-element controlType="password" label="Password" placeholder="Password" property="password"}}
+       {{bs-form-element controlType="checkbox" label="Remember me" property="rememberMe"}}
+       {{bs-button defaultText="Submit" type="primary" buttonType="submit"}}
+     {{/bs-form}}
+     ```
+    
+     See the `Components.FormElement` API docs for further information.
+    
+     @class Form
+     @namespace Components
+     @extends Ember.Component
+    */
+    exports['default'] = _ember['default'].Component.extend({
+        tagName: 'form',
+        classNameBindings: ['layoutClass'],
+        ariaRole: 'form',
 
-   exports['default'] = Ember['default'].Component.extend({
-       tagName: 'form',
-       classNameBindings: ['layoutClass'],
-       ariaRole: 'form',
+        /**
+         * Bootstrap form class name (computed)
+         *
+         * @property layoutClass
+         * @type string
+         * @readonly
+         * @protected
+         *
+         */
+        layoutClass: _ember['default'].computed('formLayout', function () {
+            var layout = this.get('formLayout');
+            return layout === 'vertical' ? 'form' : 'form-' + layout;
+        }),
 
-       /**
-        * Bootstrap form class name (computed)
-        *
-        * @property layoutClass
-        * @type string
-        * @readonly
-        * @protected
-        *
-        */
-       layoutClass: Ember['default'].computed('formLayout', function () {
-           var layout = this.get('formLayout');
-           return layout === 'vertical' ? 'form' : 'form-' + layout;
-       }),
+        /**
+         * Set a model that this form should represent. This serves several purposes:
+         *
+         * * child `Components.FormElement`s can access and bind to this model by their `property`
+         * * when the model supports validation by using the [ember-validations](https://github.com/dockyard/ember-validations) mixin,
+         * child `Components.FormElement`s will look at the validation information of their `property` and render their form group accordingly.
+         * Moreover the form's `submit` event handler will validate the model and deny submitting if the model is not validated successfully.
+         *
+         * @property model
+         * @type Ember.Object
+         * @public
+         */
+        model: null,
 
-       /**
-        * Set a model that this form should represent. This serves several purposes:
-        *
-        * * child `Components.FormElement`s can access and bind to this model by their `property`
-        * * when the model supports validation by using the [ember-validations](https://github.com/dockyard/ember-validations) mixin,
-        * child `Components.FormElement`s will look at the validation information of their `property` and render their form group accordingly.
-        * Moreover the form's `submit` event handler will validate the model and deny submitting if the model is not validated successfully.
-        *
-        * @property model
-        * @type Ember.Object
-        * @public
-        */
-       model: null,
+        /**
+         * Set the layout of the form to either "vertical", "horizontal" or "inline". See http://getbootstrap.com/css/#forms-inline and http://getbootstrap.com/css/#forms-horizontal
+         *
+         * @property formLayout
+         * @type string
+         * @public
+         */
+        formLayout: 'vertical',
 
-       /**
-        * Set the layout of the form to either "vertical", "horizontal" or "inline". See http://getbootstrap.com/css/#forms-inline and http://getbootstrap.com/css/#forms-horizontal
-        *
-        * @property formLayout
-        * @type string
-        * @public
-        */
-       formLayout: 'vertical',
+        /**
+         * Check if the `model` has a validate method, i.e. supports validation by using [ember-validations](https://github.com/dockyard/ember-validations)
+         *
+         * @property hasValidator
+         * @type boolean
+         * @readonly
+         * @protected
+         */
+        hasValidator: _ember['default'].computed.notEmpty('model.validate'),
 
-       /**
-        * Check if the `model` has a validate method, i.e. supports validation by using [ember-validations](https://github.com/dockyard/ember-validations)
-        *
-        * @property hasValidator
-        * @type boolean
-        * @readonly
-        * @protected
-        */
-       hasValidator: Ember['default'].computed.notEmpty('model.validate'),
+        /**
+         * The Bootstrap grid class for form labels. This is used by the `Components.FormElement` class as a default for the
+         * whole form.
+         *
+         * @property horizontalLabelGridClass
+         * @type string
+         * @default 'col-md-4'
+         * @public
+         */
+        horizontalLabelGridClass: 'col-md-4',
 
-       /**
-        * The Bootstrap grid class for form labels. This is used by the `Components.FormElement` class as a default for the
-        * whole form.
-        *
-        * @property horizontalLabelGridClass
-        * @type string
-        * @default 'col-md-4'
-        * @public
-        */
-       horizontalLabelGridClass: 'col-md-4',
+        /**
+         * If set to true pressing enter will submit the form, even if no submit button is present
+         *
+         * @property submitOnEnter
+         * @type boolean
+         * @default false
+         * @public
+         */
+        submitOnEnter: false,
 
-       /**
-        * If set to true pressing enter will submit the form, even if no submit button is present
-        *
-        * @property submitOnEnter
-        * @type boolean
-        * @default false
-        * @public
-        */
-       submitOnEnter: false,
+        /**
+         * An array of `Components.FormElement`s that are children of this form.
+         *
+         * @property childFormElements
+         * @type Array
+         * @readonly
+         * @protected
+         */
+        childFormElements: _ember['default'].computed.filter('childViews', function (view) {
+            return view instanceof _emberBootstrapComponentsBsFormElement['default'];
+        }),
 
-       /**
-        * An array of `Components.FormElement`s that are children of this form.
-        *
-        * @property childFormElements
-        * @type Array
-        * @readonly
-        * @protected
-        */
-       childFormElements: Ember['default'].computed.filter('childViews', function (view) {
-           return view instanceof FormElement['default'];
-       }),
+        /**
+         * Submit handler that will send the default action ("action") to the controller when submitting the form.
+         *
+         * If there is a supplied `model` that supports validation (`hasValidator`) the model will be validated before, and
+         * only if validation is successful the default action will be sent. Otherwise an "invalid" action will be sent, and
+         * all the `showValidation` property of all child `Components.FormElement`s will be set to true, so error state and
+         * messages will be shown automatically.
+         *
+         * @event submit
+         */
+        submit: function submit(e) {
+            var that = this;
+            if (e) {
+                e.preventDefault();
+            }
+            if (!this.get('hasValidator')) {
+                return this.sendAction();
+            } else {
+                return this.get('model').validate().then(function () {
+                    if (that.get('model.isValid')) {
+                        return that.sendAction();
+                    }
+                })['catch'](function () {
+                    that.get('childFormElements').setEach('showValidation', true);
+                    return that.sendAction('invalid');
+                });
+            }
+        },
 
-       /**
-        * Submit handler that will send the default action ("action") to the controller when submitting the form.
-        *
-        * If there is a supplied `model` that supports validation (`hasValidator`) the model will be validated before, and
-        * only if validation is successful the default action will be sent. Otherwise an "invalid" action will be sent, and
-        * all the `showValidation` property of all child `Components.FormElement`s will be set to true, so error state and
-        * messages will be shown automatically.
-        *
-        * @event submit
-        */
-       submit: function submit(e) {
-           var that = this;
-           if (e) {
-               e.preventDefault();
-           }
-           if (!this.get('hasValidator')) {
-               return this.sendAction();
-           } else {
-               return this.get('model').validate().then(function () {
-                   if (that.get('model.isValid')) {
-                       return that.sendAction();
-                   }
-               })['catch'](function () {
-                   that.get('childFormElements').setEach('showValidation', true);
-                   return that.sendAction('invalid');
-               });
-           }
-       },
-
-       keyPress: function keyPress(e) {
-           var code = e.keyCode || e.which;
-           if (code === 13 && this.get('submitOnEnter')) {
-               this.$().submit();
-           }
-       }
-   });
-
+        keyPress: function keyPress(e) {
+            var code = e.keyCode || e.which;
+            if (code === 13 && this.get('submitOnEnter')) {
+                this.$().submit();
+            }
+        }
+    });
 });
-define('ember-bootstrap/components/bs-input', ['exports', 'ember', 'ember-bootstrap/mixins/i18n-support'], function (exports, Ember, I18nSupport) {
-
+define('ember-bootstrap/components/bs-input', ['exports', 'ember', 'ember-bootstrap/mixins/i18n-support'], function (exports, _ember, _emberBootstrapMixinsI18nSupport) {
   'use strict';
 
-  exports['default'] = Ember['default'].TextField.extend(I18nSupport['default'], {
+  /**
+   Extends Ember.TextField to add Bootstrap's 'form-control' class.
+  
+   ### I18n support
+  
+   Supports translateable properties if [ember-i18n](https://github.com/jamesarosen/ember-i18n) is present.
+   See {{#crossLink "Mixins.I18nSupport"}}{{/crossLink}}
+  
+   @class Input
+   @namespace Components
+   @extends Ember.TextField
+   @uses Mixins.I18nSupport
+   */
+  exports['default'] = _ember['default'].TextField.extend(_emberBootstrapMixinsI18nSupport['default'], {
     classNames: ['form-control']
   });
-
 });
-define('ember-bootstrap/components/bs-select', ['exports', 'ember', 'ember-bootstrap/mixins/i18n-support'], function (exports, Ember, I18nSupport) {
-
+define('ember-bootstrap/components/bs-select', ['exports', 'ember', 'ember-bootstrap/mixins/i18n-support'], function (exports, _ember, _emberBootstrapMixinsI18nSupport) {
   'use strict';
 
-  exports['default'] = Ember['default'].Component.extend(I18nSupport['default'], {
+  /**
+   Extends Ember.Select to add Bootstrap's 'form-control' class.
+  
+   ### I18n support
+  
+   Supports translateable properties if [ember-i18n](https://github.com/jamesarosen/ember-i18n) is present.
+   See {{#crossLink "Mixins.I18nSupport"}}{{/crossLink}}
+  
+   @class Select
+   @namespace Components
+   @extends Ember.Select
+   @uses Mixins.I18nSupport
+   */
+  exports['default'] = _ember['default'].Component.extend(_emberBootstrapMixinsI18nSupport['default'], {
     tagName: 'select',
     classNames: ['form-control'],
 
@@ -90441,7 +90788,7 @@ define('ember-bootstrap/components/bs-select', ['exports', 'ember', 'ember-boots
     prompt: null,
     optionValuePath: 'id',
     optionLabelPath: 'title',
-    action: Ember['default'].K, // action to fire on change
+    action: _ember['default'].K, // action to fire on change
 
     value: null,
 
@@ -90472,19 +90819,28 @@ define('ember-bootstrap/components/bs-select', ['exports', 'ember', 'ember-boots
     }
 
   });
-
 });
-define('ember-bootstrap/components/bs-textarea', ['exports', 'ember', 'ember-bootstrap/mixins/i18n-support'], function (exports, Ember, I18nSupport) {
-
+define('ember-bootstrap/components/bs-textarea', ['exports', 'ember', 'ember-bootstrap/mixins/i18n-support'], function (exports, _ember, _emberBootstrapMixinsI18nSupport) {
   'use strict';
 
-  exports['default'] = Ember['default'].TextArea.extend(I18nSupport['default'], {
+  /**
+   Extends Ember.TextArea to add Bootstrap's 'form-control' class.
+  
+   ### I18n support
+  
+   Supports translateable properties if [ember-i18n](https://github.com/jamesarosen/ember-i18n) is present.
+   See {{#crossLink "Mixins.I18nSupport"}}{{/crossLink}}
+  
+   @class Textarea
+   @namespace Components
+   @extends Ember.TextArea
+   @uses Mixins.I18nSupport
+   */
+  exports['default'] = _ember['default'].TextArea.extend(_emberBootstrapMixinsI18nSupport['default'], {
     classNames: ['form-control']
   });
-
 });
 define('ember-bootstrap/config', ['exports'], function (exports) {
-
     'use strict';
 
     var Config = {
@@ -90503,10 +90859,8 @@ define('ember-bootstrap/config', ['exports'], function (exports) {
     };
 
     exports['default'] = Config;
-
 });
-define('ember-bootstrap/helpers/is-equal', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-bootstrap/helpers/is-equal', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
   exports.isEqual = isEqual;
@@ -90515,11 +90869,9 @@ define('ember-bootstrap/helpers/is-equal', ['exports', 'ember'], function (expor
     return params[0] === params[1];
   }
 
-  exports['default'] = Ember['default'].Helper.helper(isEqual);
-
+  exports['default'] = _ember['default'].Helper.helper(isEqual);
 });
-define('ember-bootstrap/helpers/is-not', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-bootstrap/helpers/is-not', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
   exports.isNot = isNot;
@@ -90528,50 +90880,56 @@ define('ember-bootstrap/helpers/is-not', ['exports', 'ember'], function (exports
     return !params[0];
   }
 
-  exports['default'] = Ember['default'].Helper.helper(isNot);
-
+  exports['default'] = _ember['default'].Helper.helper(isNot);
 });
-define('ember-bootstrap/helpers/read-path', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-bootstrap/helpers/read-path', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
   exports.readPath = readPath;
 
   function readPath(params /*, hash*/) {
-    return Ember['default'].get(params[0], params[1]);
+    return _ember['default'].get(params[0], params[1]);
   }
 
-  exports['default'] = Ember['default'].Helper.helper(readPath);
-
+  exports['default'] = _ember['default'].Helper.helper(readPath);
 });
-define('ember-bootstrap/mixins/component-child', ['exports', 'ember', 'ember-bootstrap/mixins/component-parent'], function (exports, Ember, ComponentParentMixin) {
-
+define('ember-bootstrap/mixins/component-child', ['exports', 'ember', 'ember-bootstrap/mixins/component-parent'], function (exports, _ember, _emberBootstrapMixinsComponentParent) {
   'use strict';
 
-  exports['default'] = Ember['default'].Mixin.create({
+  /**
+   * Mixin for components that act as a child component in a parent-child relationship of components
+   *
+   * @class ComponentChild
+   * @namespace Mixins
+   */
+  exports['default'] = _ember['default'].Mixin.create({
 
-    _didInsertElement: Ember['default'].on('didInsertElement', function () {
-      var parent = this.nearestOfType(ComponentParentMixin['default']);
+    _didInsertElement: _ember['default'].on('didInsertElement', function () {
+      var parent = this.nearestOfType(_emberBootstrapMixinsComponentParent['default']);
       if (parent) {
         parent.registerChild(this);
       }
     }),
 
-    _willDestroyElement: Ember['default'].on('willDestroyElement', function () {
-      var parent = this.nearestOfType(ComponentParentMixin['default']);
+    _willDestroyElement: _ember['default'].on('willDestroyElement', function () {
+      var parent = this.nearestOfType(_emberBootstrapMixinsComponentParent['default']);
       if (parent) {
         parent.removeChild(this);
       }
     })
 
   });
-
 });
-define('ember-bootstrap/mixins/component-parent', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-bootstrap/mixins/component-parent', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
-  exports['default'] = Ember['default'].Mixin.create({
+  /**
+   * Mixin for components that act as a parent component in a parent-child relationship of components
+   *
+   * @class ComponentParent
+   * @namespace Mixins
+   */
+  exports['default'] = _ember['default'].Mixin.create({
 
     /**
      * Array of registered child components
@@ -90582,8 +90940,8 @@ define('ember-bootstrap/mixins/component-parent', ['exports', 'ember'], function
      */
     children: null,
 
-    _onInit: Ember['default'].on('init', function () {
-      this.set('children', Ember['default'].A());
+    _onInit: _ember['default'].on('init', function () {
+      this.set('children', _ember['default'].A());
     }),
 
     /**
@@ -90594,7 +90952,7 @@ define('ember-bootstrap/mixins/component-parent', ['exports', 'ember'], function
      * @public
      */
     registerChild: function registerChild(child) {
-      Ember['default'].run.schedule('sync', this, function () {
+      _ember['default'].run.schedule('sync', this, function () {
         this.get('children').addObject(child);
       });
     },
@@ -90610,13 +90968,17 @@ define('ember-bootstrap/mixins/component-parent', ['exports', 'ember'], function
       this.get('children').removeObject(child);
     }
   });
-
 });
-define('ember-bootstrap/mixins/dropdown-toggle', ['exports', 'ember', 'ember-bootstrap/mixins/component-child'], function (exports, Ember, componentChild) {
-
+define('ember-bootstrap/mixins/dropdown-toggle', ['exports', 'ember', 'ember-bootstrap/mixins/component-child'], function (exports, _ember, _emberBootstrapMixinsComponentChild) {
   'use strict';
 
-  exports['default'] = Ember['default'].Mixin.create(componentChild['default'], {
+  /**
+   * Mixin for components that act as dropdown toggles.
+   *
+   * @class DropdownToggle
+   * @namespace Mixins
+   */
+  exports['default'] = _ember['default'].Mixin.create(_emberBootstrapMixinsComponentChild['default'], {
     classNames: ['dropdown-toggle'],
     attributeBindings: ['data-toggle'],
     /**
@@ -90629,7 +90991,7 @@ define('ember-bootstrap/mixins/dropdown-toggle', ['exports', 'ember', 'ember-boo
 
     'data-toggle': 'dropdown',
 
-    targetObject: Ember['default'].computed.alias('parentView'),
+    targetObject: _ember['default'].computed.alias('parentView'),
 
     /**
      * The default action is set to "toggleDropdown" on the parent {{#crossLink "Components.Dropdown"}}{{/crossLink}}
@@ -90641,30 +91003,49 @@ define('ember-bootstrap/mixins/dropdown-toggle', ['exports', 'ember', 'ember-boo
      */
     action: 'toggleDropdown'
   });
-
 });
-define('ember-bootstrap/mixins/i18n-support', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-bootstrap/mixins/i18n-support', ['exports', 'ember'], function (exports, _ember) {
     'use strict';
+
+    /**
+     Mixin for internationalization support.
+    
+     Currently supported is only [ember-i18n](https://github.com/jamesarosen/ember-i18n):
+     If Ember.I18n is present, this mixin will simply export `Ember.I18n.TranslateableProperties`, maiking all
+     components that use this mixin inherit the translateable properties functionality of `Ember.I18n.TranslateableProperties`.
+     See https://github.com/jamesarosen/ember-i18n#translate-properties-on-any-object.
+    
+     ```hbs
+     {{bs-button defaultTextTranslation="label.translated"}}
+     ```
+    
+     @class I18nSupport
+     @namespace Mixins
+     */
 
     var Mixin;
 
     switch (true) {
-        case Ember['default'].isPresent(Ember['default'].I18n):
-            Mixin = Ember['default'].I18n.TranslateableProperties;
+        case _ember['default'].isPresent(_ember['default'].I18n):
+            Mixin = _ember['default'].I18n.TranslateableProperties;
             break;
         default:
-            Mixin = Ember['default'].Mixin.create();
+            Mixin = _ember['default'].Mixin.create();
     }
 
     exports['default'] = Mixin;
-
 });
-define('ember-bootstrap/mixins/size-class', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-bootstrap/mixins/size-class', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
-  exports['default'] = Ember['default'].Mixin.create({
+  /**
+   * Mixin to set the appropriate class for components with different sizes.
+   *
+   *
+   * @class SizeClass
+   * @namespace Mixins
+   */
+  exports['default'] = _ember['default'].Mixin.create({
     /**
      * Prefix for the size class, e.g. "btn" for button size classes ("btn-lg", "btn-sm" etc.)
      *
@@ -90675,10 +91056,10 @@ define('ember-bootstrap/mixins/size-class', ['exports', 'ember'], function (expo
      */
     classTypePrefix: null,
     classNameBindings: ['sizeClass'],
-    sizeClass: Ember['default'].computed('size', function () {
+    sizeClass: _ember['default'].computed('size', function () {
       var prefix = this.get('classTypePrefix'),
           size = this.get('size');
-      return Ember['default'].isBlank(size) ? null : prefix + '-' + size;
+      return _ember['default'].isBlank(size) ? null : prefix + '-' + size;
     }),
 
     /**
@@ -90692,22 +91073,27 @@ define('ember-bootstrap/mixins/size-class', ['exports', 'ember'], function (expo
      */
     size: null
   });
-
 });
-define('ember-bootstrap/mixins/sub-component', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-bootstrap/mixins/sub-component', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
-  exports['default'] = Ember['default'].Mixin.create({
-    targetObject: Ember['default'].computed.alias('parentView')
+  /**
+   * @class Bootstrap.SubComponent
+   */
+  exports['default'] = _ember['default'].Mixin.create({
+    targetObject: _ember['default'].computed.alias('parentView')
   });
-
 });
-define('ember-bootstrap/mixins/type-class', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-bootstrap/mixins/type-class', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
-  exports['default'] = Ember['default'].Mixin.create({
+  /**
+   * Mixin to set the appropriate class for components with differently styled types ("success", "danger" etc.)
+   *
+   * @class TypeClass
+   * @namespace Mixins
+   */
+  exports['default'] = _ember['default'].Mixin.create({
     /**
      * Prefix for the type class, e.g. "btn" for button type classes ("btn-primary2 etc.)
      *
@@ -90718,7 +91104,7 @@ define('ember-bootstrap/mixins/type-class', ['exports', 'ember'], function (expo
      */
     classTypePrefix: null,
     classNameBindings: ['typeClass'],
-    typeClass: Ember['default'].computed('type', function () {
+    typeClass: _ember['default'].computed('type', function () {
       var prefix = this.get('classTypePrefix'),
           type = this.get('type') || 'default';
       return prefix + '-' + type;
@@ -90736,7 +91122,6 @@ define('ember-bootstrap/mixins/type-class', ['exports', 'ember'], function (expo
      */
     type: 'default'
   });
-
 });
 define('ember-bootstrap', ['ember-bootstrap/index', 'ember', 'exports'], function(__index__, __Ember__, __exports__) {
   'use strict';
@@ -90750,24 +91135,20 @@ define('ember-bootstrap', ['ember-bootstrap/index', 'ember', 'exports'], functio
   }));
 });
 
-define('ember-cli-app-version/components/app-version', ['exports', 'ember', 'ember-cli-app-version/templates/app-version'], function (exports, Ember, layout) {
-
+define('ember-cli-app-version/components/app-version', ['exports', 'ember', 'ember-cli-app-version/templates/app-version'], function (exports, _ember, _emberCliAppVersionTemplatesAppVersion) {
   'use strict';
 
-  exports['default'] = Ember['default'].Component.extend({
+  exports['default'] = _ember['default'].Component.extend({
     tagName: 'span',
-    layout: layout['default']
+    layout: _emberCliAppVersionTemplatesAppVersion['default']
   });
-
 });
-define('ember-cli-app-version/initializer-factory', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-cli-app-version/initializer-factory', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
-
-
 
   exports['default'] = initializerFactory;
-  var classify = Ember['default'].String.classify;
+
+  var classify = _ember['default'].String.classify;
 
   function initializerFactory(name, version) {
     var registered = false;
@@ -90775,18 +91156,16 @@ define('ember-cli-app-version/initializer-factory', ['exports', 'ember'], functi
     return function () {
       if (!registered && name && version) {
         var appName = classify(name);
-        Ember['default'].libraries.register(appName, version);
+        _ember['default'].libraries.register(appName, version);
         registered = true;
       }
     };
   }
-
 });
-define('ember-cli-app-version/templates/app-version', ['exports'], function (exports) {
+define("ember-cli-app-version/templates/app-version", ["exports"], function (exports) {
+  "use strict";
 
-  'use strict';
-
-  exports['default'] = Ember.HTMLBars.template((function() {
+  exports["default"] = Ember.HTMLBars.template((function () {
     return {
       meta: {
         "revision": "Ember@1.13.7",
@@ -90816,18 +91195,15 @@ define('ember-cli-app-version/templates/app-version', ['exports'], function (exp
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var morphs = new Array(1);
-        morphs[0] = dom.createMorphAt(fragment,0,0,contextualElement);
+        morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
         dom.insertBoundary(fragment, 0);
         return morphs;
       },
-      statements: [
-        ["content","version",["loc",[null,[1,0],[1,11]]]]
-      ],
+      statements: [["content", "version", ["loc", [null, [1, 0], [1, 11]]]]],
       locals: [],
       templates: []
     };
-  }()));
-
+  })());
 });
 define('ember-cli-app-version', ['ember-cli-app-version/index', 'ember', 'exports'], function(__index__, __Ember__, __exports__) {
   'use strict';
@@ -90841,20 +91217,17 @@ define('ember-cli-app-version', ['ember-cli-app-version/index', 'ember', 'export
   }));
 });
 
-define('ember-cli-bootstrap-datepicker/components/bootstrap-datepicker-inline', ['exports', 'ember', 'ember-cli-bootstrap-datepicker/components/datepicker-support'], function (exports, Ember, DatepickerSupport) {
-
+define('ember-cli-bootstrap-datepicker/components/bootstrap-datepicker-inline', ['exports', 'ember', 'ember-cli-bootstrap-datepicker/components/datepicker-support'], function (exports, _ember, _emberCliBootstrapDatepickerComponentsDatepickerSupport) {
   'use strict';
 
-  exports['default'] = Ember['default'].Component.extend(DatepickerSupport['default'], {
+  exports['default'] = _ember['default'].Component.extend(_emberCliBootstrapDatepickerComponentsDatepickerSupport['default'], {
     tagName: 'div'
   });
-
 });
-define('ember-cli-bootstrap-datepicker/components/bootstrap-datepicker', ['exports', 'ember', 'ember-cli-bootstrap-datepicker/components/datepicker-support'], function (exports, Ember, DatepickerSupport) {
-
+define('ember-cli-bootstrap-datepicker/components/bootstrap-datepicker', ['exports', 'ember', 'ember-cli-bootstrap-datepicker/components/datepicker-support'], function (exports, _ember, _emberCliBootstrapDatepickerComponentsDatepickerSupport) {
   'use strict';
 
-  exports['default'] = Ember['default'].Component.extend(DatepickerSupport['default'], {
+  exports['default'] = _ember['default'].Component.extend(_emberCliBootstrapDatepickerComponentsDatepickerSupport['default'], {
     instrumentDisplay: '{{input type="text"}}',
 
     classNames: ['ember-text-field'],
@@ -90865,13 +91238,11 @@ define('ember-cli-bootstrap-datepicker/components/bootstrap-datepicker', ['expor
 
     type: 'text'
   });
-
 });
-define('ember-cli-bootstrap-datepicker/components/datepicker-support', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-cli-bootstrap-datepicker/components/datepicker-support', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
-  exports['default'] = Ember['default'].Mixin.create({
+  exports['default'] = _ember['default'].Mixin.create({
     mustUpdateInput: true,
     value: null,
     // add the observed properties
@@ -90881,7 +91252,7 @@ define('ember-cli-bootstrap-datepicker/components/datepicker-support', ['exports
     startDate: undefined,
     endDate: undefined,
 
-    setupBootstrapDatepicker: Ember['default'].on('didInsertElement', function () {
+    setupBootstrapDatepicker: _ember['default'].on('didInsertElement', function () {
       var self = this;
 
       this.$().datepicker({
@@ -90913,7 +91284,7 @@ define('ember-cli-bootstrap-datepicker/components/datepicker-support', ['exports
         weekStart: this.get('weekStart'),
         datesDisabled: this.get('datesDisabled')
       }).on('changeDate', function (event) {
-        Ember['default'].run(function () {
+        _ember['default'].run(function () {
           self._didChangeDate(event);
         });
       }).on('input', function () {
@@ -90925,11 +91296,11 @@ define('ember-cli-bootstrap-datepicker/components/datepicker-support', ['exports
       this._updateDatepicker();
     }),
 
-    teardownBootstrapDatepicker: Ember['default'].on('willDestroyElement', function () {
+    teardownBootstrapDatepicker: _ember['default'].on('willDestroyElement', function () {
       this.$().datepicker('remove');
     }),
 
-    didChangeValue: Ember['default'].observer('value', function () {
+    didChangeValue: _ember['default'].observer('value', function () {
       this._updateDatepicker();
     }),
 
@@ -90949,7 +91320,7 @@ define('ember-cli-bootstrap-datepicker/components/datepicker-support', ['exports
       this.sendAction('changeDate', value);
     },
 
-    _addObservers: Ember['default'].on('didInsertElement', function () {
+    _addObservers: _ember['default'].on('didInsertElement', function () {
       this.addObserver('language', function () {
         this.$().datepicker('remove');
         this.setupBootstrapDatepicker();
@@ -90994,7 +91365,7 @@ define('ember-cli-bootstrap-datepicker/components/datepicker-support', ['exports
         return;
       }
 
-      switch (Ember['default'].typeOf(value)) {
+      switch (_ember['default'].typeOf(value)) {
         case 'array':
           dates = value;
           break;
@@ -91005,7 +91376,7 @@ define('ember-cli-bootstrap-datepicker/components/datepicker-support', ['exports
           dates = [null];
       }
       dates = dates.map(function (date) {
-        return Ember['default'].isNone(date) ? null : self._getDateCloneWithNoTime(date);
+        return _ember['default'].isNone(date) ? null : self._getDateCloneWithNoTime(date);
       });
 
       element.datepicker.apply(element, Array.prototype.concat.call(['update'], dates));
@@ -91025,7 +91396,6 @@ define('ember-cli-bootstrap-datepicker/components/datepicker-support', ['exports
       return clone;
     }
   });
-
 });
 define('ember-cli-bootstrap-datepicker', ['ember-cli-bootstrap-datepicker/index', 'ember', 'exports'], function(__index__, __Ember__, __exports__) {
   'use strict';
@@ -91051,13 +91421,12 @@ define('ember-cli-content-security-policy', ['ember-cli-content-security-policy/
   }));
 });
 
-define('ember-cli-font-awesome/components/fa-icon', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-cli-font-awesome/components/fa-icon', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
-  var computed = Ember['default'].computed;
+  var computed = _ember['default'].computed;
 
-  exports['default'] = Ember['default'].Component.extend({
+  exports['default'] = _ember['default'].Component.extend({
     tagName: 'i',
 
     classNames: ['fa'],
@@ -91121,32 +91490,26 @@ define('ember-cli-font-awesome/components/fa-icon', ['exports', 'ember'], functi
       return ariaHidden !== false ? true : undefined;
     })
   });
-
 });
-define('ember-cli-font-awesome/components/fa-list-icon', ['exports', 'ember-cli-font-awesome/components/fa-icon'], function (exports, FaIcon) {
-
-	'use strict';
-
-	exports['default'] = FaIcon['default'].extend({ listItem: true });
-
-});
-define('ember-cli-font-awesome/components/fa-list', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-cli-font-awesome/components/fa-list-icon', ['exports', 'ember-cli-font-awesome/components/fa-icon'], function (exports, _emberCliFontAwesomeComponentsFaIcon) {
   'use strict';
 
-  exports['default'] = Ember['default'].Component.extend({
+  exports['default'] = _emberCliFontAwesomeComponentsFaIcon['default'].extend({ listItem: true });
+});
+define('ember-cli-font-awesome/components/fa-list', ['exports', 'ember'], function (exports, _ember) {
+  'use strict';
+
+  exports['default'] = _ember['default'].Component.extend({
     tagName: 'ul',
     classNames: 'fa-ul'
   });
-
 });
-define('ember-cli-font-awesome/components/fa-stack', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-cli-font-awesome/components/fa-stack', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
-  var computed = Ember['default'].computed;
+  var computed = _ember['default'].computed;
 
-  exports['default'] = Ember['default'].Component.extend({
+  exports['default'] = _ember['default'].Component.extend({
     tagName: 'span',
 
     classNames: 'fa-stack',
@@ -91164,7 +91527,6 @@ define('ember-cli-font-awesome/components/fa-stack', ['exports', 'ember'], funct
       }
     })
   });
-
 });
 define('ember-cli-font-awesome', ['ember-cli-font-awesome/index', 'ember', 'exports'], function(__index__, __Ember__, __exports__) {
   'use strict';
@@ -91178,11 +91540,10 @@ define('ember-cli-font-awesome', ['ember-cli-font-awesome/index', 'ember', 'expo
   }));
 });
 
-define('ember-cli-full-calendar/components/full-calendar', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-cli-full-calendar/components/full-calendar', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
-  exports['default'] = Ember['default'].Component.extend({
+  exports['default'] = _ember['default'].Component.extend({
     tagName: 'div',
     classNames: ['full-calendar'],
 
@@ -91215,7 +91576,7 @@ define('ember-cli-full-calendar/components/full-calendar', ['exports', 'ember'],
     selectable: false,
 
     updateEvents: (function () {
-      var fullCalendarComponent = Ember['default'].$(".full-calendar");
+      var fullCalendarComponent = _ember['default'].$(".full-calendar");
       fullCalendarComponent.fullCalendar('removeEvents');
       fullCalendarComponent.fullCalendar('addEventSource', this.get('events'));
       fullCalendarComponent.fullCalendar('rerenderEvents');
@@ -91223,7 +91584,7 @@ define('ember-cli-full-calendar/components/full-calendar', ['exports', 'ember'],
 
     _initializeCalendar: (function () {
       var _this = this;
-      return Ember['default'].$(".full-calendar").fullCalendar({
+      return _ember['default'].$(".full-calendar").fullCalendar({
         // General Display
         header: {
           left: _this.get('headerLeft'),
@@ -91282,7 +91643,6 @@ define('ember-cli-full-calendar/components/full-calendar', ['exports', 'ember'],
       });
     }).on('didInsertElement').observes('events')
   });
-
 });
 define('ember-cli-full-calendar', ['ember-cli-full-calendar/index', 'ember', 'exports'], function(__index__, __Ember__, __exports__) {
   'use strict';
@@ -91296,8 +91656,7 @@ define('ember-cli-full-calendar', ['ember-cli-full-calendar/index', 'ember', 'ex
   }));
 });
 
-define('ember-django-adapter/adapters/drf', ['exports', 'ember-data', 'ember'], function (exports, DS, Ember) {
-
+define('ember-django-adapter/adapters/drf', ['exports', 'ember-data', 'ember'], function (exports, _emberData, _ember) {
   'use strict';
 
   var ERROR_MESSAGES = {
@@ -91317,7 +91676,7 @@ define('ember-django-adapter/adapters/drf', ['exports', 'ember-data', 'ember'], 
    * @constructor
    * @extends DS.RESTAdapter
    */
-  exports['default'] = DS['default'].RESTAdapter.extend({
+  exports['default'] = _emberData['default'].RESTAdapter.extend({
     defaultSerializer: "DS/djangoREST",
     addTrailingSlashes: true,
     nonFieldErrorsKey: 'non_field_errors',
@@ -91330,8 +91689,8 @@ define('ember-django-adapter/adapters/drf', ['exports', 'ember-data', 'ember'], 
      * @return {String} path
      */
     pathForType: function pathForType(type) {
-      var dasherized = Ember['default'].String.dasherize(type);
-      return Ember['default'].String.pluralize(dasherized);
+      var dasherized = _ember['default'].String.dasherize(type);
+      return _ember['default'].String.pluralize(dasherized);
     },
 
     /**
@@ -91386,7 +91745,7 @@ define('ember-django-adapter/adapters/drf', ['exports', 'ember-data', 'ember'], 
       if (this.isSuccess(status, headers, payload)) {
         return payload;
       } else if (this.isInvalid(status, headers, payload)) {
-        return new DS['default'].InvalidError(this._drfToJsonAPIValidationErrors(payload));
+        return new _emberData['default'].InvalidError(this._drfToJsonAPIValidationErrors(payload));
       }
 
       if (Object.getOwnPropertyNames(payload).length === 0) {
@@ -91397,9 +91756,9 @@ define('ember-django-adapter/adapters/drf', ['exports', 'ember-data', 'ember'], 
       var errors = this.normalizeErrorResponse(status, headers, payload);
 
       if (ERROR_MESSAGES[status]) {
-        return new DS['default'].AdapterError(errors, ERROR_MESSAGES[status]);
+        return new _emberData['default'].AdapterError(errors, ERROR_MESSAGES[status]);
       }
-      return new DS['default'].AdapterError(errors);
+      return new _emberData['default'].AdapterError(errors);
     },
 
     isInvalid: function isInvalid(status) {
@@ -91428,9 +91787,9 @@ define('ember-django-adapter/adapters/drf', ['exports', 'ember-data', 'ember'], 
 
       var out = [];
 
-      var _loop = function (key) {
+      var _loop = function _loop(key) {
         if (payload.hasOwnProperty(key)) {
-          if (Ember['default'].isArray(payload[key])) {
+          if (_ember['default'].isArray(payload[key])) {
             payload[key].forEach(function (error) {
               if (key === _this.get('nonFieldErrorsKey')) {
                 out.push({
@@ -91475,13 +91834,20 @@ define('ember-django-adapter/adapters/drf', ['exports', 'ember-data', 'ember'], 
       return this.buildURL(snapshot.modelName);
     }
   });
-
 });
-define('ember-django-adapter/serializers/drf', ['exports', 'ember-data', 'ember'], function (exports, DS, Ember) {
-
+define('ember-django-adapter/serializers/drf', ['exports', 'ember-data', 'ember'], function (exports, _emberData, _ember) {
   'use strict';
 
-  exports['default'] = DS['default'].RESTSerializer.extend({
+  /**
+   * Handle JSON/REST (de)serialization.
+   *
+   * This serializer adjusts payload data so that it is consumable by
+   * Django REST Framework API endpoints.
+   *
+   * @class DRFSerializer
+   * @extends DS.RESTSerializer
+   */
+  exports['default'] = _emberData['default'].RESTSerializer.extend({
     // Remove this in our 2.0 release.
     isNewSerializerAPI: true,
 
@@ -91513,7 +91879,7 @@ define('ember-django-adapter/serializers/drf', ['exports', 'ember-data', 'ember'
         if (relationshipMeta.kind === 'hasMany' || relationshipMeta.kind === 'belongsTo') {
           // Matches strings starting with: https://, http://, //, /
           var payloadRel = resourceHash[payloadRelKey];
-          if (!Ember['default'].isNone(payloadRel) && !Ember['default'].isNone(payloadRel.match) && typeof payloadRel.match === 'function' && payloadRel.match(/^((https?:)?\/\/|\/)\w/)) {
+          if (!_ember['default'].isNone(payloadRel) && !_ember['default'].isNone(payloadRel.match) && typeof payloadRel.match === 'function' && payloadRel.match(/^((https?:)?\/\/|\/)\w/)) {
             resourceHash['links'][key] = resourceHash[payloadRelKey];
             delete resourceHash[payloadRelKey];
           }
@@ -91562,7 +91928,7 @@ define('ember-django-adapter/serializers/drf', ['exports', 'ember-data', 'ember'
     normalizeResponse: function normalizeResponse(store, primaryModelClass, payload, id, requestType) {
       var convertedPayload = {};
 
-      if (!Ember['default'].isNone(payload) && payload.hasOwnProperty('count') && payload.hasOwnProperty('next') && payload.hasOwnProperty('previous') && payload.hasOwnProperty('results')) {
+      if (!_ember['default'].isNone(payload) && payload.hasOwnProperty('count') && payload.hasOwnProperty('next') && payload.hasOwnProperty('previous') && payload.hasOwnProperty('results')) {
 
         // Move DRF metadata to the meta hash.
         convertedPayload[primaryModelClass.modelName] = JSON.parse(JSON.stringify(payload.results));
@@ -91570,14 +91936,14 @@ define('ember-django-adapter/serializers/drf', ['exports', 'ember-data', 'ember'
         convertedPayload['meta'] = JSON.parse(JSON.stringify(payload));
 
         // The next and previous pagination URLs are parsed to make it easier to paginate data in applications.
-        if (!Ember['default'].isNone(convertedPayload.meta['next'])) {
+        if (!_ember['default'].isNone(convertedPayload.meta['next'])) {
           convertedPayload.meta['next'] = this.extractPageNumber(convertedPayload.meta['next']);
         }
-        if (!Ember['default'].isNone(convertedPayload.meta['previous'])) {
+        if (!_ember['default'].isNone(convertedPayload.meta['previous'])) {
           var pageNumber = this.extractPageNumber(convertedPayload.meta['previous']);
           // The DRF previous URL doesn't always include the page=1 query param in the results for page 2. We need to
           // explicitly set previous to 1 when the previous URL is defined but the page is not set.
-          if (Ember['default'].isNone(pageNumber)) {
+          if (_ember['default'].isNone(pageNumber)) {
             pageNumber = 1;
           }
           convertedPayload.meta['previous'] = pageNumber;
@@ -91608,7 +91974,7 @@ define('ember-django-adapter/serializers/drf', ['exports', 'ember-data', 'ember'
      * @param {Object} options
      */
     serializeIntoHash: function serializeIntoHash(hash, type, snapshot, options) {
-      Ember['default'].merge(hash, this.serialize(snapshot, options));
+      _ember['default'].merge(hash, this.serialize(snapshot, options));
     },
 
     /**
@@ -91620,7 +91986,7 @@ define('ember-django-adapter/serializers/drf', ['exports', 'ember-data', 'ember'
      * @return {String} normalized key
      */
     keyForAttribute: function keyForAttribute(key) {
-      return Ember['default'].String.decamelize(key);
+      return _ember['default'].String.decamelize(key);
     },
 
     /**
@@ -91633,10 +91999,9 @@ define('ember-django-adapter/serializers/drf', ['exports', 'ember-data', 'ember'
      * @return {String} normalized key
      */
     keyForRelationship: function keyForRelationship(key) {
-      return Ember['default'].String.decamelize(key);
+      return _ember['default'].String.decamelize(key);
     }
   });
-
 });
 define('ember-django-adapter', ['ember-django-adapter/index', 'ember', 'exports'], function(__index__, __Ember__, __exports__) {
   'use strict';
@@ -91650,16 +92015,15 @@ define('ember-django-adapter', ['ember-django-adapter/index', 'ember', 'exports'
   }));
 });
 
-define('ember-simple-auth/authenticators/base', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-simple-auth/authenticators/base', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
-  var RSVP = Ember['default'].RSVP;
+  var RSVP = _ember['default'].RSVP;
 
   /**
     The base class for all authenticators. __This serves as a starting point for
     implementing custom authenticators and must not be used directly.__
-
+  
     The authenticator authenticates the session. The actual mechanism used to do
     this might e.g. be posting a set of credentials to a server and in exchange
     retrieving an access token, initiating authentication against an external
@@ -91671,32 +92035,32 @@ define('ember-simple-auth/authenticators/base', ['exports', 'ember'], function (
     and be used by the authorizer (see
     {{#crossLink "BaseAuthorizer/authorize:method"}}{{/crossLink}}) to e.g.
     authorize outgoing requests.
-
+  
     The authenticator also decides whether a set of data that was restored from
     the session store (see
     {{#crossLink "BaseStore/restore:method"}}{{/crossLink}}) makes up an
     authenticated session or not.
-
+  
     __Authenticators for an application are defined in the `app/authenticators`
     directory__, e.g.:
-
+  
     ```js
     // app/authenticators/oauth2.js
     import OAuth2PasswordGrantAuthenticator from 'ember-simple-auth/authenticators/oauth2-password-grant';
-
+  
     export default OAuth2PasswordGrantAuthenticator.extend({
       ...
     });
     ```
-
+  
     and can then be used with the name Ember CLI automatically registers them
     with in the Ember container:
-
+  
     ```js
     // app/components/login-form.js
     export default Ember.Controller.extend({
       session: Ember.inject.service(),
-
+  
       actions: {
         authenticate: function() {
           this.get('session').authenticate('authenticator:oauth2');
@@ -91704,14 +92068,14 @@ define('ember-simple-auth/authenticators/base', ['exports', 'ember'], function (
       }
     });
     ```
-
+  
     @class BaseAuthenticator
     @module ember-simple-auth/authenticators/base
     @extends Ember.Object
     @uses Ember.Evented
     @public
   */
-  exports['default'] = Ember['default'].Object.extend(Ember['default'].Evented, {
+  exports['default'] = _ember['default'].Object.extend(_ember['default'].Evented, {
     /**
       __Triggered when the authentication data is updated by the authenticator
       due to an external or scheduled event__. This might happen e.g. if the
@@ -91804,31 +92168,29 @@ define('ember-simple-auth/authenticators/base', ['exports', 'ember'], function (
       return RSVP.resolve();
     }
   });
-
 });
-define('ember-simple-auth/authenticators/devise', ['exports', 'ember', 'ember-simple-auth/authenticators/base'], function (exports, Ember, BaseAuthenticator) {
-
+define('ember-simple-auth/authenticators/devise', ['exports', 'ember', 'ember-simple-auth/authenticators/base'], function (exports, _ember, _emberSimpleAuthAuthenticatorsBase) {
   'use strict';
 
-  var RSVP = Ember['default'].RSVP;
-  var isEmpty = Ember['default'].isEmpty;
-  var run = Ember['default'].run;
-  var get = Ember['default'].get;
+  var RSVP = _ember['default'].RSVP;
+  var isEmpty = _ember['default'].isEmpty;
+  var run = _ember['default'].run;
+  var get = _ember['default'].get;
 
   /**
     Authenticator that works with the Ruby gem
     [devise](https://github.com/plataformatec/devise).
-
+  
     __As token authentication is not actually part of devise anymore, the server
     needs to implement some customizations__ to work with this authenticator -
     see [this gist](https://gist.github.com/josevalim/fb706b1e933ef01e4fb6).
-
+  
     @class DeviseAuthenticator
     @module ember-simple-auth/authenticators/devise
     @extends BaseAuthenticator
     @public
   */
-  exports['default'] = BaseAuthenticator['default'].extend({
+  exports['default'] = _emberSimpleAuthAuthenticatorsBase['default'].extend({
     /**
       The endpoint on the server that the authentication request is sent to.
        @property serverTokenEndpoint
@@ -91954,7 +92316,7 @@ define('ember-simple-auth/authenticators/devise', ['exports', 'ember', 'ember-si
     */
     makeRequest: function makeRequest(data) {
       var serverTokenEndpoint = this.get('serverTokenEndpoint');
-      return Ember['default'].$.ajax({
+      return _ember['default'].$.ajax({
         url: serverTokenEndpoint,
         type: 'POST',
         dataType: 'json',
@@ -91965,32 +92327,30 @@ define('ember-simple-auth/authenticators/devise', ['exports', 'ember', 'ember-si
       });
     }
   });
-
 });
-define('ember-simple-auth/authenticators/oauth2-password-grant', ['exports', 'ember', 'ember-simple-auth/authenticators/base'], function (exports, Ember, BaseAuthenticator) {
-
+define('ember-simple-auth/authenticators/oauth2-password-grant', ['exports', 'ember', 'ember-simple-auth/authenticators/base'], function (exports, _ember, _emberSimpleAuthAuthenticatorsBase) {
+  /* jscs:disable requireDotNotation */
   'use strict';
 
-  /* jscs:disable requireDotNotation */
-  var RSVP = Ember['default'].RSVP;
-  var isEmpty = Ember['default'].isEmpty;
-  var run = Ember['default'].run;
+  var RSVP = _ember['default'].RSVP;
+  var isEmpty = _ember['default'].isEmpty;
+  var run = _ember['default'].run;
 
   /**
     Authenticator that conforms to OAuth 2
     ([RFC 6749](http://tools.ietf.org/html/rfc6749)), specifically the _"Resource
     Owner Password Credentials Grant Type"_.
-
+  
     This authenticator also automatically refreshes access tokens (see
     [RFC 6749, section 6](http://tools.ietf.org/html/rfc6749#section-6)) if the
     server supports it.
-
+  
     @class OAuth2PasswordGrantAuthenticator
     @module ember-simple-auth/authenticators/oauth2-password-grant
     @extends BaseAuthenticator
     @public
   */
-  exports['default'] = BaseAuthenticator['default'].extend({
+  exports['default'] = _emberSimpleAuthAuthenticatorsBase['default'].extend({
     /**
       Triggered when the authenticator refreshed the access token (see
       [RFC 6749, section 6](http://tools.ietf.org/html/rfc6749#section-6)).
@@ -92112,8 +92472,8 @@ define('ember-simple-auth/authenticators/oauth2-password-grant', ['exports', 'em
       return new RSVP.Promise(function (resolve, reject) {
         var data = { 'grant_type': 'password', username: identification, password: password };
         var serverTokenEndpoint = _this2.get('serverTokenEndpoint');
-        var scopesString = Ember['default'].makeArray(scope).join(' ');
-        if (!Ember['default'].isEmpty(scopesString)) {
+        var scopesString = _ember['default'].makeArray(scope).join(' ');
+        if (!_ember['default'].isEmpty(scopesString)) {
           data.scope = scopesString;
         }
         _this2.makeRequest(serverTokenEndpoint, data).then(function (response) {
@@ -92121,7 +92481,7 @@ define('ember-simple-auth/authenticators/oauth2-password-grant', ['exports', 'em
             var expiresAt = _this2._absolutizeExpirationTime(response['expires_in']);
             _this2._scheduleAccessTokenRefresh(response['expires_in'], expiresAt, response['refresh_token']);
             if (!isEmpty(expiresAt)) {
-              response = Ember['default'].merge(response, { 'expires_at': expiresAt });
+              response = _ember['default'].merge(response, { 'expires_at': expiresAt });
             }
             resolve(response);
           });
@@ -92158,7 +92518,7 @@ define('ember-simple-auth/authenticators/oauth2-password-grant', ['exports', 'em
         } else {
           (function () {
             var requests = [];
-            Ember['default'].A(['access_token', 'refresh_token']).forEach(function (tokenType) {
+            _ember['default'].A(['access_token', 'refresh_token']).forEach(function (tokenType) {
               var token = data[tokenType];
               if (!isEmpty(token)) {
                 requests.push(_this3.makeRequest(serverTokenRevocationEndpoint, {
@@ -92195,14 +92555,14 @@ define('ember-simple-auth/authenticators/oauth2-password-grant', ['exports', 'em
 
       if (!isEmpty(clientId)) {
         var base64ClientId = window.btoa(clientId.concat(':'));
-        Ember['default'].merge(options, {
+        _ember['default'].merge(options, {
           headers: {
             Authorization: 'Basic ' + base64ClientId
           }
         });
       }
 
-      return Ember['default'].$.ajax(options);
+      return _ember['default'].$.ajax(options);
     },
 
     _scheduleAccessTokenRefresh: function _scheduleAccessTokenRefresh(expiresIn, expiresAt, refreshToken) {
@@ -92216,7 +92576,7 @@ define('ember-simple-auth/authenticators/oauth2-password-grant', ['exports', 'em
         if (!isEmpty(refreshToken) && !isEmpty(expiresAt) && expiresAt > now - offset) {
           run.cancel(this._refreshTokenTimeout);
           delete this._refreshTokenTimeout;
-          if (!Ember['default'].testing) {
+          if (!_ember['default'].testing) {
             this._refreshTokenTimeout = run.later(this, this._refreshAccessToken, expiresIn, refreshToken, expiresAt - now - offset);
           }
         }
@@ -92234,13 +92594,13 @@ define('ember-simple-auth/authenticators/oauth2-password-grant', ['exports', 'em
             expiresIn = response['expires_in'] || expiresIn;
             refreshToken = response['refresh_token'] || refreshToken;
             var expiresAt = _this4._absolutizeExpirationTime(expiresIn);
-            var data = Ember['default'].merge(response, { 'expires_in': expiresIn, 'expires_at': expiresAt, 'refresh_token': refreshToken });
+            var data = _ember['default'].merge(response, { 'expires_in': expiresIn, 'expires_at': expiresAt, 'refresh_token': refreshToken });
             _this4._scheduleAccessTokenRefresh(expiresIn, null, refreshToken);
             _this4.trigger('sessionDataUpdated', data);
             resolve(data);
           });
         }, function (xhr, status, error) {
-          Ember['default'].Logger.warn('Access token could not be refreshed - server responded with ' + error + '.');
+          _ember['default'].Logger.warn('Access token could not be refreshed - server responded with ' + error + '.');
           reject();
         });
       });
@@ -92252,15 +92612,13 @@ define('ember-simple-auth/authenticators/oauth2-password-grant', ['exports', 'em
       }
     }
   });
-
 });
-define('ember-simple-auth/authenticators/test', ['exports', 'ember', 'ember-simple-auth/authenticators/base'], function (exports, Ember, BaseAuthenticator) {
-
+define('ember-simple-auth/authenticators/test', ['exports', 'ember', 'ember-simple-auth/authenticators/base'], function (exports, _ember, _emberSimpleAuthAuthenticatorsBase) {
   'use strict';
 
-  var RSVP = Ember['default'].RSVP;
+  var RSVP = _ember['default'].RSVP;
 
-  exports['default'] = BaseAuthenticator['default'].extend({
+  exports['default'] = _emberSimpleAuthAuthenticatorsBase['default'].extend({
     restore: function restore(data) {
       return RSVP.resolve(data);
     },
@@ -92273,39 +92631,37 @@ define('ember-simple-auth/authenticators/test', ['exports', 'ember', 'ember-simp
       return RSVP.resolve();
     }
   });
-
 });
-define('ember-simple-auth/authenticators/torii', ['exports', 'ember', 'ember-simple-auth/authenticators/base'], function (exports, Ember, BaseAuthenticator) {
-
+define('ember-simple-auth/authenticators/torii', ['exports', 'ember', 'ember-simple-auth/authenticators/base'], function (exports, _ember, _emberSimpleAuthAuthenticatorsBase) {
   'use strict';
 
-  var RSVP = Ember['default'].RSVP;
-  var isEmpty = Ember['default'].isEmpty;
+  var RSVP = _ember['default'].RSVP;
+  var isEmpty = _ember['default'].isEmpty;
 
   /**
     Authenticator that wraps the
     [Torii library](https://github.com/Vestorly/torii) and thus allows to connect
     any external authentication provider that torii defines a provider for.
-
+  
     In order to use this authenticator, __the application needs to have the
     [torii addon](https://github.com/Vestorly/torii) installed and must inject
     the torii service into the authenticator__:
-
+  
     ```js
     // app/authenticators/torii.js
     import ToriiAuthenticator from 'ember-simple-auth/authenticators/torii';
-
+  
     export default ToriiAuthenticator.extend(
       torii: Ember.inject.service()
     )
     ```
-
+  
     @class ToriiAuthenticator
     @module ember-simple-auth/authenticators/torii
     @extends BaseAuthenticator
     @public
   */
-  exports['default'] = BaseAuthenticator['default'].extend({
+  exports['default'] = _emberSimpleAuthAuthenticatorsBase['default'].extend({
     _provider: null,
 
     /**
@@ -92401,16 +92757,34 @@ define('ember-simple-auth/authenticators/torii', ['exports', 'ember', 'ember-sim
 
     _assertToriiIsPresent: function _assertToriiIsPresent() {
       var torii = this.get('torii');
-      Ember['default'].assert('You are trying to use the torii authenticator but torii is not available. Inject torii into the authenticator with "torii: Ember.inject.service()".', Ember['default'].isPresent(torii));
+      _ember['default'].assert('You are trying to use the torii authenticator but torii is not available. Inject torii into the authenticator with "torii: Ember.inject.service()".', _ember['default'].isPresent(torii));
     }
   });
-
 });
-define('ember-simple-auth/authorizers/base', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-simple-auth/authorizers/base', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
-  exports['default'] = Ember['default'].Object.extend({
+  /**
+    The base class for all authorizers. __This serves as a starting point for
+    implementing custom authorizers and must not be used directly.__
+  
+    Authorizers use the session data aqcuired by an authenticator when
+    authenticating the session to construct authrorization data that can e.g. be
+    injected into outgoing network requests etc. Depending on the authorization
+    mechanism the authorizer implements, that authorization data might be an HTTP
+    header, query string parameters, a cookie etc.
+  
+    __The authorizer has to fit the authenticator__ (see
+    {{#crossLink "BaseAuthenticator"}}{{/crossLink}})
+    as it can only use data that the authenticator acquires when authenticating
+    the session.
+  
+    @class BaseAuthorizer
+    @module ember-simple-auth/authorizers/base
+    @extends Ember.Object
+    @public
+  */
+  exports['default'] = _ember['default'].Object.extend({
     /**
       Authorizes a block of code. This method will be invoked by the session
       service's {{#crossLink "SessionService/authorize:method"}}{{/crossLink}}
@@ -92427,34 +92801,32 @@ define('ember-simple-auth/authorizers/base', ['exports', 'ember'], function (exp
     */
     authorize: function authorize() {}
   });
-
 });
-define('ember-simple-auth/authorizers/devise', ['exports', 'ember', 'ember-simple-auth/authorizers/base'], function (exports, Ember, BaseAuthorizer) {
-
+define('ember-simple-auth/authorizers/devise', ['exports', 'ember', 'ember-simple-auth/authorizers/base'], function (exports, _ember, _emberSimpleAuthAuthorizersBase) {
   'use strict';
 
-  var isEmpty = Ember['default'].isEmpty;
+  var isEmpty = _ember['default'].isEmpty;
 
   /**
     Authorizer that works with the Ruby gem
     [devise](https://github.com/plataformatec/devise); includes the user's token
     and identification from the session data in the `Authorization` HTTP header,
     e.g.:
-
+  
     ```
     Authorization: token="234rtgjneroigne4" email="user@domain.tld"
     ```
-
+  
     __As token authentication is not actually part of devise anymore, the server
     needs to implement some customizations__ to work with this authenticator -
     see [this gist](https://gist.github.com/josevalim/fb706b1e933ef01e4fb6).
-
+  
     @class DeviseAuthorizer
     @module ember-simple-auth/authorizers/devise
     @extends BaseAuthorizer
     @public
   */
-  exports['default'] = BaseAuthorizer['default'].extend({
+  exports['default'] = _emberSimpleAuthAuthorizersBase['default'].extend({
     /**
       The token attribute name.
        @property tokenAttributeName
@@ -92498,14 +92870,12 @@ define('ember-simple-auth/authorizers/devise', ['exports', 'ember', 'ember-simpl
       }
     }
   });
-
 });
-define('ember-simple-auth/authorizers/oauth2-bearer', ['exports', 'ember', 'ember-simple-auth/authorizers/base'], function (exports, Ember, Base) {
-
+define('ember-simple-auth/authorizers/oauth2-bearer', ['exports', 'ember', 'ember-simple-auth/authorizers/base'], function (exports, _ember, _emberSimpleAuthAuthorizersBase) {
+  /* jscs:disable requireDotNotation */
   'use strict';
 
-  /* jscs:disable requireDotNotation */
-  var isEmpty = Ember['default'].isEmpty;
+  var isEmpty = _ember['default'].isEmpty;
 
   /**
     Authorizer that conforms to OAuth 2
@@ -92513,17 +92883,17 @@ define('ember-simple-auth/authorizers/oauth2-bearer', ['exports', 'ember', 'embe
     from the session data as a bearer token
     ([RFC 6750](http://tools.ietf.org/html/rfc6750)) in the `Authorization`
     header, e.g.:
-
+  
     ```
     Authorization: Bearer 234rtgjneroigne4
     ```
-
+  
     @class OAuth2BearerAuthorizer
     @module ember-simple-auth/authorizers/oauth2-bearer
     @extends BaseAuthorizer
     @public
   */
-  exports['default'] = Base['default'].extend({
+  exports['default'] = _emberSimpleAuthAuthorizersBase['default'].extend({
     /**
       Includes the access token from the session data into the `Authorization`
       header as a Bearer token, e.g.:
@@ -92542,10 +92912,8 @@ define('ember-simple-auth/authorizers/oauth2-bearer', ['exports', 'ember', 'embe
       }
     }
   });
-
 });
-define('ember-simple-auth/configuration', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-simple-auth/configuration', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
   var DEFAULTS = {
@@ -92556,17 +92924,17 @@ define('ember-simple-auth/configuration', ['exports', 'ember'], function (export
 
   /**
     Ember Simple Auth's configuration object.
-
+  
     To change any of these values, set them on the application's environment
     object, e.g.:
-
+  
     ```js
     // config/environment.js
     ENV['ember-simple-auth'] = {
       authenticationRoute: 'sign-in'
     };
     ```
-
+  
     @class Configuration
     @extends Object
     @module ember-simple-auth/configuration
@@ -92623,57 +92991,48 @@ define('ember-simple-auth/configuration', ['exports', 'ember'], function (export
     routeIfAlreadyAuthenticated: DEFAULTS.routeIfAlreadyAuthenticated,
 
     load: function load(config) {
-      var wrappedConfig = Ember['default'].Object.create(config);
+      var wrappedConfig = _ember['default'].Object.create(config);
       for (var property in this) {
-        if (this.hasOwnProperty(property) && Ember['default'].typeOf(this[property]) !== 'function') {
+        if (this.hasOwnProperty(property) && _ember['default'].typeOf(this[property]) !== 'function') {
           this[property] = wrappedConfig.getWithDefault(property, DEFAULTS[property]);
         }
       }
     }
   };
-
 });
-define('ember-simple-auth/initializers/setup-session-service', ['exports', 'ember-simple-auth/utils/inject'], function (exports, inject) {
-
+define('ember-simple-auth/initializers/setup-session-service', ['exports', 'ember-simple-auth/utils/inject'], function (exports, _emberSimpleAuthUtilsInject) {
   'use strict';
-
-
 
   exports['default'] = setupSessionStore;
+
   function setupSessionStore(registry) {
-    inject['default'](registry, 'service:session', 'session', 'session:main');
+    (0, _emberSimpleAuthUtilsInject['default'])(registry, 'service:session', 'session', 'session:main');
   }
-
 });
-define('ember-simple-auth/initializers/setup-session', ['exports', 'ember', 'ember-simple-auth/internal-session', 'ember-simple-auth/session-stores/ephemeral', 'ember-simple-auth/utils/inject'], function (exports, Ember, InternalSession, Ephemeral, inject) {
-
+define('ember-simple-auth/initializers/setup-session', ['exports', 'ember', 'ember-simple-auth/internal-session', 'ember-simple-auth/session-stores/ephemeral', 'ember-simple-auth/utils/inject'], function (exports, _ember, _emberSimpleAuthInternalSession, _emberSimpleAuthSessionStoresEphemeral, _emberSimpleAuthUtilsInject) {
   'use strict';
-
-
 
   exports['default'] = setupSession;
+
   function setupSession(registry) {
-    registry.register('session:main', InternalSession['default']);
+    registry.register('session:main', _emberSimpleAuthInternalSession['default']);
 
     var store = 'session-store:application';
-    if (Ember['default'].testing) {
+    if (_ember['default'].testing) {
       store = 'session-store:test';
-      registry.register(store, Ephemeral['default']);
+      registry.register(store, _emberSimpleAuthSessionStoresEphemeral['default']);
     }
-    inject['default'](registry, 'session:main', 'store', store);
+    (0, _emberSimpleAuthUtilsInject['default'])(registry, 'session:main', 'store', store);
   }
-
 });
-define('ember-simple-auth/instance-initializers/setup-session-restoration', ['exports', 'ember-simple-auth/utils/lookup'], function (exports, lookup) {
-
+define('ember-simple-auth/instance-initializers/setup-session-restoration', ['exports', 'ember-simple-auth/utils/lookup'], function (exports, _emberSimpleAuthUtilsLookup) {
   'use strict';
 
-
-
   exports['default'] = setupSessionRestoration;
+
   function setupSessionRestoration(instance) {
-    var applicationRoute = lookup['default'](instance, 'route:application');
-    var session = lookup['default'](instance, 'session:main');
+    var applicationRoute = (0, _emberSimpleAuthUtilsLookup['default'])(instance, 'route:application');
+    var session = (0, _emberSimpleAuthUtilsLookup['default'])(instance, 'session:main');
     var originalBeforeModel = applicationRoute.beforeModel;
     var applyOriginalBeforeModel = function applyOriginalBeforeModel() {
       return originalBeforeModel.apply(applicationRoute, arguments);
@@ -92690,15 +93049,13 @@ define('ember-simple-auth/instance-initializers/setup-session-restoration', ['ex
       }
     });
   }
-
 });
-define('ember-simple-auth/internal-session', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-simple-auth/internal-session', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
-  var on = Ember['default'].on;
+  var on = _ember['default'].on;
 
-  exports['default'] = Ember['default'].ObjectProxy.extend(Ember['default'].Evented, {
+  exports['default'] = _ember['default'].ObjectProxy.extend(_ember['default'].Evented, {
     authenticator: null,
     store: null,
     container: null,
@@ -92711,10 +93068,10 @@ define('ember-simple-auth/internal-session', ['exports', 'ember'], function (exp
 
       var args = Array.prototype.slice.call(arguments);
       var authenticator = args.shift();
-      Ember['default'].assert('Session#authenticate requires the authenticator to be specified, was "' + authenticator + '"!', !Ember['default'].isEmpty(authenticator));
+      _ember['default'].assert('Session#authenticate requires the authenticator to be specified, was "' + authenticator + '"!', !_ember['default'].isEmpty(authenticator));
       var theAuthenticator = this.container.lookup(authenticator);
-      Ember['default'].assert('No authenticator for factory "' + authenticator + '" could be found!', !Ember['default'].isNone(theAuthenticator));
-      return new Ember['default'].RSVP.Promise(function (resolve, reject) {
+      _ember['default'].assert('No authenticator for factory "' + authenticator + '" could be found!', !_ember['default'].isNone(theAuthenticator));
+      return new _ember['default'].RSVP.Promise(function (resolve, reject) {
         theAuthenticator.authenticate.apply(theAuthenticator, args).then(function (content) {
           _this._setup(authenticator, content, true);
           resolve();
@@ -92728,8 +93085,8 @@ define('ember-simple-auth/internal-session', ['exports', 'ember'], function (exp
     invalidate: function invalidate() {
       var _this2 = this;
 
-      Ember['default'].assert('Session#invalidate requires the session to be authenticated!', this.get('isAuthenticated'));
-      return new Ember['default'].RSVP.Promise(function (resolve, reject) {
+      _ember['default'].assert('Session#invalidate requires the session to be authenticated!', this.get('isAuthenticated'));
+      return new _ember['default'].RSVP.Promise(function (resolve, reject) {
         var authenticator = _this2.container.lookup(_this2.authenticator);
         authenticator.invalidate(_this2.content.authenticated).then(function () {
           authenticator.off('sessionDataUpdated');
@@ -92745,7 +93102,7 @@ define('ember-simple-auth/internal-session', ['exports', 'ember'], function (exp
     restore: function restore() {
       var _this3 = this;
 
-      return new Ember['default'].RSVP.Promise(function (resolve, reject) {
+      return new _ember['default'].RSVP.Promise(function (resolve, reject) {
         var restoredContent = _this3.store.restore();
 
         var _ref = restoredContent.authenticated || {};
@@ -92759,7 +93116,7 @@ define('ember-simple-auth/internal-session', ['exports', 'ember'], function (exp
             _this3._setup(authenticator, content);
             resolve();
           }, function () {
-            Ember['default'].Logger.debug('The authenticator "' + authenticator + '" rejected to restore the session - invalidating…');
+            _ember['default'].Logger.debug('The authenticator "' + authenticator + '" rejected to restore the session - invalidating…');
             _this3.set('content', restoredContent);
             _this3._clear();
             reject();
@@ -92780,7 +93137,7 @@ define('ember-simple-auth/internal-session', ['exports', 'ember'], function (exp
         isAuthenticated: true,
         authenticator: authenticator
       });
-      Ember['default'].set(this.content, 'authenticated', authenticatedContend);
+      _ember['default'].set(this.content, 'authenticated', authenticatedContend);
       this._bindToAuthenticatorEvents();
       this._updateStore();
       this.endPropertyChanges();
@@ -92796,7 +93153,7 @@ define('ember-simple-auth/internal-session', ['exports', 'ember'], function (exp
         isAuthenticated: false,
         authenticator: null
       });
-      Ember['default'].set(this.content, 'authenticated', {});
+      _ember['default'].set(this.content, 'authenticated', {});
       this._updateStore();
       this.endPropertyChanges();
       if (trigger) {
@@ -92805,7 +93162,7 @@ define('ember-simple-auth/internal-session', ['exports', 'ember'], function (exp
     },
 
     setUnknownProperty: function setUnknownProperty(key, value) {
-      Ember['default'].assert('"authenticated" is a reserved key used by Ember Simple Auth!', key !== 'authenticated');
+      _ember['default'].assert('"authenticated" is a reserved key used by Ember Simple Auth!', key !== 'authenticated');
       var result = this._super(key, value);
       this._updateStore();
       return result;
@@ -92813,8 +93170,8 @@ define('ember-simple-auth/internal-session', ['exports', 'ember'], function (exp
 
     _updateStore: function _updateStore() {
       var data = this.content;
-      if (!Ember['default'].isEmpty(this.authenticator)) {
-        Ember['default'].set(data, 'authenticated', Ember['default'].merge({ authenticator: this.authenticator }, data.authenticated || {}));
+      if (!_ember['default'].isEmpty(this.authenticator)) {
+        _ember['default'].set(data, 'authenticated', _ember['default'].merge({ authenticator: this.authenticator }, data.authenticated || {}));
       }
       this.store.persist(data);
     },
@@ -92847,7 +93204,7 @@ define('ember-simple-auth/internal-session', ['exports', 'ember'], function (exp
             _this5.set('content', content);
             _this5._setup(authenticator, authenticatedContent, true);
           }, function () {
-            Ember['default'].Logger.debug('The authenticator "' + authenticator + '" rejected to restore the session - invalidating…');
+            _ember['default'].Logger.debug('The authenticator "' + authenticator + '" rejected to restore the session - invalidating…');
             _this5.set('content', content);
             _this5._clear(true);
           });
@@ -92858,16 +93215,38 @@ define('ember-simple-auth/internal-session', ['exports', 'ember'], function (exp
       });
     })
   });
-
 });
-define('ember-simple-auth/mixins/application-route-mixin', ['exports', 'ember', 'ember-simple-auth/configuration'], function (exports, Ember, Configuration) {
-
+define('ember-simple-auth/mixins/application-route-mixin', ['exports', 'ember', 'ember-simple-auth/configuration'], function (exports, _ember, _emberSimpleAuthConfiguration) {
   'use strict';
 
-  var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i['return']) _i['return'](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError('Invalid attempt to destructure non-iterable instance'); } }; })();
+  var _slicedToArray = (function () {
+    function sliceIterator(arr, i) {
+      var _arr = [];var _n = true;var _d = false;var _e = undefined;try {
+        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+          _arr.push(_s.value);if (i && _arr.length === i) break;
+        }
+      } catch (err) {
+        _d = true;_e = err;
+      } finally {
+        try {
+          if (!_n && _i['return']) _i['return']();
+        } finally {
+          if (_d) throw _e;
+        }
+      }return _arr;
+    }return function (arr, i) {
+      if (Array.isArray(arr)) {
+        return arr;
+      } else if (Symbol.iterator in Object(arr)) {
+        return sliceIterator(arr, i);
+      } else {
+        throw new TypeError('Invalid attempt to destructure non-iterable instance');
+      }
+    };
+  })();
 
-  var inject = Ember['default'].inject;
-  var on = Ember['default'].on;
+  var inject = _ember['default'].inject;
+  var on = _ember['default'].on;
 
   /**
     The mixin for the application route; __defines methods that are called when
@@ -92875,10 +93254,10 @@ define('ember-simple-auth/mixins/application-route-mixin', ['exports', 'ember', 
     {{#crossLink "SessionService/authenticationSucceeded:event"}}{{/crossLink}})
     or invalidated__ (see
     {{#crossLink "SessionService/invalidationSucceeded:event"}}{{/crossLink}}).
-
+  
     Using this mixin is optional. The session events can also be handled
     manually, e.g. in an instance initializer:
-
+  
     ```js
     // app/instance-initializers/session-events.js
     Ember.Application.initializer({
@@ -92896,16 +93275,16 @@ define('ember-simple-auth/mixins/application-route-mixin', ['exports', 'ember', 
       }
     });
     ```
-
+  
     __When using the `ApplicationRouteMixin` you need to specify
     `needs: ['service:session']` in the application route's unit test.__
-
+  
     @class ApplicationRouteMixin
     @module ember-simple-auth/mixins/application-route-mixin
     @extends Ember.Mixin
     @public
   */
-  exports['default'] = Ember['default'].Mixin.create({
+  exports['default'] = _ember['default'].Mixin.create({
     /**
       The session service.
        @property session
@@ -92919,13 +93298,13 @@ define('ember-simple-auth/mixins/application-route-mixin', ['exports', 'ember', 
       var _this = this,
           _arguments = arguments;
 
-      Ember['default'].A([['authenticationSucceeded', 'sessionAuthenticated'], ['invalidationSucceeded', 'sessionInvalidated']]).forEach(function (_ref) {
+      _ember['default'].A([['authenticationSucceeded', 'sessionAuthenticated'], ['invalidationSucceeded', 'sessionInvalidated']]).forEach(function (_ref) {
         var _ref2 = _slicedToArray(_ref, 2);
 
         var event = _ref2[0];
         var method = _ref2[1];
 
-        _this.get('session').on(event, Ember['default'].run.bind(_this, function () {
+        _this.get('session').on(event, _ember['default'].run.bind(_this, function () {
           _this[method].apply(_this, _arguments);
         }));
       });
@@ -92948,7 +93327,7 @@ define('ember-simple-auth/mixins/application-route-mixin', ['exports', 'ember', 
         attemptedTransition.retry();
         this.set('session.attemptedTransition', null);
       } else {
-        this.transitionTo(Configuration['default'].routeAfterAuthentication);
+        this.transitionTo(_emberSimpleAuthConfiguration['default'].routeAfterAuthentication);
       }
     },
 
@@ -92966,18 +93345,16 @@ define('ember-simple-auth/mixins/application-route-mixin', ['exports', 'ember', 
       @public
     */
     sessionInvalidated: function sessionInvalidated() {
-      if (!Ember['default'].testing) {
-        window.location.replace(Configuration['default'].baseURL);
+      if (!_ember['default'].testing) {
+        window.location.replace(_emberSimpleAuthConfiguration['default'].baseURL);
       }
     }
   });
-
 });
-define('ember-simple-auth/mixins/authenticated-route-mixin', ['exports', 'ember', 'ember-simple-auth/configuration'], function (exports, Ember, Configuration) {
-
+define('ember-simple-auth/mixins/authenticated-route-mixin', ['exports', 'ember', 'ember-simple-auth/configuration'], function (exports, _ember, _emberSimpleAuthConfiguration) {
   'use strict';
 
-  var service = Ember['default'].inject.service;
+  var service = _ember['default'].inject.service;
 
   /**
     __This mixin is used to make routes accessible only if the session is
@@ -92985,20 +93362,20 @@ define('ember-simple-auth/mixins/authenticated-route-mixin', ['exports', 'ember'
     transition and instead transitions to the
     {{#crossLink "Configuration/authenticationRoute:property"}}{{/crossLink}} if
     the session is not authenticated.
-
+  
     ```js
     // app/routes/protected.js
     import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
-
+  
     export default Ember.Route.extend(AuthenticatedRouteMixin);
     ```
-
+  
     @class AuthenticatedRouteMixin
     @module ember-simple-auth/mixins/authenticated-route-mixin
     @extends Ember.Mixin
     @public
   */
-  exports['default'] = Ember['default'].Mixin.create({
+  exports['default'] = _ember['default'].Mixin.create({
     /**
       The session service.
        @property session
@@ -93029,20 +93406,18 @@ define('ember-simple-auth/mixins/authenticated-route-mixin', ['exports', 'ember'
       if (!this.get('session.isAuthenticated')) {
         transition.abort();
         this.get('session').set('attemptedTransition', transition);
-        Ember['default'].assert('The route configured as Configuration.authenticationRoute cannot implement the AuthenticatedRouteMixin mixin as that leads to an infinite transitioning loop!', this.get('routeName') !== Configuration['default'].authenticationRoute);
-        this.transitionTo(Configuration['default'].authenticationRoute);
+        _ember['default'].assert('The route configured as Configuration.authenticationRoute cannot implement the AuthenticatedRouteMixin mixin as that leads to an infinite transitioning loop!', this.get('routeName') !== _emberSimpleAuthConfiguration['default'].authenticationRoute);
+        this.transitionTo(_emberSimpleAuthConfiguration['default'].authenticationRoute);
       } else {
         return this._super.apply(this, arguments);
       }
     }
   });
-
 });
-define('ember-simple-auth/mixins/data-adapter-mixin', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-simple-auth/mixins/data-adapter-mixin', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
-  var service = Ember['default'].inject.service;
+  var service = _ember['default'].inject.service;
 
   /**
     __This mixin can be used to make Ember Data adapters authorize all outgoing
@@ -93050,27 +93425,27 @@ define('ember-simple-auth/mixins/data-adapter-mixin', ['exports', 'ember'], func
     the authorization callback (see
     {{#crossLink "BaseAuthorizer/authorize:method"}}{{/crossLink}}) with header
     name and header content arguments.
-
+  
     __The `DataAdapterMixin` will also invalidate the session whenever it
     receives a 401 response for an API request.__
-
+  
     ```js
     // app/adapters/application.js
     import DS from 'ember-data';
     import DataAdapterMixin from 'ember-simple-auth/mixins/data-adapter-mixin';
-
+  
     export default DS.JSONAPIAdapter.extend(DataAdapterMixin, {
       authorizer: 'authorizer:application'
     });
     ```
-
+  
     @class DataAdapterMixin
     @module ember-simple-auth/mixins/data-adapter-mixin
     @extends Ember.Mixin
     @public
   */
 
-  exports['default'] = Ember['default'].Mixin.create({
+  exports['default'] = _ember['default'].Mixin.create({
     /**
       The session service.
        @property session
@@ -93108,7 +93483,7 @@ define('ember-simple-auth/mixins/data-adapter-mixin', ['exports', 'ember'], func
       var _this = this;
 
       var authorizer = this.get('authorizer');
-      Ember['default'].assert("You're using the DataAdapterMixin without specifying an authorizer. Please add `authorizer: 'authorizer:application'` to your adapter.", Ember['default'].isPresent(authorizer));
+      _ember['default'].assert("You're using the DataAdapterMixin without specifying an authorizer. Please add `authorizer: 'authorizer:application'` to your adapter.", _ember['default'].isPresent(authorizer));
 
       var hash = this._super.apply(this, arguments);
       var beforeSend = hash.beforeSend;
@@ -93143,13 +93518,11 @@ define('ember-simple-auth/mixins/data-adapter-mixin', ['exports', 'ember'], func
       }
     }
   });
-
 });
-define('ember-simple-auth/mixins/unauthenticated-route-mixin', ['exports', 'ember', 'ember-simple-auth/configuration'], function (exports, Ember, Configuration) {
-
+define('ember-simple-auth/mixins/unauthenticated-route-mixin', ['exports', 'ember', 'ember-simple-auth/configuration'], function (exports, _ember, _emberSimpleAuthConfiguration) {
   'use strict';
 
-  var service = Ember['default'].inject.service;
+  var service = _ember['default'].inject.service;
 
   /**
     __This mixin is used to make routes accessible only if the session is
@@ -93158,20 +93531,20 @@ define('ember-simple-auth/mixins/unauthenticated-route-mixin', ['exports', 'embe
     transitions to the
     {{#crossLink "Configuration/routeIfAlreadyAuthenticated:property"}}{{/crossLink}}
     if the session is authenticated.
-
+  
     ```js
     // app/routes/login.js
     import UnauthenticatedRouteMixin from 'ember-simple-auth/mixins/unauthenticated-route-mixin';
-
+  
     export default Ember.Route.extend(UnauthenticatedRouteMixin);
     ```
-
+  
     @class UnauthenticatedRouteMixin
     @module ember-simple-auth/mixins/unauthenticated-route-mixin
     @extends Ember.Mixin
     @public
   */
-  exports['default'] = Ember['default'].Mixin.create({
+  exports['default'] = _ember['default'].Mixin.create({
     /**
       The session service.
        @property session
@@ -93195,46 +93568,45 @@ define('ember-simple-auth/mixins/unauthenticated-route-mixin', ['exports', 'embe
     beforeModel: function beforeModel(transition) {
       if (this.get('session').get('isAuthenticated')) {
         transition.abort();
-        Ember['default'].assert('The route configured as Configuration.routeIfAlreadyAuthenticated cannot implement the UnauthenticatedRouteMixin mixin as that leads to an infinite transitioning loop!', this.get('routeName') !== Configuration['default'].routeIfAlreadyAuthenticated);
-        this.transitionTo(Configuration['default'].routeIfAlreadyAuthenticated);
+        _ember['default'].assert('The route configured as Configuration.routeIfAlreadyAuthenticated cannot implement the UnauthenticatedRouteMixin mixin as that leads to an infinite transitioning loop!', this.get('routeName') !== _emberSimpleAuthConfiguration['default'].routeIfAlreadyAuthenticated);
+        this.transitionTo(_emberSimpleAuthConfiguration['default'].routeIfAlreadyAuthenticated);
       } else {
         return this._super.apply(this, arguments);
       }
     }
   });
-
 });
-define('ember-simple-auth/services/session', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-simple-auth/services/session', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
   var _slice = Array.prototype.slice;
+
   var SESSION_DATA_KEY_PREFIX = /^data\./;
 
-  var computed = Ember['default'].computed;
-  var on = Ember['default'].on;
+  var computed = _ember['default'].computed;
+  var on = _ember['default'].on;
 
   /**
     __The session service provides access to the current session as well as
     methods to authenticate and invalidate it__ etc. It is the main interface for
     the application to Ember Simple Auth's functionality. It can be injected via
-
+  
     ```js
     // app/components/login-form.js
     import Ember from 'ember';
-
+  
     export default Ember.Component.extend({
       session: Ember.inject.service('session')
     });
     ```
-
+  
     @class SessionService
     @module ember-simple-auth/services/session
     @extends Ember.Service
     @uses Ember.Evented
     @public
   */
-  exports['default'] = Ember['default'].Service.extend(Ember['default'].Evented, {
+  exports['default'] = _ember['default'].Service.extend(_ember['default'].Evented, {
     /**
       Triggered whenever the session is successfully authenticated. This happens
       when the session gets authenticated via
@@ -93329,7 +93701,7 @@ define('ember-simple-auth/services/session', ['exports', 'ember'], function (exp
       var _this = this,
           _arguments = arguments;
 
-      Ember['default'].A(['authenticationSucceeded', 'invalidationSucceeded']).forEach(function (event) {
+      _ember['default'].A(['authenticationSucceeded', 'invalidationSucceeded']).forEach(function (event) {
         // the internal session won't be available in route unit tests
         var session = _this.get('session');
         if (session) {
@@ -93418,15 +93790,13 @@ define('ember-simple-auth/services/session', ['exports', 'ember'], function (exp
       }
     }
   });
-
 });
-define('ember-simple-auth/session-stores/adaptive', ['exports', 'ember', 'ember-simple-auth/session-stores/base', 'ember-simple-auth/session-stores/local-storage', 'ember-simple-auth/session-stores/cookie'], function (exports, Ember, Base, LocalStorage, Cookie) {
-
+define('ember-simple-auth/session-stores/adaptive', ['exports', 'ember', 'ember-simple-auth/session-stores/base', 'ember-simple-auth/session-stores/local-storage', 'ember-simple-auth/session-stores/cookie'], function (exports, _ember, _emberSimpleAuthSessionStoresBase, _emberSimpleAuthSessionStoresLocalStorage, _emberSimpleAuthSessionStoresCookie) {
+  /* global localStorage */
   'use strict';
 
-  /* global localStorage */
-  var computed = Ember['default'].computed;
-  var on = Ember['default'].on;
+  var computed = _ember['default'].computed;
+  var on = _ember['default'].on;
 
   var LOCAL_STORAGE_TEST_KEY = '_ember_simple_auth_test_key';
 
@@ -93434,16 +93804,16 @@ define('ember-simple-auth/session-stores/adaptive', ['exports', 'ember', 'ember-
     Session store that persists data in the browser's `localStorage` (see
     {{#crossLink "LocalStorageStore"}}{{/crossLink}}) if that is available or in
     a cookie (see {{#crossLink "CookieStore"}}{{/crossLink}}) if it is not.
-
+  
     __This is the default store that Ember Simple Auth will use when the
     application doesn't define a custom store.__
-
+  
     @class AdaptiveStore
     @module ember-simple-auth/session-stores/adaptive
     @extends BaseStore
     @public
   */
-  exports['default'] = Base['default'].extend({
+  exports['default'] = _emberSimpleAuthSessionStoresBase['default'].extend({
     /**
       The `localStorage` key the store persists data in if `localStorage` is
       available.
@@ -93510,10 +93880,10 @@ define('ember-simple-auth/session-stores/adaptive', ['exports', 'ember', 'ember-
       var store = undefined;
       if (this.get('_isLocalStorageAvailable')) {
         var options = { key: this.get('localStorageKey') };
-        store = this._createStore(LocalStorage['default'], options);
+        store = this._createStore(_emberSimpleAuthSessionStoresLocalStorage['default'], options);
       } else {
         var options = this.getProperties('cookieDomain', 'cookieName', 'cookieExpirationTime');
-        store = this._createStore(Cookie['default'], options);
+        store = this._createStore(_emberSimpleAuthSessionStoresCookie['default'], options);
       }
       this.set('_store', store);
     }),
@@ -93553,13 +93923,24 @@ define('ember-simple-auth/session-stores/adaptive', ['exports', 'ember', 'ember-
       this.get('_store').clear();
     }
   });
-
 });
-define('ember-simple-auth/session-stores/base', ['exports', 'ember'], function (exports, Ember) {
-
+define('ember-simple-auth/session-stores/base', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
-  exports['default'] = Ember['default'].Object.extend(Ember['default'].Evented, {
+  /**
+    The base class for all session stores. __This serves as a starting point for
+    implementing custom session stores and must not be used directly.__
+  
+    Session Stores persist the session's state so that it survives a page reload
+    and is synchronized across multiple tabs or windows of the same application.
+  
+    @class BaseStore
+    @module ember-simple-auth/session-stores/base
+    @extends Ember.Object
+    @uses Ember.Evented
+    @public
+  */
+  exports['default'] = _ember['default'].Object.extend(_ember['default'].Evented, {
     /**
       Triggered when the session store's data changes due to an external event,
       e.g. from another tab or window of the same application. The session
@@ -93602,18 +93983,16 @@ define('ember-simple-auth/session-stores/base', ['exports', 'ember'], function (
     */
     clear: function clear() {}
   });
-
 });
-define('ember-simple-auth/session-stores/cookie', ['exports', 'ember', 'ember-simple-auth/session-stores/base', 'ember-simple-auth/utils/objects-are-equal'], function (exports, Ember, BaseStore, objectsAreEqual) {
-
+define('ember-simple-auth/session-stores/cookie', ['exports', 'ember', 'ember-simple-auth/session-stores/base', 'ember-simple-auth/utils/objects-are-equal'], function (exports, _ember, _emberSimpleAuthSessionStoresBase, _emberSimpleAuthUtilsObjectsAreEqual) {
   'use strict';
 
-  var computed = Ember['default'].computed;
-  var on = Ember['default'].on;
+  var computed = _ember['default'].computed;
+  var on = _ember['default'].on;
 
   /**
     Session store that persists data in a cookie.
-
+  
     By default the cookie session store uses a session cookie that expires and is
     deleted when the browser is closed. The cookie expiration period can be
     configured by setting the
@@ -93621,19 +94000,19 @@ define('ember-simple-auth/session-stores/cookie', ['exports', 'ember', 'ember-si
     property. This can be used to implement "remember me" functionality that will
     either store the session persistently or in a session cookie depending on
     whether the user opted in or not:
-
+  
     ```js
     // app/controllers/login.js
     export default Ember.Controller.extend({
       rememberMe: false,
-
+  
       _rememberMeChanged: Ember.observer('rememberMe', function() {
         const expirationTime = this.get('rememberMe') ? (14 * 24 * 60 * 60) : null;
         this.set('session.store.cookieExpirationTime', expirationTime);
       }
     });
     ```
-
+  
     __In order to keep multiple tabs/windows of an application in sync, this
     store has to periodically (every 500ms) check the cookie for changes__ as
     there are no events for cookie changes that the store could subscribe to. If
@@ -93641,13 +94020,13 @@ define('ember-simple-auth/session-stores/cookie', ['exports', 'ember', 'ember-si
     the browser is closed, the
     {{#crossLink "LocalStorageStore"}}`localStorage` session store{{/crossLink}}
     should be used.
-
+  
     @class CookieStore
     @module ember-simple-auth/session-stores/cookie
     @extends BaseStore
     @public
   */
-  exports['default'] = BaseStore['default'].extend({
+  exports['default'] = _emberSimpleAuthSessionStoresBase['default'].extend({
     /**
       The domain to use for the cookie, e.g., "example.com", ".example.com"
       (which includes all subdomains) or "subdomain.example.com". If not
@@ -93717,7 +94096,7 @@ define('ember-simple-auth/session-stores/cookie', ['exports', 'ember', 'ember-si
     */
     restore: function restore() {
       var data = this._read(this.cookieName);
-      if (Ember['default'].isEmpty(data)) {
+      if (_ember['default'].isEmpty(data)) {
         return {};
       } else {
         return JSON.parse(data);
@@ -93747,8 +94126,8 @@ define('ember-simple-auth/session-stores/cookie', ['exports', 'ember', 'ember-si
 
     _write: function _write(value, expiration) {
       var path = '; path=/';
-      var domain = Ember['default'].isEmpty(this.cookieDomain) ? '' : '; domain=' + this.cookieDomain;
-      var expires = Ember['default'].isEmpty(expiration) ? '' : '; expires=' + new Date(expiration).toUTCString();
+      var domain = _ember['default'].isEmpty(this.cookieDomain) ? '' : '; domain=' + this.cookieDomain;
+      var expires = _ember['default'].isEmpty(expiration) ? '' : '; expires=' + new Date(expiration).toUTCString();
       var secure = !!this._secureCookies ? ';secure' : '';
       document.cookie = this.cookieName + '=' + encodeURIComponent(value) + domain + path + expires + secure;
       if (expiration !== null) {
@@ -93759,20 +94138,20 @@ define('ember-simple-auth/session-stores/cookie', ['exports', 'ember', 'ember-si
 
     _syncData: function _syncData() {
       var data = this.restore();
-      if (!objectsAreEqual['default'](data, this._lastData)) {
+      if (!(0, _emberSimpleAuthUtilsObjectsAreEqual['default'])(data, this._lastData)) {
         this._lastData = data;
         this.trigger('sessionDataUpdated', data);
       }
-      if (!Ember['default'].testing) {
-        Ember['default'].run.cancel(this._syncDataTimeout);
-        this._syncDataTimeout = Ember['default'].run.later(this, this._syncData, 500);
+      if (!_ember['default'].testing) {
+        _ember['default'].run.cancel(this._syncDataTimeout);
+        this._syncDataTimeout = _ember['default'].run.later(this, this._syncData, 500);
       }
     },
 
     _renew: function _renew() {
       var data = this.restore();
-      if (!Ember['default'].isEmpty(data) && data !== {}) {
-        data = Ember['default'].typeOf(data) === 'string' ? data : JSON.stringify(data || {});
+      if (!_ember['default'].isEmpty(data) && data !== {}) {
+        data = _ember['default'].typeOf(data) === 'string' ? data : JSON.stringify(data || {});
         var expiration = this._calculateExpirationTime();
         this._write(data, expiration);
       }
@@ -93782,32 +94161,30 @@ define('ember-simple-auth/session-stores/cookie', ['exports', 'ember', 'ember-si
       if (this.get('_isPageVisible')) {
         this._renew();
       }
-      if (!Ember['default'].testing) {
-        Ember['default'].run.cancel(this._renewExpirationTimeout);
-        this._renewExpirationTimeout = Ember['default'].run.later(this, this._renewExpiration, 60000);
+      if (!_ember['default'].testing) {
+        _ember['default'].run.cancel(this._renewExpirationTimeout);
+        this._renewExpirationTimeout = _ember['default'].run.later(this, this._renewExpiration, 60000);
       }
     }
   });
-
 });
-define('ember-simple-auth/session-stores/ephemeral', ['exports', 'ember', 'ember-simple-auth/session-stores/base'], function (exports, Ember, BaseStore) {
-
+define('ember-simple-auth/session-stores/ephemeral', ['exports', 'ember', 'ember-simple-auth/session-stores/base'], function (exports, _ember, _emberSimpleAuthSessionStoresBase) {
   'use strict';
 
-  var on = Ember['default'].on;
+  var on = _ember['default'].on;
 
   /**
     Session store that __persists data in memory and thus is not actually
     persistent__. It does also not synchronize the session's state across
     multiple tabs or windows as those cannot share memory. __This store is mainly
     useful for testing and will automatically be used when running tests.__
-
+  
     @class EphemeralStore
     @module ember-simple-auth/session-stores/ephemeral
     @extends BaseStore
     @public
   */
-  exports['default'] = BaseStore['default'].extend({
+  exports['default'] = _emberSimpleAuthSessionStoresBase['default'].extend({
     _setup: on('init', function () {
       this.clear();
     }),
@@ -93842,30 +94219,28 @@ define('ember-simple-auth/session-stores/ephemeral', ['exports', 'ember', 'ember
       this._data = '{}';
     }
   });
-
 });
-define('ember-simple-auth/session-stores/local-storage', ['exports', 'ember', 'ember-simple-auth/session-stores/base', 'ember-simple-auth/utils/objects-are-equal'], function (exports, Ember, BaseStore, objectsAreEqual) {
-
+define('ember-simple-auth/session-stores/local-storage', ['exports', 'ember', 'ember-simple-auth/session-stores/base', 'ember-simple-auth/utils/objects-are-equal'], function (exports, _ember, _emberSimpleAuthSessionStoresBase, _emberSimpleAuthUtilsObjectsAreEqual) {
+  /* global localStorage */
   'use strict';
 
-  /* global localStorage */
-  var on = Ember['default'].on;
+  var on = _ember['default'].on;
 
   /**
     Session store that persists data in the browser's `localStorage`.
-
+  
     __`localStorage` is not available in Safari when running in private mode. In
     general it is better to use the
     {{#crossLink "AdaptiveStore"}}{{/crossLink}} that automatically falls back to
     the {{#crossLink "CookieStore"}}{{/crossLink}} when `localStorage` is not
     available.__
-
+  
     @class LocalStorageStore
     @module ember-simple-auth/session-stores/local-storage
     @extends BaseStore
     @public
   */
-  exports['default'] = BaseStore['default'].extend({
+  exports['default'] = _emberSimpleAuthSessionStoresBase['default'].extend({
     /**
       The `localStorage` key the store persists data in.
        @property key
@@ -93917,42 +94292,36 @@ define('ember-simple-auth/session-stores/local-storage', ['exports', 'ember', 'e
     _bindToStorageEvents: function _bindToStorageEvents() {
       var _this = this;
 
-      Ember['default'].$(window).bind('storage', function () {
+      _ember['default'].$(window).bind('storage', function () {
         var data = _this.restore();
-        if (!objectsAreEqual['default'](data, _this._lastData)) {
+        if (!(0, _emberSimpleAuthUtilsObjectsAreEqual['default'])(data, _this._lastData)) {
           _this._lastData = data;
           _this.trigger('sessionDataUpdated', data);
         }
       });
     }
   });
-
 });
-define('ember-simple-auth/utils/inject', ['exports'], function (exports) {
+define("ember-simple-auth/utils/inject", ["exports"], function (exports) {
+  "use strict";
 
-  'use strict';
-
-  exports['default'] = function (registry, factoryNameOrType, property, injectionName) {
+  exports["default"] = function (registry, factoryNameOrType, property, injectionName) {
     var inject = registry.inject || registry.injection;
     inject.call(registry, factoryNameOrType, property, injectionName);
-  }
-
+  };
 });
-define('ember-simple-auth/utils/lookup', ['exports'], function (exports) {
+define("ember-simple-auth/utils/lookup", ["exports"], function (exports) {
+  "use strict";
 
-  'use strict';
-
-  exports['default'] = function (instance, factoryName) {
+  exports["default"] = function (instance, factoryName) {
     if (instance.lookup) {
       return instance.lookup(factoryName);
     } else {
       return instance.container.lookup(factoryName);
     }
-  }
-
+  };
 });
 define('ember-simple-auth/utils/objects-are-equal', ['exports'], function (exports) {
-
   'use strict';
 
   exports['default'] = objectsAreEqual;
@@ -94006,7 +94375,6 @@ define('ember-simple-auth/utils/objects-are-equal', ['exports'], function (expor
 
     return compare(a, b);
   }
-
 });
 define('ember-simple-auth', ['ember-simple-auth/index', 'ember', 'exports'], function(__index__, __Ember__, __exports__) {
   'use strict';
@@ -94020,11 +94388,10 @@ define('ember-simple-auth', ['ember-simple-auth/index', 'ember', 'exports'], fun
   }));
 });
 
-define('moment/index', ['exports', 'ember'], function (exports, Ember) {
-
+define('moment/index', ['exports', 'ember'], function (exports, _ember) {
   'use strict';
 
-  var ComparableMoment = Ember['default'].Object.extend(Ember['default'].Comparable, moment.fn, {
+  var ComparableMoment = _ember['default'].Object.extend(_ember['default'].Comparable, moment.fn, {
     compare: function compare(a, b) {
       if (moment.isMoment(a) && moment.isMoment(b) && a.isBefore(b)) {
         return -1;
@@ -94064,7 +94431,6 @@ define('moment/index', ['exports', 'ember'], function (exports, Ember) {
   });
 
   exports['default'] = comparableMoment;
-
 });
 define('moment', ['moment/index', 'ember', 'exports'], function(__index__, __Ember__, __exports__) {
   'use strict';

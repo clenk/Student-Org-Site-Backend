@@ -28,8 +28,8 @@ class Event(models.Model):
     This is an event for the calendar.
     """
     title = models.CharField(max_length=20, blank=False, unique=True)
-    start = models.CharField(max_length=20, blank=False, unique=True)
-    end = models.CharField(max_length=20, blank=False, unique=True)
+    start = models.CharField(max_length=40, blank=False, unique=True)
+    end = models.CharField(max_length=40, blank=False, unique=True)
     #allday = models.BooleanField(unique=True)
     tags = models.ManyToManyField('tag', blank=True)
     def __str__(self):
