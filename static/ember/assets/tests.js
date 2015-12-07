@@ -406,6 +406,14 @@ define('student-org-site/tests/models/user.jshint', ['exports'], function (expor
     ok(true, 'models/user.js should pass jshint.');
   });
 });
+define('student-org-site/tests/models/userprofile.jshint', ['exports'], function (exports) {
+  'use strict';
+
+  module('JSHint - models');
+  test('models/userprofile.js should pass jshint', function () {
+    ok(true, 'models/userprofile.js should pass jshint.');
+  });
+});
 define('student-org-site/tests/router.jshint', ['exports'], function (exports) {
   'use strict';
 

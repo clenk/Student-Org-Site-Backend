@@ -139,7 +139,7 @@ define('student-org-site/components/full-calendar', ['exports', 'ember'], functi
 
       test: function test() {
         var auth = this.get('authControllerChild');
-        console.log('in nav bar sending login to auth controller');
+        //console.log('in nav bar sending login to auth controller');
         auth.send('logout');
       }
     },
@@ -149,7 +149,6 @@ define('student-org-site/components/full-calendar', ['exports', 'ember'], functi
 
       _ember['default'].run.scheduleOnce('afterRender', this, function () {
         // some jQuery UI stuff
-        console.log('afterRender ran');
         this.$('.calendar').fullCalendar({
           header: {
             left: 'title',
@@ -201,18 +200,11 @@ define('student-org-site/controllers/add-event', ['exports', 'ember'], function 
 
     actions: {
       addEvent: function addEvent() {
-        //TODO: add account to database
         var title = this.get('title');
         var startDate = '';
         startDate = this.get('startDate');
         var endDate = this.get('endDate');
-        /*this.store.createRecord('event',{
-        	title: title,
-        	start: startDate
-        });*/
-        //users.save();
 
-        //Ember.$.post( "/api/events", { title: "codePushEvent", start: "2015-12-20", end: "2015-12-22" } );
         var ev = this.store.createRecord('event', {
           title: title,
           start: startDate,
@@ -220,7 +212,6 @@ define('student-org-site/controllers/add-event', ['exports', 'ember'], function 
         });
         ev.save();
 
-        alert(title + " was added for dates " + startDate + " - " + endDate);
         this.set('title', '');
         this.set('startDate', '');
         this.set('endDate', '');
@@ -230,33 +221,40 @@ define('student-org-site/controllers/add-event', ['exports', 'ember'], function 
 
   });
 });
-define('student-org-site/controllers/add-post', ['exports', 'ember'], function (exports, _ember) {
+define('student-org-site/controllers/add-post', ['exports', 'ember', 'moment'], function (exports, _ember, _moment) {
   exports['default'] = _ember['default'].Controller.extend({
 
     actions: {
       addPost: function addPost() {
-        //TODO: add post to database
         var title = this.get('title');
         var subtitle = this.get('subtitle');
         var image = this.get('image');
         var content = this.get('content2');
+        var author = "arch3r";
+        var today = (0, _moment['default'])().format();
+        var tags = this.get('tags');
+        console.log(this);
 
+        //console.log("=======================");
+        //console.log(author + " " + today);
         //Ember.$.post( "/api/posts", { title: title, subtitle: subtitle, image: image, content: content } );
         var po = this.store.createRecord('post', {
           title: title,
           subtitle: subtitle,
           image: image,
-          content: content
-          //TODO: get the current date, the author name, and tags
+          content: content,
+          datePublished: today,
+          author: author,
+          //TODO: get "datePublished", "author" and tags
+          tags: tags
         });
         po.save();
-
-        alert(title + " / " + subtitle + " with the image at " + image + " and content " + content + " is saved.");
 
         this.set('title', '');
         this.set('subtitle', '');
         this.set('image', '');
         this.set('content2', '');
+        this.set('tags', '');
         this.transitionToRoute('posts');
       }
     }
@@ -277,7 +275,8 @@ define('student-org-site/controllers/application', ['exports', 'ember'], functio
 	exports['default'] = _ember['default'].ObjectController.extend({
 		authController: null,
 		posts: null,
-		events: null
+		events: null,
+		profiles: null
 	});
 });
 define('student-org-site/controllers/array', ['exports', 'ember'], function (exports, _ember) {
@@ -302,14 +301,14 @@ define('student-org-site/controllers/auth', ['exports', 'ember'], function (expo
                 _ember['default'].$.post('../api/session/', data, function (response) {
                     if (response.isauthenticated) {
                         //success
-                        console.log('Login POST Request to ../api/session/ was successful.');
+                        //console.log('Login POST Request to ../api/session/ was successful.');
                         controllerObj.set('username', response.username);
                         controllerObj.set('userid', response.userid);
                         controllerObj.set('isLoggedIn', true);
                         controllerObj.transitionToRoute('/'); //redirects back home after login
                     } else {
                             //errors
-                            console.log('Login POST Request to ../api/session/ was successful but with errors.');
+                            //console.log('Login POST Request to ../api/session/ was successful but with errors.');
                             controllerObj.set('errorMsg', response.message);
                         }
                 });
@@ -318,7 +317,7 @@ define('student-org-site/controllers/auth', ['exports', 'ember'], function (expo
                 var remember = this.get('remember');
                 var controllerObj = this;
                 _ember['default'].$.ajax({ url: '../api/session/', type: 'DELETE' }).then(function (response) {
-                    console.log('Logout success.');
+                    //console.log('Logout success.');
                     controllerObj.set('isLoggedIn', false);
                     controllerObj.set('errorMsg', '');
                     controllerObj.set('username', '');
@@ -374,8 +373,8 @@ define('student-org-site/controllers/post', ['exports', 'ember'], function (expo
     previousPost: _ember['default'].computed('model', 'recentPosts.@each', function () {
       var recentPosts, index;
       recentPosts = this.get('recentPosts');
-      console.log('b4 recentposts');
-      console.log(recentPosts);
+      //console.log('b4 recentposts');
+      //console.log(recentPosts);
       index = recentPosts.indexOf(this.get('model'));
       // Cap the index
       if (index !== -1) {
@@ -392,7 +391,8 @@ define('student-org-site/controllers/post', ['exports', 'ember'], function (expo
         index += 1;
       }
       return recentPosts.objectAt(index);
-    })
+    }),
+    profiles: null
   });
 });
 define('student-org-site/controllers/search', ['exports', 'ember'], function (exports, _ember) {
@@ -670,6 +670,7 @@ define('student-org-site/models/tag', ['exports', 'ember-data'], function (expor
 });
 define('student-org-site/models/user', ['exports', 'ember-data'], function (exports, _emberData) {
   exports['default'] = _emberData['default'].Model.extend({
+    user: _emberData['default'].belongsTo('userprofile'),
     name: _emberData['default'].attr('string'),
     password: _emberData['default'].attr('string'),
     emailAddress: _emberData['default'].attr('string'),
@@ -698,6 +699,13 @@ define('student-org-site/models/user', ['exports', 'ember-data'], function (expo
    },
   ]
   });*/
+});
+define('student-org-site/models/userprofile', ['exports', 'ember-data'], function (exports, _emberData) {
+  exports['default'] = _emberData['default'].Model.extend({
+    user: _emberData['default'].belongsTo('user'),
+    profileImageUrl: _emberData['default'].attr('string'),
+    posts: _emberData['default'].hasMany('post')
+  });
 });
 define('student-org-site/router', ['exports', 'ember', 'student-org-site/config/environment'], function (exports, _ember, _studentOrgSiteConfigEnvironment) {
 
@@ -729,7 +737,11 @@ define('student-org-site/routes/add-event', ['exports', 'ember'], function (expo
   exports['default'] = _ember['default'].Route.extend({});
 });
 define('student-org-site/routes/add-post', ['exports', 'ember'], function (exports, _ember) {
-  exports['default'] = _ember['default'].Route.extend({});
+	exports['default'] = _ember['default'].Route.extend({
+		model: function model() {
+			return this.modelFor('application');
+		}
+	});
 });
 define('student-org-site/routes/admin', ['exports', 'ember'], function (exports, _ember) {
   exports['default'] = _ember['default'].Route.extend({});
@@ -752,26 +764,30 @@ define('student-org-site/routes/application', ['exports', 'ember'], function (ex
 				}),
 				events: this.get('store').find('event').then(function (events) {
 					return events.sortBy('start');
+				}),
+				profiles: this.get('store').find('userprofile').then(function (profiles) {
+					console.log(profiles);
+					return profiles;
 				})
 			});
 		},
 		authCheck: function authCheck(transition) {
 			//Method to check user credentials and redirect if necessary
-			console.log('Checking authentication');
+			//console.log('Checking authentication');
 			var t = this;
 			var auth = t.controllerFor('auth');
-			console.log("are you logged in " + auth.get('isLoggedIn'));
+			//console.log("are you logged in "+ auth.get('isLoggedIn'));
 			var previoustrans = t.get('currentTransition');
-			console.log('User attempting to access: /' + transition.targetName);
+			//console.log('User attempting to access: /'+transition.targetName);
 			if (!auth.get('isLoggedIn')) {
 				if (transition.targetName === 'auth' || transition.targetName === 'createAccount' || transition.targetName === 'calendar' || transition.targetName === 'about') {} else {
 					t.set('currentTransition', transition);
 					transition.abort();
-					console.log('User is unauthenicated, redirecting');
+					//console.log('User is unauthenicated, redirecting');
 					t.transitionTo('auth');
 				}
 			} else if (previoustrans) {
-				console.log('Redirecting back to original request: /' + previoustrans.targetName);
+				//console.log('Redirecting back to original request: /'+previoustrans.targetName);
 				t.set('currentTransition', null);
 				previoustrans.retry();
 			}
@@ -839,6 +855,9 @@ define('student-org-site/routes/post', ['exports', 'ember'], function (exports, 
 		},
 		setupController: function setupController(controller, model) {
 			var recent = this.modelFor('application').posts;
+			var profiles = this.modelFor('application');
+			//console.log(profiles);
+			/*var profiles = $()*/
 
 			controller.set('recentPosts', recent);
 			controller.set('postContent', model);
@@ -856,6 +875,7 @@ define('student-org-site/routes/post', ['exports', 'ember'], function (exports, 
 				}
 				return recent.objectAt(index);
 			})());
+			controller.set('profiles', profiles);
 		}
 	});
 });
@@ -1099,9 +1119,7 @@ define("student-org-site/templates/add-post", ["exports"], function (exports) {
         var el4 = dom.createTextNode("Title of Post");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("    ");
+        var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createComment("");
         dom.appendChild(el2, el3);
@@ -1118,9 +1136,7 @@ define("student-org-site/templates/add-post", ["exports"], function (exports) {
         var el4 = dom.createTextNode("Subtitle");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("    ");
+        var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createComment("");
         dom.appendChild(el2, el3);
@@ -1137,9 +1153,7 @@ define("student-org-site/templates/add-post", ["exports"], function (exports) {
         var el4 = dom.createTextNode("Upload an Image");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("    ");
+        var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createComment("");
         dom.appendChild(el2, el3);
@@ -1156,9 +1170,25 @@ define("student-org-site/templates/add-post", ["exports"], function (exports) {
         var el4 = dom.createTextNode("Content");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n");
+        var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("    ");
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "form-group");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("label");
+        dom.setAttribute(el3, "style", "padding-right:20px;vertical-align:top;");
+        var el4 = dom.createTextNode("Tags");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createComment("");
         dom.appendChild(el2, el3);
@@ -1182,15 +1212,16 @@ define("student-org-site/templates/add-post", ["exports"], function (exports) {
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var element0 = dom.childAt(fragment, [0]);
-        var morphs = new Array(5);
+        var morphs = new Array(6);
         morphs[0] = dom.createElementMorph(element0);
-        morphs[1] = dom.createMorphAt(dom.childAt(element0, [1]), 4, 4);
-        morphs[2] = dom.createMorphAt(dom.childAt(element0, [3]), 4, 4);
-        morphs[3] = dom.createMorphAt(dom.childAt(element0, [5]), 4, 4);
-        morphs[4] = dom.createMorphAt(dom.childAt(element0, [7]), 4, 4);
+        morphs[1] = dom.createMorphAt(dom.childAt(element0, [1]), 3, 3);
+        morphs[2] = dom.createMorphAt(dom.childAt(element0, [3]), 3, 3);
+        morphs[3] = dom.createMorphAt(dom.childAt(element0, [5]), 3, 3);
+        morphs[4] = dom.createMorphAt(dom.childAt(element0, [7]), 3, 3);
+        morphs[5] = dom.createMorphAt(dom.childAt(element0, [9]), 3, 3);
         return morphs;
       },
-      statements: [["element", "action", ["addPost"], ["on", "submit"], ["loc", [null, [1, 6], [1, 38]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "title", ["loc", [null, [5, 18], [5, 23]]]]], [], []], "placeholder", "Title", "class", "form-control"], ["loc", [null, [5, 4], [5, 66]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "subtitle", ["loc", [null, [10, 18], [10, 26]]]]], [], []], "placeholder", "Subtitle", "class", "form-control"], ["loc", [null, [10, 4], [10, 72]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "image", ["loc", [null, [15, 18], [15, 23]]]]], [], []], "placeholder", "Paste image URL here", "class", "form-control"], ["loc", [null, [15, 4], [15, 81]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "content2", ["loc", [null, [20, 18], [20, 26]]]]], [], []], "placeholder", "Content", "class", "form-control"], ["loc", [null, [20, 4], [20, 71]]]]],
+      statements: [["element", "action", ["addPost"], ["on", "submit"], ["loc", [null, [1, 6], [1, 38]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "title", ["loc", [null, [4, 18], [4, 23]]]]], [], []], "placeholder", "Title", "class", "form-control"], ["loc", [null, [4, 4], [4, 66]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "subtitle", ["loc", [null, [8, 18], [8, 26]]]]], [], []], "placeholder", "Subtitle", "class", "form-control"], ["loc", [null, [8, 4], [8, 72]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "image", ["loc", [null, [12, 18], [12, 23]]]]], [], []], "placeholder", "Paste image URL here", "class", "form-control"], ["loc", [null, [12, 4], [12, 81]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "content2", ["loc", [null, [16, 18], [16, 26]]]]], [], []], "placeholder", "Content", "class", "form-control"], ["loc", [null, [16, 4], [16, 71]]]], ["inline", "view", ["select"], ["value", ["subexpr", "@mut", [["get", "tags", ["loc", [null, [20, 26], [20, 30]]]]], [], []], "class", "form-control", "multiple", true, "content", ["subexpr", "@mut", [["get", "model.tags", ["loc", [null, [20, 74], [20, 84]]]]], [], []], "optionValuePath", "content.name", "optionLabelPath", "content.name", "selection", "selectedTags"], ["loc", [null, [20, 4], [20, 173]]]]],
       locals: [],
       templates: []
     };
@@ -1650,21 +1681,16 @@ define("student-org-site/templates/auth", ["exports"], function (exports) {
         var el0 = dom.createDocumentFragment();
         var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createComment("");
-        dom.appendChild(el0, el1);
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(2);
+        var morphs = new Array(1);
         morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
-        morphs[1] = dom.createMorphAt(fragment, 2, 2, contextualElement);
         dom.insertBoundary(fragment, 0);
         dom.insertBoundary(fragment, null);
         return morphs;
       },
-      statements: [["inline", "log", [["get", "username", ["loc", [null, [1, 6], [1, 14]]]]], [], ["loc", [null, [1, 0], [1, 16]]]], ["block", "if", [["get", "isLoggedIn", ["loc", [null, [2, 6], [2, 16]]]]], [], 0, 1, ["loc", [null, [2, 0], [38, 7]]]]],
+      statements: [["block", "if", [["get", "isLoggedIn", ["loc", [null, [2, 6], [2, 16]]]]], [], 0, 1, ["loc", [null, [2, 0], [38, 7]]]]],
       locals: [],
       templates: [child0, child1]
     };
@@ -4425,7 +4451,7 @@ define("student-org-site/templates/components/nav-bar", ["exports"], function (e
             "column": 0
           },
           "end": {
-            "line": 40,
+            "line": 39,
             "column": 6
           }
         },
@@ -4525,15 +4551,7 @@ define("student-org-site/templates/components/nav-bar", ["exports"], function (e
         dom.setAttribute(el4, "class", "nav navbar-nav navbar-right");
         var el5 = dom.createTextNode("\n\n");
         dom.appendChild(el4, el5);
-        var el5 = dom.createTextNode("	");
-        dom.appendChild(el4, el5);
         var el5 = dom.createComment("");
-        dom.appendChild(el4, el5);
-        var el5 = dom.createTextNode("\n");
-        dom.appendChild(el4, el5);
-        var el5 = dom.createComment("");
-        dom.appendChild(el4, el5);
-        var el5 = dom.createTextNode("	\n");
         dom.appendChild(el4, el5);
         dom.appendChild(el3, el4);
         var el4 = dom.createTextNode("\n");
@@ -4551,17 +4569,15 @@ define("student-org-site/templates/components/nav-bar", ["exports"], function (e
         var element0 = dom.childAt(fragment, [0, 1]);
         var element1 = dom.childAt(element0, [3]);
         var element2 = dom.childAt(element1, [1]);
-        var element3 = dom.childAt(element1, [3]);
-        var morphs = new Array(6);
+        var morphs = new Array(5);
         morphs[0] = dom.createMorphAt(dom.childAt(element0, [1]), 1, 1);
         morphs[1] = dom.createMorphAt(element2, 1, 1);
         morphs[2] = dom.createMorphAt(element2, 3, 3);
         morphs[3] = dom.createMorphAt(element2, 5, 5);
-        morphs[4] = dom.createMorphAt(element3, 2, 2);
-        morphs[5] = dom.createMorphAt(element3, 4, 4);
+        morphs[4] = dom.createMorphAt(dom.childAt(element1, [3]), 1, 1);
         return morphs;
       },
-      statements: [["block", "link-to", ["application"], ["tagName", "li"], 0, null, ["loc", [null, [4, 0], [4, 92]]]], ["block", "link-to", ["posts"], ["tagName", "li"], 1, null, ["loc", [null, [8, 1], [8, 72]]]], ["block", "link-to", ["calendar"], ["tagName", "li"], 2, null, ["loc", [null, [9, 1], [9, 81]]]], ["block", "link-to", ["about"], ["tagName", "li"], 3, null, ["loc", [null, [10, 1], [10, 72]]]], ["inline", "log", [["get", "authControllerChild.isLoggedIn", ["loc", [null, [26, 7], [26, 37]]]]], [], ["loc", [null, [26, 1], [26, 39]]]], ["block", "if", [["get", "authControllerChild.isLoggedIn", ["loc", [null, [27, 7], [27, 37]]]]], [], 4, 5, ["loc", [null, [27, 1], [35, 8]]]]],
+      statements: [["block", "link-to", ["application"], ["tagName", "li"], 0, null, ["loc", [null, [4, 0], [4, 92]]]], ["block", "link-to", ["posts"], ["tagName", "li"], 1, null, ["loc", [null, [8, 1], [8, 72]]]], ["block", "link-to", ["calendar"], ["tagName", "li"], 2, null, ["loc", [null, [9, 1], [9, 81]]]], ["block", "link-to", ["about"], ["tagName", "li"], 3, null, ["loc", [null, [10, 1], [10, 72]]]], ["block", "if", [["get", "authControllerChild.isLoggedIn", ["loc", [null, [27, 7], [27, 37]]]]], [], 4, 5, ["loc", [null, [27, 1], [35, 8]]]]],
       locals: [],
       templates: [child0, child1, child2, child3, child4, child5]
     };
@@ -5121,11 +5137,11 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 21,
+              "line": 23,
               "column": 6
             },
             "end": {
-              "line": 21,
+              "line": 23,
               "column": 129
             }
           },
@@ -5160,11 +5176,11 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
             "loc": {
               "source": null,
               "start": {
-                "line": 35,
+                "line": 37,
                 "column": 8
               },
               "end": {
-                "line": 42,
+                "line": 44,
                 "column": 8
               }
             },
@@ -5209,7 +5225,7 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
             morphs[1] = dom.createMorphAt(dom.childAt(fragment, [3]), 1, 1);
             return morphs;
           },
-          statements: [["attribute", "src", ["get", "post.author.profileImageUrl", []]], ["content", "post.title", ["loc", [null, [40, 10], [40, 24]]]]],
+          statements: [["attribute", "src", ["get", "post.author.profileImageUrl", []]], ["content", "post.title", ["loc", [null, [42, 10], [42, 24]]]]],
           locals: [],
           templates: []
         };
@@ -5220,11 +5236,11 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 33,
+              "line": 35,
               "column": 6
             },
             "end": {
-              "line": 44,
+              "line": 46,
               "column": 6
             }
           },
@@ -5255,7 +5271,7 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
           morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 1, 1);
           return morphs;
         },
-        statements: [["block", "link-to", ["post", ["get", "post", ["loc", [null, [35, 26], [35, 30]]]]], ["classNames", "table-row"], 0, null, ["loc", [null, [35, 8], [42, 20]]]]],
+        statements: [["block", "link-to", ["post", ["get", "post", ["loc", [null, [37, 26], [37, 30]]]]], ["classNames", "table-row"], 0, null, ["loc", [null, [37, 8], [44, 20]]]]],
         locals: ["post"],
         templates: [child0]
       };
@@ -5267,11 +5283,11 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 52,
+              "line": 54,
               "column": 4
             },
             "end": {
-              "line": 54,
+              "line": 56,
               "column": 4
             }
           },
@@ -5299,7 +5315,7 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
           morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
           return morphs;
         },
-        statements: [["content", "tag.id", ["loc", [null, [53, 39], [53, 49]]]]],
+        statements: [["content", "tag.id", ["loc", [null, [55, 39], [55, 49]]]]],
         locals: ["tag"],
         templates: []
       };
@@ -5312,11 +5328,11 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
             "loc": {
               "source": null,
               "start": {
-                "line": 68,
+                "line": 70,
                 "column": 25
               },
               "end": {
-                "line": 68,
+                "line": 70,
                 "column": 64
               }
             },
@@ -5345,11 +5361,11 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 67,
+              "line": 69,
               "column": 3
             },
             "end": {
-              "line": 69,
+              "line": 71,
               "column": 3
             }
           },
@@ -5376,7 +5392,7 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
           morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
           return morphs;
         },
-        statements: [["block", "link-to", ["post", ["get", "previousPost", ["loc", [null, [68, 43], [68, 55]]]]], [], 0, null, ["loc", [null, [68, 25], [68, 76]]]]],
+        statements: [["block", "link-to", ["post", ["get", "previousPost", ["loc", [null, [70, 43], [70, 55]]]]], [], 0, null, ["loc", [null, [70, 25], [70, 76]]]]],
         locals: [],
         templates: [child0]
       };
@@ -5388,11 +5404,11 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 69,
+              "line": 71,
               "column": 3
             },
             "end": {
-              "line": 71,
+              "line": 73,
               "column": 3
             }
           },
@@ -5432,11 +5448,11 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
             "loc": {
               "source": null,
               "start": {
-                "line": 73,
+                "line": 75,
                 "column": 21
               },
               "end": {
-                "line": 73,
+                "line": 75,
                 "column": 56
               }
             },
@@ -5465,11 +5481,11 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 72,
+              "line": 74,
               "column": 3
             },
             "end": {
-              "line": 74,
+              "line": 76,
               "column": 3
             }
           },
@@ -5496,7 +5512,7 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
           morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
           return morphs;
         },
-        statements: [["block", "link-to", ["post", ["get", "nextPost", ["loc", [null, [73, 39], [73, 47]]]]], [], 0, null, ["loc", [null, [73, 21], [73, 68]]]]],
+        statements: [["block", "link-to", ["post", ["get", "nextPost", ["loc", [null, [75, 39], [75, 47]]]]], [], 0, null, ["loc", [null, [75, 21], [75, 68]]]]],
         locals: [],
         templates: [child0]
       };
@@ -5508,11 +5524,11 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 74,
+              "line": 76,
               "column": 3
             },
             "end": {
-              "line": 76,
+              "line": 78,
               "column": 3
             }
           },
@@ -5554,7 +5570,7 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 81,
+            "line": 83,
             "column": 6
           }
         },
@@ -5608,6 +5624,10 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
         dom.appendChild(el1, el2);
         var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n");
         dom.appendChild(el0, el1);
@@ -5775,27 +5795,28 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
         var element2 = dom.childAt(fragment, [0]);
         var element3 = dom.childAt(element2, [1, 1]);
         var element4 = dom.childAt(element2, [3, 1]);
-        var element5 = dom.childAt(fragment, [2, 1]);
+        var element5 = dom.childAt(fragment, [4, 1]);
         var element6 = dom.childAt(element5, [1]);
         var element7 = dom.childAt(element6, [1]);
         var element8 = dom.childAt(element7, [1, 1]);
         var element9 = dom.childAt(element5, [3]);
         var element10 = dom.childAt(element9, [3]);
-        var morphs = new Array(11);
+        var morphs = new Array(12);
         morphs[0] = dom.createAttrMorph(element3, 'src');
         morphs[1] = dom.createMorphAt(dom.childAt(element4, [1]), 0, 0);
         morphs[2] = dom.createMorphAt(element4, 3, 3);
-        morphs[3] = dom.createMorphAt(element8, 1, 1);
-        morphs[4] = dom.createMorphAt(dom.childAt(element8, [2]), 0, 0);
-        morphs[5] = dom.createMorphAt(dom.childAt(element7, [3]), 1, 1);
-        morphs[6] = dom.createMorphAt(dom.childAt(element6, [3, 3, 1]), 1, 1);
-        morphs[7] = dom.createMorphAt(dom.childAt(element6, [5, 3]), 1, 1);
-        morphs[8] = dom.createUnsafeMorphAt(dom.childAt(element9, [1, 1]), 1, 1);
-        morphs[9] = dom.createMorphAt(element10, 1, 1);
-        morphs[10] = dom.createMorphAt(element10, 2, 2);
+        morphs[3] = dom.createMorphAt(fragment, 2, 2, contextualElement);
+        morphs[4] = dom.createMorphAt(element8, 1, 1);
+        morphs[5] = dom.createMorphAt(dom.childAt(element8, [2]), 0, 0);
+        morphs[6] = dom.createMorphAt(dom.childAt(element7, [3]), 1, 1);
+        morphs[7] = dom.createMorphAt(dom.childAt(element6, [3, 3, 1]), 1, 1);
+        morphs[8] = dom.createMorphAt(dom.childAt(element6, [5, 3]), 1, 1);
+        morphs[9] = dom.createUnsafeMorphAt(dom.childAt(element9, [1, 1]), 1, 1);
+        morphs[10] = dom.createMorphAt(element10, 1, 1);
+        morphs[11] = dom.createMorphAt(element10, 2, 2);
         return morphs;
       },
-      statements: [["attribute", "src", ["get", "postContent.image", ["loc", [null, [3, 22], [3, 39]]]]], ["content", "postContent.title", ["loc", [null, [7, 28], [7, 49]]]], ["block", "if", [["get", "postContent.subtitle", ["loc", [null, [8, 8], [8, 28]]]]], [], 0, null, ["loc", [null, [8, 2], [10, 9]]]], ["block", "if", [["get", "postContent.author.profileImageUrl", ["loc", [null, [21, 12], [21, 46]]]]], [], 1, null, ["loc", [null, [21, 6], [21, 136]]]], ["content", "postContent.author.name", ["loc", [null, [21, 162], [21, 189]]]], ["inline", "date-formatter", ["MMMM DD, YYYY", ["get", "model.datePublished", ["loc", [null, [25, 38], [25, 57]]]]], [], ["loc", [null, [25, 5], [25, 59]]]], ["block", "each", [["get", "recentPosts", ["loc", [null, [33, 22], [33, 33]]]]], [], 2, null, ["loc", [null, [33, 6], [44, 15]]]], ["block", "each", [["get", "postContent.tags", ["loc", [null, [52, 19], [52, 35]]]]], [], 3, null, ["loc", [null, [52, 4], [54, 13]]]], ["content", "postContent.content", ["loc", [null, [62, 4], [62, 29]]]], ["block", "if", [["get", "previousPost", ["loc", [null, [67, 9], [67, 21]]]]], [], 4, 5, ["loc", [null, [67, 3], [71, 10]]]], ["block", "if", [["get", "nextPost", ["loc", [null, [72, 9], [72, 17]]]]], [], 6, 7, ["loc", [null, [72, 3], [76, 10]]]]],
+      statements: [["attribute", "src", ["get", "postContent.image", ["loc", [null, [3, 22], [3, 39]]]]], ["content", "postContent.title", ["loc", [null, [7, 28], [7, 49]]]], ["block", "if", [["get", "postContent.subtitle", ["loc", [null, [8, 8], [8, 28]]]]], [], 0, null, ["loc", [null, [8, 2], [10, 9]]]], ["content", "profiles.profiles", ["loc", [null, [15, 0], [15, 21]]]], ["block", "if", [["get", "postContent.author.profileImageUrl", ["loc", [null, [23, 12], [23, 46]]]]], [], 1, null, ["loc", [null, [23, 6], [23, 136]]]], ["content", "postContent.author.name", ["loc", [null, [23, 162], [23, 189]]]], ["inline", "date-formatter", ["MMMM DD, YYYY", ["get", "model.datePublished", ["loc", [null, [27, 38], [27, 57]]]]], [], ["loc", [null, [27, 5], [27, 59]]]], ["block", "each", [["get", "recentPosts", ["loc", [null, [35, 22], [35, 33]]]]], [], 2, null, ["loc", [null, [35, 6], [46, 15]]]], ["block", "each", [["get", "postContent.tags", ["loc", [null, [54, 19], [54, 35]]]]], [], 3, null, ["loc", [null, [54, 4], [56, 13]]]], ["content", "postContent.content", ["loc", [null, [64, 4], [64, 29]]]], ["block", "if", [["get", "previousPost", ["loc", [null, [69, 9], [69, 21]]]]], [], 4, 5, ["loc", [null, [69, 3], [73, 10]]]], ["block", "if", [["get", "nextPost", ["loc", [null, [74, 9], [74, 17]]]]], [], 6, 7, ["loc", [null, [74, 3], [78, 10]]]]],
       locals: [],
       templates: [child0, child1, child2, child3, child4, child5, child6, child7]
     };
@@ -6452,10 +6473,10 @@ define('student-org-site/views/calendar', ['exports', 'ember'], function (export
   	height: Ember.$(window).height()-(Ember.$('.navbar-header').height()+40)
   });*/
 
-		/*console.log(this.$("#calendar").css('width'));
-  console.log(this.$("#calendar").css('height'));
-  console.log(this.$(window).width());
-  console.log(this.$(window).height());
+		/*//console.log(this.$("#calendar").css('width'));
+  //console.log(this.$("#calendar").css('height'));
+  //console.log(this.$(window).width());
+  //console.log(this.$(window).height());
   this.$("#calendar").fullCalendar('option', 'height', (this.$(window).height()));
   //this.$("#calendar").fullCalendar('option', 'width', (this.$(window).width()));
   //this.$("#calendar").height(this.$(window).height());
@@ -6464,8 +6485,8 @@ define('student-org-site/views/calendar', ['exports', 'ember'], function (export
   	this.$("#calendar").width(this.$(window).width());
   	this.$("#calendar").width(this.$(window).height());
   });
-  console.log(this.$("#calendar").css('width'));
-  console.log(this.$("#calendar").css('height'));*/
+  //console.log(this.$("#calendar").css('width'));
+  //console.log(this.$("#calendar").css('height'));*/
 		//}
 	});
 });
@@ -6495,7 +6516,7 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("student-org-site/app")["default"].create({"API_HOST":"http://localhost:8000","name":"student-org-site","version":"0.0.0+141c28f6","API_NAMESPACE":"api","API_ADD_TRAILING_SLASHES":true});
+  require("student-org-site/app")["default"].create({"API_HOST":"http://localhost:8000","name":"student-org-site","version":"0.0.0+4f06655e","API_NAMESPACE":"api","API_ADD_TRAILING_SLASHES":true});
 }
 
 /* jshint ignore:end */

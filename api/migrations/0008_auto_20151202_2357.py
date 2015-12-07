@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='post',
             name='content',
-            field=models.TextField(validators=[Student_Org_Site_Backend.api.validators.removeJavascriptKeyword]),
+            field=models.TextField(validators=[Student_Org_Site_Backend.api.validators.XSScheck]),
         ),
     ]
