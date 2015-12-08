@@ -2,10 +2,11 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib import admin
 from localsettings import *
+print IS_PROD
 if IS_PROD:
-    from Student_Org_Site_Backend.api.validators import *
-else:
     from api.validators import *
+else:
+    from Student_Org_Site_Backend.api.validators import *
 from django.core.exceptions import ValidationError
 
 from django.contrib.auth.models import AbstractUser

@@ -4,6 +4,7 @@ from django.conf.urls import include, url
 from rest_framework import routers
 from rest_framework.urlpatterns import format_suffix_patterns
 from localsettings import *
+print IS_PROD
 if IS_PROD:
     from api import views
 else:

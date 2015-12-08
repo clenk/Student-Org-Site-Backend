@@ -121,14 +121,28 @@ STATICFILES_DIRS = (
     '/var/www/Student_Org_Site_Backend/static/',
 )
 
-REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated'
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'Student_Org_Site_Backend.rest_framework_config.CsrfExemptSessionAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    ],
-}
+if IS_PROD:
+	REST_FRAMEWORK = {
+	    # Use Django's standard `django.contrib.auth` permissions,
+	    # or allow read-only access for unauthenticated users.
+	    'DEFAULT_PERMISSION_CLASSES': [
+		'rest_framework.permissions.IsAuthenticated'
+	    ],
+	    'DEFAULT_AUTHENTICATION_CLASSES': [
+		'rest_framework_config.CsrfExemptSessionAuthentication',
+		'rest_framework.authentication.SessionAuthentication',
+	    ],
+	}
+else:
+	REST_FRAMEWORK = {
+	    # Use Django's standard `django.contrib.auth` permissions,
+	    # or allow read-only access for unauthenticated users.
+	    'DEFAULT_PERMISSION_CLASSES': [
+		'rest_framework.permissions.IsAuthenticated'
+	    ],
+	    'DEFAULT_AUTHENTICATION_CLASSES': [
+		'Student_Org_Site_Backend.rest_framework_config.CsrfExemptSessionAuthentication',
+		'rest_framework.authentication.SessionAuthentication',
+	    ],
+	}
+	
