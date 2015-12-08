@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 #load django and webapp models
 from django.contrib.auth.models import *
-from localsettings import *
+from Student_Org_Site_Backend.localsettings import *
 if IS_PROD:
     from api.models import *
 else:
@@ -70,7 +70,7 @@ class PostSerializer(serializers.ModelSerializer):
     tags = serializers.SlugRelatedField(slug_field='name', many=True, queryset=Tag.objects.all())
     class Meta:
         model = Post
-        fields = ('id','title', 'subtitle', 'image', 'content', 'datePublished', 'author', 'tags', 'url')
+        fields = ('id','title', 'subtitle', 'image', 'content', 'datePublished', 'author', 'tags')
     def validate_content(self, value):
         """
         Check that the content field doesn't contain the keyword javascript'

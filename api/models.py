@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib import admin
-from localsettings import *
+from Student_Org_Site_Backend.localsettings import *
 print IS_PROD
 if IS_PROD:
     from api.validators import *
@@ -92,9 +92,10 @@ class Post(models.Model):
     subtitle = models.CharField(max_length=40, blank=False, validators=[XSScheck])
     image = models.CharField(max_length=120, blank=True, validators=[isImg])
     content = models.TextField(blank=False, validators=[XSScheck])
-    datePublished = models.TextField(blank=False, validators=[XSScheck, isDateFormat])
+    datePublished = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(User)
-    tags = models.ManyToManyField('tag', blank=True)
+    tagsuper = models.TextField(blank=False)
+    tags = models.ManyToManyField('Tag', blank=True)
     def __str__(self):
         return str(self.id) +":" +self.title
 

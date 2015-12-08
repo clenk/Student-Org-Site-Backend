@@ -1,5 +1,5 @@
 from django.contrib import admin
-from localsettings import *
+from Student_Org_Site_Backend.localsettings import *
 if IS_PROD:
 	from api.models import *
 else:

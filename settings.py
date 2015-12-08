@@ -43,6 +43,17 @@ if IS_PROD:
         'api',
         'rest_framework',
     )
+    MIDDLEWARE_CLASSES = (
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+        'django.middleware.clickjacking.XFrameOptionsMiddleware',
+        'django.middleware.security.SecurityMiddleware',
+        'disable.DisableCSRF',
+    )
 else:
     INSTALLED_APPS = (
         'django.contrib.admin',
@@ -55,17 +66,18 @@ else:
         'Student_Org_Site_Backend.api',
         'rest_framework',
     )
+    MIDDLEWARE_CLASSES = (
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+        'django.middleware.clickjacking.XFrameOptionsMiddleware',
+        'django.middleware.security.SecurityMiddleware',
+        'Student_Org_Site_Backend.disable.DisableCSRF',
+    )
 
-MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-)
 
 
 TEMPLATES = [
@@ -123,26 +135,23 @@ STATICFILES_DIRS = (
 
 if IS_PROD:
 	REST_FRAMEWORK = {
-	    # Use Django's standard `django.contrib.auth` permissions,
-	    # or allow read-only access for unauthenticated users.
-	    'DEFAULT_PERMISSION_CLASSES': [
+        # Use Django's standard `django.contrib.auth` permissions,
+        # or allow read-only access for unauthenticated users.
+        'DEFAULT_PERMISSION_CLASSES': [
 		'rest_framework.permissions.IsAuthenticated'
-	    ],
-	    'DEFAULT_AUTHENTICATION_CLASSES': [
-		'rest_framework_config.CsrfExemptSessionAuthentication',
+        ],
+        'DEFAULT_AUTHENTICATION_CLASSES': [
 		'rest_framework.authentication.SessionAuthentication',
-	    ],
+        ],
 	}
 else:
 	REST_FRAMEWORK = {
-	    # Use Django's standard `django.contrib.auth` permissions,
-	    # or allow read-only access for unauthenticated users.
-	    'DEFAULT_PERMISSION_CLASSES': [
+        # Use Django's standard `django.contrib.auth` permissions,
+        # or allow read-only access for unauthenticated users.
+        'DEFAULT_PERMISSION_CLASSES': [
 		'rest_framework.permissions.IsAuthenticated'
-	    ],
-	    'DEFAULT_AUTHENTICATION_CLASSES': [
-		'Student_Org_Site_Backend.rest_framework_config.CsrfExemptSessionAuthentication',
+        ],
+        'DEFAULT_AUTHENTICATION_CLASSES': [
 		'rest_framework.authentication.SessionAuthentication',
-	    ],
+        ],
 	}
-	

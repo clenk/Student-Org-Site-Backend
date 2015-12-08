@@ -4,7 +4,7 @@ from django.shortcuts import *
 # Import models
 from django.db import models
 from django.contrib.auth.models import *
-from localsettings import *
+from Student_Org_Site_Backend.localsettings import *
 if IS_PROD:
     from api.models import *
     from api.serializers import *
@@ -86,14 +86,18 @@ class PostList(APIView):
     def get(self, request, format=None):
         posts = Post.objects.all() #you could limit this to only the posts for which the user has access
         serializer = PostSerializer(posts, many=True, context={'request': request})
-        return Response(serializer.data) #you can customize the response here
-    
+        return Response(serializer.data)
+
     def post(self, request, format=None):
-        serializer = PostSerializer(data=request.data, context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED) #you could customize the response here
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) #you could customize the error message here
+        new_post = request.data
+        print new_post
+        if 'tags' in new_post and new_post['tags']:
+            tags = new_post['tags']
+            created_post = Post.objects.create(title=new_post['title'], subtitle=new_post['subtitle'], image=new_post['image'], content=new_post['content'], tags=tags, author=request.user)
+        else:
+            created_post = Post.objects.create(title=new_post['title'], subtitle=new_post['subtitle'], image=new_post['image'], content=new_post['content'], author=request.user)
+        created_post.save()
+        return Response({'success':True}) #you could customize the response here
 
 class PostDetail(APIView):
     """
@@ -152,13 +156,6 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     """
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
-
-class PostViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows for CRUD operations on post objects.
-    """
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
 
 def home(request):
   """
