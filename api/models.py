@@ -94,8 +94,7 @@ class Post(models.Model):
     content = models.TextField(blank=False, validators=[XSScheck])
     datePublished = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(User)
-    tagsuper = models.TextField(blank=False)
-    tags = models.ManyToManyField('Tag', blank=True)
+    tags = models.ManyToManyField('tag', blank=True)
     def __str__(self):
         return str(self.id) +":" +self.title
 

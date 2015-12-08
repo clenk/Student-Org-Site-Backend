@@ -59,7 +59,7 @@ define('student-org-site/tests/controllers/add-post.jshint', ['exports'], functi
 
   module('JSHint - controllers');
   test('controllers/add-post.js should pass jshint', function () {
-    ok(false, 'controllers/add-post.js should pass jshint.\ncontrollers/add-post.js: line 2, col 8, \'moment\' is defined but never used.\n\n1 error');
+    ok(true, 'controllers/add-post.js should pass jshint.');
   });
 });
 define('student-org-site/tests/controllers/admin.jshint', ['exports'], function (exports) {

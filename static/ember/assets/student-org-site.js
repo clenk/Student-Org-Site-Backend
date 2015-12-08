@@ -220,7 +220,7 @@ define('student-org-site/controllers/add-event', ['exports', 'ember'], function 
 
   });
 });
-define('student-org-site/controllers/add-post', ['exports', 'ember', 'moment'], function (exports, _ember, _moment) {
+define('student-org-site/controllers/add-post', ['exports', 'ember'], function (exports, _ember) {
   exports['default'] = _ember['default'].Controller.extend({
     title: '',
     subtitle: '',
@@ -241,7 +241,7 @@ define('student-org-site/controllers/add-post', ['exports', 'ember', 'moment'], 
 
         //console.log("=======================");
         //console.log(author + " " + today);
-        _ember['default'].$.post("/api/posts", {
+        _ember['default'].$.post("/api/posts/", {
           title: title,
           subtitle: subtitle,
           image: image,
@@ -1131,7 +1131,7 @@ define("student-org-site/templates/add-post", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 29,
+            "line": 30,
             "column": 0
           }
         },
@@ -1222,9 +1222,7 @@ define("student-org-site/templates/add-post", ["exports"], function (exports) {
         var el4 = dom.createTextNode("Tags");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("    ");
+        var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createComment("");
         dom.appendChild(el2, el3);
@@ -1262,10 +1260,10 @@ define("student-org-site/templates/add-post", ["exports"], function (exports) {
         morphs[2] = dom.createMorphAt(dom.childAt(element0, [3]), 3, 3);
         morphs[3] = dom.createMorphAt(dom.childAt(element0, [5]), 3, 3);
         morphs[4] = dom.createMorphAt(dom.childAt(element0, [7]), 3, 3);
-        morphs[5] = dom.createMorphAt(dom.childAt(element0, [9]), 4, 4);
+        morphs[5] = dom.createMorphAt(dom.childAt(element0, [9]), 3, 3);
         return morphs;
       },
-      statements: [["element", "action", ["addPost"], ["on", "submit"], ["loc", [null, [1, 6], [1, 38]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "title", ["loc", [null, [4, 18], [4, 23]]]]], [], []], "placeholder", "Title", "class", "form-control"], ["loc", [null, [4, 4], [4, 66]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "subtitle", ["loc", [null, [8, 18], [8, 26]]]]], [], []], "placeholder", "Subtitle", "class", "form-control"], ["loc", [null, [8, 4], [8, 72]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "image", ["loc", [null, [12, 18], [12, 23]]]]], [], []], "placeholder", "Paste image URL here", "class", "form-control"], ["loc", [null, [12, 4], [12, 81]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "content2", ["loc", [null, [16, 18], [16, 26]]]]], [], []], "placeholder", "Content", "class", "form-control"], ["loc", [null, [16, 4], [16, 71]]]], ["inline", "view", [["get", "Ember.Select", ["loc", [null, [21, 11], [21, 23]]]]], ["content", ["subexpr", "@mut", [["get", "tags", ["loc", [null, [21, 39], [21, 43]]]]], [], []], "value", ["subexpr", "@mut", [["get", "tags2", ["loc", [null, [21, 57], [21, 62]]]]], [], []], "optionValuePath", "content.name", "optionLabelPath", "content.name"], ["loc", [null, [21, 4], [21, 126]]]]],
+      statements: [["element", "action", ["addPost"], ["on", "submit"], ["loc", [null, [1, 6], [1, 38]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "title", ["loc", [null, [4, 18], [4, 23]]]]], [], []], "placeholder", "Title", "class", "form-control"], ["loc", [null, [4, 4], [4, 66]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "subtitle", ["loc", [null, [8, 18], [8, 26]]]]], [], []], "placeholder", "Subtitle", "class", "form-control"], ["loc", [null, [8, 4], [8, 72]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "image", ["loc", [null, [12, 18], [12, 23]]]]], [], []], "placeholder", "Paste image URL here", "class", "form-control"], ["loc", [null, [12, 4], [12, 81]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "content2", ["loc", [null, [16, 18], [16, 26]]]]], [], []], "placeholder", "Content", "class", "form-control"], ["loc", [null, [16, 4], [16, 71]]]], ["inline", "input", [], ["value", ["subexpr", "@mut", [["get", "tags2", ["loc", [null, [20, 18], [20, 23]]]]], [], []], "placeholder", "Tags", "class", "form-control"], ["loc", [null, [20, 4], [20, 65]]]]],
       locals: [],
       templates: []
     };
@@ -6603,7 +6601,7 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("student-org-site/app")["default"].create({"API_HOST":"http://localhost:8000","name":"student-org-site","version":"0.0.0+27ee8c88","API_NAMESPACE":"api","API_ADD_TRAILING_SLASHES":true});
+  require("student-org-site/app")["default"].create({"API_HOST":"http://localhost:8000","name":"student-org-site","version":"0.0.0+e45e3e89","API_NAMESPACE":"api","API_ADD_TRAILING_SLASHES":true});
 }
 
 /* jshint ignore:end */

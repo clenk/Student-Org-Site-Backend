@@ -90,13 +90,21 @@ class PostList(APIView):
 
     def post(self, request, format=None):
         new_post = request.data
-        print new_post
+        #print new_post
         if 'tags' in new_post and new_post['tags']:
-            tags = new_post['tags']
-            created_post = Post.objects.create(title=new_post['title'], subtitle=new_post['subtitle'], image=new_post['image'], content=new_post['content'], tags=tags, author=request.user)
+            tags = new_post['tags'].split(',')
+            tags = map(lambda s: s.strip(), tags)
+            tags_array = []
+            for g in tags:
+                obj, created = Tag.objects.get_or_create(name=g)
+                tags_array.append(obj)
+                print tags_array
+            created_post = Post.objects.create(title=new_post['title'], subtitle=new_post['subtitle'], image=new_post['image'], content=new_post['content'], author=request.user)
+            created_post.save()
+            created_post.tags = tags_array
         else:
             created_post = Post.objects.create(title=new_post['title'], subtitle=new_post['subtitle'], image=new_post['image'], content=new_post['content'], author=request.user)
-        created_post.save()
+            created_post.save()
         return Response({'success':True}) #you could customize the response here
 
 class PostDetail(APIView):
