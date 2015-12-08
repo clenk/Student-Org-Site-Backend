@@ -32,20 +32,29 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = (
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-)
 if IS_PROD:
-    INSTALLED_APPS += 'api'
+    INSTALLED_APPS = (
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+        'api'
+        'rest_framework',
+    )
 else:
-    INSTALLED_APPS += 'Student_Org_Site_Backend'
-    INSTALLED_APPS += 'Student_Org_Site_Backend.api'
+    INSTALLED_APPS = (
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+        'Student_Org_Site_Backend',
+        'Student_Org_Site_Backend.api',
+        'rest_framework',
+    )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
