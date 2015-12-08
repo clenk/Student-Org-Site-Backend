@@ -39,10 +39,13 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Student_Org_Site_Backend',
-    'Student_Org_Site_Backend.api',
     'rest_framework',
 )
+if IS_PROD:
+    INSTALLED_APPS += 'api'
+else:
+    INSTALLED_APPS += 'Student_Org_Site_Backend'
+    INSTALLED_APPS += 'Student_Org_Site_Backend.api'
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -59,7 +62,7 @@ MIDDLEWARE_CLASSES = (
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['static/ember/'],
+        'DIRS': ['/var/www/Student_Org_Site_Backend/static/ember/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

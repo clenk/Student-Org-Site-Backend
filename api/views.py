@@ -4,11 +4,15 @@ from django.shortcuts import *
 # Import models
 from django.db import models
 from django.contrib.auth.models import *
-from Student_Org_Site_Backend.api.models import *
+if IS_PROD:
+    from api.models import *
+    from api.serializers import *
+else:
+    from Student_Org_Site_Backend.api.models import *
+    from Student_Org_Site_Backend.api.serializers import *
 
 #REST API
 from rest_framework import viewsets
-from Student_Org_Site_Backend.api.serializers import *
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView

@@ -2,8 +2,11 @@ from django.conf.urls import include, url
 
 #Django Rest Framework
 from rest_framework import routers
-from Student_Org_Site_Backend.api import views
 from rest_framework.urlpatterns import format_suffix_patterns
+if IS_PROD:
+    from api import views
+else:
+	from Student_Org_Site_Backend.api import views
 
 #REST API routes
 router = routers.DefaultRouter()

@@ -15,7 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from Student_Org_Site_Backend.api import views
+if IS_PROD:
+    from api import views
+else:
+    from Student_Org_Site_Backend.api import views
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),

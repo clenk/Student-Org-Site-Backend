@@ -2,7 +2,10 @@ from rest_framework import serializers
 
 #load django and webapp models
 from django.contrib.auth.models import *
-from Student_Org_Site_Backend.api.models import *
+if IS_PROD:
+    from api.models import *
+else:
+    from Student_Org_Site_Backend.api.models import *
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
