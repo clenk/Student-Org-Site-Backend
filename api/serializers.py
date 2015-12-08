@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 #load django and webapp models
 from django.contrib.auth.models import *
+from localsettings import *
 if IS_PROD:
     from api.models import *
 else:

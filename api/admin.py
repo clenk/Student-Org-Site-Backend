@@ -1,4 +1,5 @@
 from django.contrib import admin
+from localsettings import *
 if IS_PROD:
 	from api.models import *
 else:

@@ -1,10 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib import admin
+from localsettings import *
 if IS_PROD:
-    from api.validators import *
-else:
     from Student_Org_Site_Backend.api.validators import *
+else:
+    from api.validators import *
 from django.core.exceptions import ValidationError
 
 from django.contrib.auth.models import AbstractUser
@@ -88,7 +89,7 @@ class Post(models.Model):
     """
     title = models.CharField(max_length=40, blank=False, validators=[XSScheck])
     subtitle = models.CharField(max_length=40, blank=False, validators=[XSScheck])
-    image = models.CharField(max_length=120, blank=True, validators=[isImage])
+    image = models.CharField(max_length=120, blank=True, validators=[isImg])
     content = models.TextField(blank=False, validators=[XSScheck])
     datePublished = models.TextField(blank=False, validators=[XSScheck, isDateFormat])
     author = models.ForeignKey(User)
