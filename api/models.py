@@ -15,7 +15,7 @@ class Tag(models.Model):
     """
     This is a tag for user submitted post entries.
     """
-    name = models.CharField(max_length=20, blank=False, unique=True)
+    name = models.CharField(max_length=20, blank=False, unique=True, validators=[XSScheck])
     posts = models.ManyToManyField('Post', blank=True)
     def __str__(self):
         return str(self.id)+":"+self.name
@@ -30,9 +30,9 @@ class Event(models.Model):
     """
     This is an event for the calendar.
     """
-    title = models.CharField(max_length=20, blank=False, unique=True)
-    start = models.CharField(max_length=40, blank=False, unique=True)
-    end = models.CharField(max_length=40, blank=False, unique=True)
+    title = models.CharField(max_length=20, blank=False, unique=True, validators=[XSScheck])
+    start = models.CharField(max_length=40, blank=False, unique=True, validators=[XSScheck, isDateFormat])
+    end = models.CharField(max_length=40, blank=False, unique=True, validators=[XSScheck, isDateFormat])
     #allday = models.BooleanField(unique=True)
     tags = models.ManyToManyField('tag', blank=True)
     def __str__(self):
@@ -86,11 +86,11 @@ class Post(models.Model):
     """
     This is a forum post for storing user submitted post entries.
     """
-    title = models.CharField(max_length=40, blank=False)
-    subtitle = models.CharField(max_length=40, blank=False)
-    image = models.CharField(max_length=120, blank=True)
-    content = models.TextField(blank=False, validators=[removeJavascriptKeyword])
-    datePublished = models.TextField(blank=False)
+    title = models.CharField(max_length=40, blank=False, validators=[XSScheck])
+    subtitle = models.CharField(max_length=40, blank=False, validators=[XSScheck])
+    image = models.CharField(max_length=120, blank=True, validators=[isImage])
+    content = models.TextField(blank=False, validators=[XSScheck])
+    datePublished = models.TextField(blank=False, validators=[XSScheck, isDateFormat])
     author = models.ForeignKey(User)
     tags = models.ManyToManyField('tag', blank=True)
     def __str__(self):
