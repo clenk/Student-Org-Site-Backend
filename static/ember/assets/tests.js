@@ -83,7 +83,7 @@ define('student-org-site/tests/controllers/auth.jshint', ['exports'], function (
 
   module('JSHint - controllers');
   test('controllers/auth.js should pass jshint', function () {
-    ok(false, 'controllers/auth.js should pass jshint.\ncontrollers/auth.js: line 13, col 17, \'remember\' is defined but never used.\ncontrollers/auth.js: line 43, col 22, \'response\' is defined but never used.\n\n2 errors');
+    ok(true, 'controllers/auth.js should pass jshint.');
   });
 });
 define('student-org-site/tests/controllers/calendar.jshint', ['exports'], function (exports) {
@@ -483,7 +483,7 @@ define('student-org-site/tests/routes/auth.jshint', ['exports'], function (expor
 
   module('JSHint - routes');
   test('routes/auth.js should pass jshint', function () {
-    ok(false, 'routes/auth.js should pass jshint.\nroutes/auth.js: line 7, col 43, \'model\' is defined but never used.\nroutes/auth.js: line 7, col 31, \'controller\' is defined but never used.\n\n2 errors');
+    ok(true, 'routes/auth.js should pass jshint.');
   });
 });
 define('student-org-site/tests/routes/bad-url.jshint', ['exports'], function (exports) {

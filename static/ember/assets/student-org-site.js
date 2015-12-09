@@ -312,7 +312,6 @@ define('student-org-site/controllers/auth', ['exports', 'ember'], function (expo
                 //do stuff to authenticate here
                 var username = this.get('username');
                 var password = this.get('password');
-                var remember = this.get('remember');
                 var data = {
                     'username': username,
                     'password': password };
@@ -341,7 +340,7 @@ define('student-org-site/controllers/auth', ['exports', 'ember'], function (expo
             logout: function logout() {
                 var remember = this.get('remember');
                 var controllerObj = this;
-                _ember['default'].$.ajax({ url: '../api/session/', type: 'DELETE' }).then(function (response) {
+                _ember['default'].$.ajax({ url: '../api/session/', type: 'DELETE' }).then(function () {
                     //console.log('Logout success.');
                     controllerObj.set('isLoggedIn', false);
                     controllerObj.set('errorMsg', '');
@@ -903,14 +902,7 @@ define('student-org-site/routes/application', ['exports', 'ember'], function (ex
 	});
 });
 define('student-org-site/routes/auth', ['exports', 'ember'], function (exports, _ember) {
-	exports['default'] = _ember['default'].Route.extend({
-		model: function model() {
-			//return this.store.find('user');
-		},
-		setupController: function setupController(controller, model) {
-			//controller.set('users', model);
-		}
-	});
+  exports['default'] = _ember['default'].Route.extend({});
 });
 define('student-org-site/routes/bad-url', ['exports', 'ember'], function (exports, _ember) {
   exports['default'] = _ember['default'].Route.extend({});
@@ -6937,7 +6929,7 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("student-org-site/app")["default"].create({"API_HOST":"http://localhost:8000","name":"student-org-site","version":"0.0.0+ef1cfa6f","API_NAMESPACE":"api","API_ADD_TRAILING_SLASHES":true});
+  require("student-org-site/app")["default"].create({"API_HOST":"http://localhost:8000","name":"student-org-site","version":"0.0.0+24994501","API_NAMESPACE":"api","API_ADD_TRAILING_SLASHES":true});
 }
 
 /* jshint ignore:end */
