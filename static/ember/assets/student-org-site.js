@@ -237,7 +237,15 @@ define('student-org-site/controllers/add-post', ['exports', 'ember'], function (
         var image = this.get('image');
         var content = this.get('content2');
         var tags2 = this.get('tags2');
-        console.log(tags2);
+
+        /*var p = this.store.createRecord('post', {
+          title: title,
+          subtitle: subtitle,
+          image: image,
+          content: content,
+          //tags: tags2,
+        });
+        p.save();*/
 
         //console.log("=======================");
         //console.log(author + " " + today);
@@ -381,14 +389,47 @@ define('student-org-site/controllers/event', ['exports', 'ember'], function (exp
 });
 define('student-org-site/controllers/home', ['exports', 'ember'], function (exports, _ember) {
 	exports['default'] = _ember['default'].Controller.extend({
+		/*posts: (function(){
+  	return this.store.peekAll('post').toArray().reverse();
+  }).property('posts'),
+  topposts: Ember.computed('posts', function(){
+  	return this.get('posts').slice(0, 4);
+  }),*/
 		posts: (function () {
 			return this.store.peekAll('post');
 		}).property('posts'),
+		sorting: ['id:desc'],
+		sortedposts: _ember['default'].computed.sort('posts', 'sorting'),
+		/*aposts: null,
+  topposts: (function(){
+  	var x = this.get('sortedposts');
+  	console.log('stustst',x[0]);
+  	this.set('aposts', this.get('sortedposts'));
+  }).observes('sortedposts').on('init'),*/
+		/*potposts: [],
+  topposts: function(){
+  	console.log('HHHHEEEEEEEEEEEEE');
+  	var i = 0;
+  	var t = this;
+  	var arr = [];
+  	console.log("Sorted POSTS", this.get('sortedposts'));
+  	console.log("Sorted POSTS", this.get('sortedposts').toArray());
+  	this.get('sortedposts').forEach(function(post) {
+  		console.log("this is a pst: ", post);
+  		if (i < 4) {
+  			t.get('potposts').push(post);
+  		}
+  		i++;
+  	});
+  }.observes('sortedPosts').on('init'),*/
 		events: (function () {
 			return this.store.peekAll('event');
 		}).property('events')
 	});
 });
+/*posts: (function(){
+	return this.store.peekAll('post');
+}).property('posts'),*/
 define('student-org-site/controllers/object', ['exports', 'ember'], function (exports, _ember) {
   exports['default'] = _ember['default'].Controller;
 });
@@ -396,39 +437,55 @@ define('student-org-site/controllers/post', ['exports', 'ember'], function (expo
   exports['default'] = _ember['default'].ObjectController.extend({
     needs: ['application'],
     postContent: null,
-    recentPosts: _ember['default'].computed.alias('controllers.application.posts'),
-    previousPost: _ember['default'].computed('model', 'recentPosts.@each', function () {
-      var recentPosts, index;
-      recentPosts = this.get('recentPosts');
-      //console.log('b4 recentposts');
-      //console.log(recentPosts);
-      index = recentPosts.indexOf(this.get('model'));
+    posts: (function () {
+      return this.store.peekAll('post');
+    }).property('posts'),
+    previousPost: _ember['default'].computed('model', 'posts.@each', function () {
+      var posts, index;
+      posts = this.get('posts');
+      //console.log('b4 posts');
+      //console.log(posts);
+      index = posts.indexOf(this.get('model'));
       // Cap the index
       if (index !== -1) {
         index -= 1;
       }
-      return recentPosts.objectAt(index);
+      return posts.objectAt(index);
     }),
-    nextPost: _ember['default'].computed('model', 'recentPosts.@each', function () {
-      var recentPosts, index;
-      recentPosts = this.get('recentPosts');
-      index = recentPosts.indexOf(this.get('model'));
+    nextPost: _ember['default'].computed('model', 'posts.@each', function () {
+      var posts, index;
+      posts = this.get('posts');
+      index = posts.indexOf(this.get('model'));
       // Cap the index
       if (index !== -1) {
         index += 1;
       }
-      return recentPosts.objectAt(index);
+      return posts.objectAt(index);
     }),
-    profiles: null
+    /*previousPost: function(){
+        var index = recent.indexOf(model);
+        if (recent.objectAt(index - 1) !== undefined) { index = index -1; }
+        return recent.objectAt(index);
+    },*/
+
+    topposts: _ember['default'].computed('posts', function () {
+      return this.get('posts').toArray().reverse().slice(0, 4);
+    }),
+    tags: (function () {
+      return this.store.peekAll('tag');
+    }).property('tags'),
+    profiles: (function () {
+      return this.store.peekAll('userprofiles');
+    }).property('profiles')
   });
 });
 define('student-org-site/controllers/posts', ['exports', 'ember'], function (exports, _ember) {
 	exports['default'] = _ember['default'].Controller.extend({
 		posts: (function () {
-			return this.store.peekAll('post');
+			return this.store.peekAll('post').toArray().reverse();
 		}).property('posts'),
 		topposts: _ember['default'].computed('posts', function () {
-			return this.get('posts').slice(0, 3);
+			return this.get('posts').slice(0, 4);
 		}),
 		tags: (function () {
 			return this.store.peekAll('tag');
@@ -766,7 +823,7 @@ define('student-org-site/router', ['exports', 'ember', 'student-org-site/config/
     // Catch unrecognized URLs
     this.route('bad-url', { path: '/*badurl' });
     this.route('addPost', {});
-    this.route('home');
+    this.route('home', {});
   });
 
   exports['default'] = Router;
@@ -805,7 +862,6 @@ define('student-org-site/routes/application', ['exports', 'ember'], function (ex
 						return events.sortBy('start');
 					}),
 					profiles: this.get('store').find('userprofile').then(function (profiles) {
-						console.log(profiles);
 						return profiles;
 					})
 				});
@@ -880,7 +936,11 @@ define('student-org-site/routes/create-account', ['exports', 'ember'], function 
 	});
 });
 define('student-org-site/routes/home', ['exports', 'ember'], function (exports, _ember) {
-	exports['default'] = _ember['default'].Route.extend({});
+	exports['default'] = _ember['default'].Route.extend({
+		model: function model() {
+			return this.modelFor('application');
+		}
+	});
 });
 define('student-org-site/routes/post', ['exports', 'ember'], function (exports, _ember) {
 	exports['default'] = _ember['default'].Route.extend({
@@ -888,28 +948,24 @@ define('student-org-site/routes/post', ['exports', 'ember'], function (exports, 
 			return this.get('store').find('post', params.post_id);
 		},
 		setupController: function setupController(controller, model) {
-			var recent = this.modelFor('application').posts;
-			var profiles = this.modelFor('application');
+			//var recent = this.modelFor('application').posts;
+			//var profiles = this.modelFor('application');
 			//console.log(profiles);
 			/*var profiles = $()*/
 
-			controller.set('recentPosts', recent);
+			//controller.set('recentPosts', recent);
 			controller.set('postContent', model);
-			controller.set('previousPost', (function () {
-				var index = recent.indexOf(model);
-				if (recent.objectAt(index - 1) !== undefined) {
-					index = index - 1;
-				}
-				return recent.objectAt(index);
-			})());
-			controller.set('nextPost', (function () {
-				var index = recent.indexOf(model);
-				if (recent.objectAt(index + 1) !== undefined) {
-					index = index + 1;
-				}
-				return recent.objectAt(index);
-			})());
-			controller.set('profiles', profiles);
+			/*controller.set('previousPost', (function(){
+   	var index = recent.indexOf(model);
+   	if (recent.objectAt(index - 1) !== undefined) { index = index -1; }
+   	return recent.objectAt(index);
+   }()));
+   controller.set('nextPost', (function(){
+   	var index = recent.indexOf(model);
+   	if (recent.objectAt(index + 1) !== undefined) { index = index +1; }
+   	return recent.objectAt(index);
+   }()));*/
+			//controller.set('profiles', profiles);
 		}
 	});
 });
@@ -1358,8 +1414,8 @@ define("student-org-site/templates/application", ["exports"], function (exports)
             "column": 0
           },
           "end": {
-            "line": 4,
-            "column": 6
+            "line": 5,
+            "column": 14
           }
         },
         "moduleName": "student-org-site/templates/application.hbs"
@@ -1382,16 +1438,22 @@ define("student-org-site/templates/application", ["exports"], function (exports)
         var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var morphs = new Array(2);
+        var morphs = new Array(3);
         morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
         morphs[1] = dom.createMorphAt(dom.childAt(fragment, [2]), 1, 1);
+        morphs[2] = dom.createMorphAt(fragment, 4, 4, contextualElement);
         dom.insertBoundary(fragment, 0);
+        dom.insertBoundary(fragment, null);
         return morphs;
       },
-      statements: [["inline", "nav-bar", [], ["authControllerChild", ["subexpr", "@mut", [["get", "authController", ["loc", [null, [1, 30], [1, 44]]]]], [], []]], ["loc", [null, [1, 0], [1, 46]]]], ["content", "outlet", ["loc", [null, [3, 1], [3, 11]]]]],
+      statements: [["inline", "nav-bar", [], ["authControllerChild", ["subexpr", "@mut", [["get", "authController", ["loc", [null, [1, 30], [1, 44]]]]], [], []]], ["loc", [null, [1, 0], [1, 46]]]], ["content", "outlet", ["loc", [null, [3, 1], [3, 11]]]], ["content", "nav-footer", ["loc", [null, [5, 0], [5, 14]]]]],
       locals: [],
       templates: []
     };
@@ -4183,7 +4245,7 @@ define("student-org-site/templates/components/nav-bar", ["exports"], function (e
             },
             "end": {
               "line": 4,
-              "column": 80
+              "column": 73
             }
           },
           "moduleName": "student-org-site/templates/components/nav-bar.hbs"
@@ -4328,11 +4390,11 @@ define("student-org-site/templates/components/nav-bar", ["exports"], function (e
             "loc": {
               "source": null,
               "start": {
-                "line": 31,
+                "line": 21,
                 "column": 2
               },
               "end": {
-                "line": 31,
+                "line": 21,
                 "column": 60
               }
             },
@@ -4364,11 +4426,11 @@ define("student-org-site/templates/components/nav-bar", ["exports"], function (e
           "loc": {
             "source": null,
             "start": {
-              "line": 27,
+              "line": 17,
               "column": 1
             },
             "end": {
-              "line": 32,
+              "line": 22,
               "column": 1
             }
           },
@@ -4400,7 +4462,7 @@ define("student-org-site/templates/components/nav-bar", ["exports"], function (e
           morphs[0] = dom.createMorphAt(fragment, 5, 5, contextualElement);
           return morphs;
         },
-        statements: [["block", "link-to", ["auth"], ["tagName", "li"], 0, null, ["loc", [null, [31, 2], [31, 72]]]]],
+        statements: [["block", "link-to", ["auth"], ["tagName", "li"], 0, null, ["loc", [null, [21, 2], [21, 72]]]]],
         locals: [],
         templates: [child0]
       };
@@ -4413,11 +4475,11 @@ define("student-org-site/templates/components/nav-bar", ["exports"], function (e
             "loc": {
               "source": null,
               "start": {
-                "line": 33,
+                "line": 23,
                 "column": 2
               },
               "end": {
-                "line": 33,
+                "line": 23,
                 "column": 80
               }
             },
@@ -4450,11 +4512,11 @@ define("student-org-site/templates/components/nav-bar", ["exports"], function (e
           "loc": {
             "source": null,
             "start": {
-              "line": 32,
+              "line": 22,
               "column": 1
             },
             "end": {
-              "line": 35,
+              "line": 25,
               "column": 1
             }
           },
@@ -4478,7 +4540,7 @@ define("student-org-site/templates/components/nav-bar", ["exports"], function (e
           morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
           return morphs;
         },
-        statements: [["block", "link-to", ["auth"], ["tagName", "li"], 0, null, ["loc", [null, [33, 2], [33, 92]]]]],
+        statements: [["block", "link-to", ["auth"], ["tagName", "li"], 0, null, ["loc", [null, [23, 2], [23, 92]]]]],
         locals: [],
         templates: [child0]
       };
@@ -4493,7 +4555,7 @@ define("student-org-site/templates/components/nav-bar", ["exports"], function (e
             "column": 0
           },
           "end": {
-            "line": 39,
+            "line": 29,
             "column": 6
           }
         },
@@ -4542,50 +4604,6 @@ define("student-org-site/templates/components/nav-bar", ["exports"], function (e
         dom.appendChild(el4, el5);
         var el5 = dom.createTextNode("\n");
         dom.appendChild(el4, el5);
-        var el5 = dom.createTextNode("	");
-        dom.appendChild(el4, el5);
-        var el5 = dom.createElement("li");
-        var el6 = dom.createElement("form");
-        dom.setAttribute(el6, "class", "navbar-form");
-        dom.setAttribute(el6, "role", "search");
-        var el7 = dom.createTextNode("\n        ");
-        dom.appendChild(el6, el7);
-        var el7 = dom.createElement("div");
-        dom.setAttribute(el7, "class", "input-group");
-        var el8 = dom.createTextNode("\n            ");
-        dom.appendChild(el7, el8);
-        var el8 = dom.createElement("input");
-        dom.setAttribute(el8, "type", "text");
-        dom.setAttribute(el8, "class", "form-control");
-        dom.setAttribute(el8, "placeholder", "Search");
-        dom.setAttribute(el8, "name", "srch-term");
-        dom.setAttribute(el8, "id", "srch-term");
-        dom.appendChild(el7, el8);
-        var el8 = dom.createTextNode("\n            ");
-        dom.appendChild(el7, el8);
-        var el8 = dom.createElement("div");
-        dom.setAttribute(el8, "class", "input-group-btn");
-        var el9 = dom.createTextNode("\n                ");
-        dom.appendChild(el8, el9);
-        var el9 = dom.createElement("button");
-        dom.setAttribute(el9, "class", "btn btn-default");
-        dom.setAttribute(el9, "type", "submit");
-        var el10 = dom.createElement("i");
-        dom.setAttribute(el10, "class", "fa fa-search");
-        dom.appendChild(el9, el10);
-        dom.appendChild(el8, el9);
-        var el9 = dom.createTextNode("\n            ");
-        dom.appendChild(el8, el9);
-        dom.appendChild(el7, el8);
-        var el8 = dom.createTextNode("\n        ");
-        dom.appendChild(el7, el8);
-        dom.appendChild(el6, el7);
-        var el7 = dom.createTextNode("\n    ");
-        dom.appendChild(el6, el7);
-        dom.appendChild(el5, el6);
-        dom.appendChild(el4, el5);
-        var el5 = dom.createTextNode("\n");
-        dom.appendChild(el4, el5);
         dom.appendChild(el3, el4);
         var el4 = dom.createTextNode("\n");
         dom.appendChild(el3, el4);
@@ -4619,7 +4637,7 @@ define("student-org-site/templates/components/nav-bar", ["exports"], function (e
         morphs[4] = dom.createMorphAt(dom.childAt(element1, [3]), 1, 1);
         return morphs;
       },
-      statements: [["block", "link-to", ["application"], ["tagName", "li"], 0, null, ["loc", [null, [4, 0], [4, 92]]]], ["block", "link-to", ["posts"], ["tagName", "li"], 1, null, ["loc", [null, [8, 1], [8, 72]]]], ["block", "link-to", ["calendar"], ["tagName", "li"], 2, null, ["loc", [null, [9, 1], [9, 81]]]], ["block", "link-to", ["about"], ["tagName", "li"], 3, null, ["loc", [null, [10, 1], [10, 72]]]], ["block", "if", [["get", "authControllerChild.isLoggedIn", ["loc", [null, [27, 7], [27, 37]]]]], [], 4, 5, ["loc", [null, [27, 1], [35, 8]]]]],
+      statements: [["block", "link-to", ["home"], ["tagName", "li"], 0, null, ["loc", [null, [4, 0], [4, 85]]]], ["block", "link-to", ["posts"], ["tagName", "li"], 1, null, ["loc", [null, [8, 1], [8, 72]]]], ["block", "link-to", ["calendar"], ["tagName", "li"], 2, null, ["loc", [null, [9, 1], [9, 81]]]], ["block", "link-to", ["about"], ["tagName", "li"], 3, null, ["loc", [null, [10, 1], [10, 72]]]], ["block", "if", [["get", "authControllerChild.isLoggedIn", ["loc", [null, [17, 7], [17, 37]]]]], [], 4, 5, ["loc", [null, [17, 1], [25, 8]]]]],
       locals: [],
       templates: [child0, child1, child2, child3, child4, child5]
     };
@@ -4791,11 +4809,11 @@ define("student-org-site/templates/home", ["exports"], function (exports) {
             "loc": {
               "source": null,
               "start": {
-                "line": 15,
+                "line": 19,
                 "column": 30
               },
               "end": {
-                "line": 15,
+                "line": 19,
                 "column": 68
               }
             },
@@ -4817,7 +4835,7 @@ define("student-org-site/templates/home", ["exports"], function (exports) {
             dom.insertBoundary(fragment, null);
             return morphs;
           },
-          statements: [["content", "post.title", ["loc", [null, [15, 54], [15, 68]]]]],
+          statements: [["content", "post.title", ["loc", [null, [19, 54], [19, 68]]]]],
           locals: [],
           templates: []
         };
@@ -4828,11 +4846,11 @@ define("student-org-site/templates/home", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 7,
+              "line": 11,
               "column": 3
             },
             "end": {
-              "line": 26,
+              "line": 30,
               "column": 3
             }
           },
@@ -4950,7 +4968,7 @@ define("student-org-site/templates/home", ["exports"], function (exports) {
           morphs[6] = dom.createMorphAt(dom.childAt(element4, [2]), 0, 0);
           return morphs;
         },
-        statements: [["inline", "date-formatter", ["DD", ["get", "post.datePublished", ["loc", [null, [11, 53], [11, 71]]]]], [], ["loc", [null, [11, 31], [11, 73]]]], ["inline", "date-formatter", ["MMMM", ["get", "post.datePublished", ["loc", [null, [12, 58], [12, 76]]]]], [], ["loc", [null, [12, 34], [12, 78]]]], ["block", "link-to", ["post", ["get", "post", ["loc", [null, [15, 48], [15, 52]]]]], [], 0, null, ["loc", [null, [15, 30], [15, 80]]]], ["content", "post.subtitle", ["loc", [null, [16, 33], [16, 50]]]], ["inline", "text-preview", [["get", "post.content", ["loc", [null, [17, 48], [17, 60]]]], 200, 250], [], ["loc", [null, [17, 33], [17, 70]]]], ["attribute", "src", ["get", "post.author.profileImageUrl", []]], ["content", "post.author.name", ["loc", [null, [20, 109], [20, 129]]]]],
+        statements: [["inline", "date-formatter", ["DD", ["get", "post.datePublished", ["loc", [null, [15, 53], [15, 71]]]]], [], ["loc", [null, [15, 31], [15, 73]]]], ["inline", "date-formatter", ["MMMM", ["get", "post.datePublished", ["loc", [null, [16, 58], [16, 76]]]]], [], ["loc", [null, [16, 34], [16, 78]]]], ["block", "link-to", ["post", ["get", "post", ["loc", [null, [19, 48], [19, 52]]]]], [], 0, null, ["loc", [null, [19, 30], [19, 80]]]], ["content", "post.subtitle", ["loc", [null, [20, 33], [20, 50]]]], ["inline", "text-preview", [["get", "post.content", ["loc", [null, [21, 48], [21, 60]]]], 200, 250], [], ["loc", [null, [21, 33], [21, 70]]]], ["attribute", "src", ["get", "post.author.profileImageUrl", []]], ["content", "post.author.name", ["loc", [null, [24, 109], [24, 129]]]]],
         locals: ["post"],
         templates: [child0]
       };
@@ -4962,11 +4980,11 @@ define("student-org-site/templates/home", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 33,
+              "line": 37,
               "column": 4
             },
             "end": {
-              "line": 38,
+              "line": 42,
               "column": 4
             }
           },
@@ -5008,7 +5026,7 @@ define("student-org-site/templates/home", ["exports"], function (exports) {
           morphs[1] = dom.createMorphAt(dom.childAt(element0, [3]), 0, 0);
           return morphs;
         },
-        statements: [["content", "event.title", ["loc", [null, [35, 31], [35, 46]]]], ["inline", "date-formatter", ["MMMM DD, YYYY", ["get", "event.start", ["loc", [null, [36, 63], [36, 74]]]]], [], ["loc", [null, [36, 30], [36, 76]]]]],
+        statements: [["content", "event.title", ["loc", [null, [39, 31], [39, 46]]]], ["inline", "date-formatter", ["MMMM DD, YYYY", ["get", "event.start", ["loc", [null, [40, 63], [40, 74]]]]], [], ["loc", [null, [40, 30], [40, 76]]]]],
         locals: ["event"],
         templates: []
       };
@@ -5023,7 +5041,7 @@ define("student-org-site/templates/home", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 46,
+            "line": 50,
             "column": 0
           }
         },
@@ -5121,7 +5139,7 @@ define("student-org-site/templates/home", ["exports"], function (exports) {
         dom.insertBoundary(fragment, 0);
         return morphs;
       },
-      statements: [["inline", "page-title", [], ["title", "Cool Organization Name"], ["loc", [null, [1, 0], [1, 45]]]], ["block", "each", [["get", "posts", ["loc", [null, [7, 11], [7, 16]]]]], [], 0, null, ["loc", [null, [7, 3], [26, 12]]]], ["block", "each", [["get", "events", ["loc", [null, [33, 12], [33, 18]]]]], [], 1, null, ["loc", [null, [33, 4], [38, 13]]]], ["content", "outlet", ["loc", [null, [45, 0], [45, 10]]]]],
+      statements: [["inline", "page-title", [], ["title", "Cool Organization Name"], ["loc", [null, [1, 0], [1, 45]]]], ["block", "each", [["get", "sortedposts", ["loc", [null, [11, 11], [11, 22]]]]], [], 0, null, ["loc", [null, [11, 3], [30, 12]]]], ["block", "each", [["get", "events", ["loc", [null, [37, 12], [37, 18]]]]], [], 1, null, ["loc", [null, [37, 4], [42, 13]]]], ["content", "outlet", ["loc", [null, [49, 0], [49, 10]]]]],
       locals: [],
       templates: [child0, child1]
     };
@@ -5200,9 +5218,9 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
           return el0;
         },
         buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-          var element1 = dom.childAt(fragment, [0]);
+          var element0 = dom.childAt(fragment, [0]);
           var morphs = new Array(1);
-          morphs[0] = dom.createAttrMorph(element1, 'src');
+          morphs[0] = dom.createAttrMorph(element0, 'src');
           return morphs;
         },
         statements: [["attribute", "src", ["get", "postContent.author.profileImageUrl", []]]],
@@ -5211,125 +5229,17 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
       };
     })();
     var child2 = (function () {
-      var child0 = (function () {
-        return {
-          meta: {
-            "revision": "Ember@1.13.7",
-            "loc": {
-              "source": null,
-              "start": {
-                "line": 37,
-                "column": 8
-              },
-              "end": {
-                "line": 44,
-                "column": 8
-              }
-            },
-            "moduleName": "student-org-site/templates/post.hbs"
-          },
-          arity: 0,
-          cachedFragment: null,
-          hasRendered: false,
-          buildFragment: function buildFragment(dom) {
-            var el0 = dom.createDocumentFragment();
-            var el1 = dom.createTextNode("									");
-            dom.appendChild(el0, el1);
-            var el1 = dom.createElement("div");
-            dom.setAttribute(el1, "class", "vertical-center");
-            var el2 = dom.createTextNode("\n										");
-            dom.appendChild(el1, el2);
-            var el2 = dom.createElement("img");
-            dom.setAttribute(el2, "class", "author-image");
-            dom.appendChild(el1, el2);
-            var el2 = dom.createTextNode("\n									");
-            dom.appendChild(el1, el2);
-            dom.appendChild(el0, el1);
-            var el1 = dom.createTextNode("\n									");
-            dom.appendChild(el0, el1);
-            var el1 = dom.createElement("div");
-            dom.setAttribute(el1, "class", "vertical-center article-title");
-            var el2 = dom.createTextNode("\n										");
-            dom.appendChild(el1, el2);
-            var el2 = dom.createComment("");
-            dom.appendChild(el1, el2);
-            var el2 = dom.createTextNode("\n									");
-            dom.appendChild(el1, el2);
-            dom.appendChild(el0, el1);
-            var el1 = dom.createTextNode("\n");
-            dom.appendChild(el0, el1);
-            return el0;
-          },
-          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-            var element0 = dom.childAt(fragment, [1, 1]);
-            var morphs = new Array(2);
-            morphs[0] = dom.createAttrMorph(element0, 'src');
-            morphs[1] = dom.createMorphAt(dom.childAt(fragment, [3]), 1, 1);
-            return morphs;
-          },
-          statements: [["attribute", "src", ["get", "post.author.profileImageUrl", []]], ["content", "post.title", ["loc", [null, [42, 10], [42, 24]]]]],
-          locals: [],
-          templates: []
-        };
-      })();
       return {
         meta: {
           "revision": "Ember@1.13.7",
           "loc": {
             "source": null,
             "start": {
-              "line": 35,
-              "column": 6
-            },
-            "end": {
-              "line": 46,
-              "column": 6
-            }
-          },
-          "moduleName": "student-org-site/templates/post.hbs"
-        },
-        arity: 1,
-        cachedFragment: null,
-        hasRendered: false,
-        buildFragment: function buildFragment(dom) {
-          var el0 = dom.createDocumentFragment();
-          var el1 = dom.createTextNode("							");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("li");
-          dom.setAttribute(el1, "class", "table");
-          var el2 = dom.createTextNode("\n");
-          dom.appendChild(el1, el2);
-          var el2 = dom.createComment("");
-          dom.appendChild(el1, el2);
-          var el2 = dom.createTextNode("							");
-          dom.appendChild(el1, el2);
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n");
-          dom.appendChild(el0, el1);
-          return el0;
-        },
-        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-          var morphs = new Array(1);
-          morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 1, 1);
-          return morphs;
-        },
-        statements: [["block", "link-to", ["post", ["get", "post", ["loc", [null, [37, 26], [37, 30]]]]], [], 0, null, ["loc", [null, [37, 8], [44, 20]]]]],
-        locals: ["post"],
-        templates: [child0]
-      };
-    })();
-    var child3 = (function () {
-      return {
-        meta: {
-          "revision": "Ember@1.13.7",
-          "loc": {
-            "source": null,
-            "start": {
-              "line": 54,
+              "line": 55,
               "column": 4
             },
             "end": {
-              "line": 56,
+              "line": 57,
               "column": 4
             }
           },
@@ -5357,12 +5267,12 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
           morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
           return morphs;
         },
-        statements: [["content", "tag.id", ["loc", [null, [55, 39], [55, 49]]]]],
+        statements: [["content", "tag.id", ["loc", [null, [56, 39], [56, 49]]]]],
         locals: ["tag"],
         templates: []
       };
     })();
-    var child4 = (function () {
+    var child3 = (function () {
       var child0 = (function () {
         return {
           meta: {
@@ -5370,11 +5280,11 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
             "loc": {
               "source": null,
               "start": {
-                "line": 70,
+                "line": 71,
                 "column": 25
               },
               "end": {
-                "line": 70,
+                "line": 71,
                 "column": 64
               }
             },
@@ -5403,11 +5313,11 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 69,
+              "line": 70,
               "column": 3
             },
             "end": {
-              "line": 71,
+              "line": 72,
               "column": 3
             }
           },
@@ -5434,23 +5344,23 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
           morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
           return morphs;
         },
-        statements: [["block", "link-to", ["post", ["get", "previousPost", ["loc", [null, [70, 43], [70, 55]]]]], [], 0, null, ["loc", [null, [70, 25], [70, 76]]]]],
+        statements: [["block", "link-to", ["post", ["get", "previousPost", ["loc", [null, [71, 43], [71, 55]]]]], [], 0, null, ["loc", [null, [71, 25], [71, 76]]]]],
         locals: [],
         templates: [child0]
       };
     })();
-    var child5 = (function () {
+    var child4 = (function () {
       return {
         meta: {
           "revision": "Ember@1.13.7",
           "loc": {
             "source": null,
             "start": {
-              "line": 71,
+              "line": 72,
               "column": 3
             },
             "end": {
-              "line": 73,
+              "line": 74,
               "column": 3
             }
           },
@@ -5482,7 +5392,7 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
         templates: []
       };
     })();
-    var child6 = (function () {
+    var child5 = (function () {
       var child0 = (function () {
         return {
           meta: {
@@ -5490,11 +5400,11 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
             "loc": {
               "source": null,
               "start": {
-                "line": 75,
+                "line": 76,
                 "column": 21
               },
               "end": {
-                "line": 75,
+                "line": 76,
                 "column": 56
               }
             },
@@ -5523,11 +5433,11 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
           "loc": {
             "source": null,
             "start": {
-              "line": 74,
+              "line": 75,
               "column": 3
             },
             "end": {
-              "line": 76,
+              "line": 77,
               "column": 3
             }
           },
@@ -5554,23 +5464,23 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
           morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
           return morphs;
         },
-        statements: [["block", "link-to", ["post", ["get", "nextPost", ["loc", [null, [75, 39], [75, 47]]]]], [], 0, null, ["loc", [null, [75, 21], [75, 68]]]]],
+        statements: [["block", "link-to", ["post", ["get", "nextPost", ["loc", [null, [76, 39], [76, 47]]]]], [], 0, null, ["loc", [null, [76, 21], [76, 68]]]]],
         locals: [],
         templates: [child0]
       };
     })();
-    var child7 = (function () {
+    var child6 = (function () {
       return {
         meta: {
           "revision": "Ember@1.13.7",
           "loc": {
             "source": null,
             "start": {
-              "line": 76,
+              "line": 77,
               "column": 3
             },
             "end": {
-              "line": 78,
+              "line": 79,
               "column": 3
             }
           },
@@ -5602,6 +5512,198 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
         templates: []
       };
     })();
+    var child7 = (function () {
+      var child0 = (function () {
+        return {
+          meta: {
+            "revision": "Ember@1.13.7",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 139,
+                "column": 7
+              },
+              "end": {
+                "line": 147,
+                "column": 7
+              }
+            },
+            "moduleName": "student-org-site/templates/post.hbs"
+          },
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("								");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("div");
+            dom.setAttribute(el1, "class", "vertical-center");
+            var el2 = dom.createTextNode("\n									");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createComment("<img src=\"http://s3.amazonaws.com/uifaces/faces/twitter/cacique/73.jpg\" class=\"author-image\">");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode("\n									");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createElement("i");
+            dom.setAttribute(el2, "class", "fa fa-file-text-o author-image");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode("\n								");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n								");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("div");
+            dom.setAttribute(el1, "class", "vertical-center article-title");
+            var el2 = dom.createTextNode("\n									");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createComment("");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode("\n								");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(dom.childAt(fragment, [3]), 1, 1);
+            return morphs;
+          },
+          statements: [["content", "post.title", ["loc", [null, [145, 9], [145, 23]]]]],
+          locals: [],
+          templates: []
+        };
+      })();
+      return {
+        meta: {
+          "revision": "Ember@1.13.7",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 137,
+              "column": 6
+            },
+            "end": {
+              "line": 149,
+              "column": 6
+            }
+          },
+          "moduleName": "student-org-site/templates/post.hbs"
+        },
+        arity: 1,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("						");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("li");
+          dom.setAttribute(el1, "class", "table");
+          var el2 = dom.createTextNode("\n");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createComment("");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("						");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 1, 1);
+          return morphs;
+        },
+        statements: [["block", "link-to", ["post", ["get", "post", ["loc", [null, [139, 25], [139, 29]]]]], ["class", "table-row"], 0, null, ["loc", [null, [139, 7], [147, 19]]]]],
+        locals: ["post"],
+        templates: [child0]
+      };
+    })();
+    var child8 = (function () {
+      var child0 = (function () {
+        return {
+          meta: {
+            "revision": "Ember@1.13.7",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 159,
+                "column": 5
+              },
+              "end": {
+                "line": 161,
+                "column": 5
+              }
+            },
+            "moduleName": "student-org-site/templates/post.hbs"
+          },
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("						");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("button");
+            dom.setAttribute(el1, "type", "submit");
+            dom.setAttribute(el1, "class", "btn");
+            var el2 = dom.createComment("");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
+            return morphs;
+          },
+          statements: [["content", "tag.name", ["loc", [null, [160, 40], [160, 52]]]]],
+          locals: [],
+          templates: []
+        };
+      })();
+      return {
+        meta: {
+          "revision": "Ember@1.13.7",
+          "loc": {
+            "source": null,
+            "start": {
+              "line": 158,
+              "column": 4
+            },
+            "end": {
+              "line": 162,
+              "column": 4
+            }
+          },
+          "moduleName": "student-org-site/templates/post.hbs"
+        },
+        arity: 1,
+        cachedFragment: null,
+        hasRendered: false,
+        buildFragment: function buildFragment(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createComment("");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+          var morphs = new Array(1);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
+          return morphs;
+        },
+        statements: [["block", "if", [["get", "tag.name", ["loc", [null, [159, 11], [159, 19]]]]], [], 0, null, ["loc", [null, [159, 5], [161, 12]]]]],
+        locals: ["tag"],
+        templates: [child0]
+      };
+    })();
     return {
       meta: {
         "revision": "Ember@1.13.7",
@@ -5612,8 +5714,8 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 83,
-            "column": 6
+            "line": 168,
+            "column": 0
           }
         },
         "moduleName": "student-org-site/templates/post.hbs"
@@ -5724,37 +5826,7 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
         dom.appendChild(el3, el4);
         var el4 = dom.createTextNode("\n\n			");
         dom.appendChild(el3, el4);
-        var el4 = dom.createElement("div");
-        dom.setAttribute(el4, "class", "post-sidebar-module");
-        var el5 = dom.createTextNode("\n				");
-        dom.appendChild(el4, el5);
-        var el5 = dom.createElement("h3");
-        var el6 = dom.createElement("i");
-        dom.setAttribute(el6, "class", "fa fa-newspaper-o");
-        dom.appendChild(el5, el6);
-        var el6 = dom.createTextNode(" Recent Posts");
-        dom.appendChild(el5, el6);
-        dom.appendChild(el4, el5);
-        var el5 = dom.createTextNode("\n				");
-        dom.appendChild(el4, el5);
-        var el5 = dom.createElement("div");
-        dom.setAttribute(el5, "class", "recent-posts-cont");
-        var el6 = dom.createTextNode("\n					");
-        dom.appendChild(el5, el6);
-        var el6 = dom.createElement("ul");
-        dom.setAttribute(el6, "class", "image-list");
-        var el7 = dom.createTextNode("\n");
-        dom.appendChild(el6, el7);
-        var el7 = dom.createComment("");
-        dom.appendChild(el6, el7);
-        var el7 = dom.createTextNode("					");
-        dom.appendChild(el6, el7);
-        dom.appendChild(el5, el6);
-        var el6 = dom.createTextNode("\n				");
-        dom.appendChild(el5, el6);
-        dom.appendChild(el4, el5);
-        var el5 = dom.createTextNode("\n			");
-        dom.appendChild(el4, el5);
+        var el4 = dom.createComment("\n			<div class=\"post-sidebar-module\">\n				<h3><i class=\"fa fa-newspaper-o\"></i> Recent Posts</h3>\n				<div class=\"recent-posts-cont\">\n					<ul class=\"image-list\">\n{{#each post in recentPosts}}\n							<li class=\"table\">\n								{{#link-to \"post\" post}}\n									<div class=\"vertical-center\">\n										<img {{bind-attr src=\"post.author.profileImageUrl\"}} class=\"author-image\">\n									</div>\n									<div class=\"vertical-center article-title\">\n										{{post.title}}\n									</div>\n								{{/link-to}}\n							</li>\n						{{/each}}					</ul>\n				</div>\n			</div>");
         dom.appendChild(el3, el4);
         var el4 = dom.createTextNode("\n\n			");
         dom.appendChild(el3, el4);
@@ -5829,35 +5901,261 @@ define("student-org-site/templates/post", ["exports"], function (exports) {
         var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("footer");
+        var el2 = dom.createTextNode("\n	");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2, "class", "container");
+        var el3 = dom.createTextNode("\n		");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        dom.setAttribute(el3, "class", "row");
+        var el4 = dom.createTextNode("\n			");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("div");
+        dom.setAttribute(el4, "class", "col-sm-4");
+        var el5 = dom.createTextNode("\n				");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createElement("h3");
+        var el6 = dom.createElement("i");
+        dom.setAttribute(el6, "class", "fa fa-leaf");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode(" Contact Us");
+        dom.appendChild(el5, el6);
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode("\n				");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createComment("<address>\n					<strong>Website:</strong><br />\n					<a href=\"#\">www.iconic-locations.com</a>\n				</address>");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode("\n				");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createElement("address");
+        var el6 = dom.createTextNode("\n					");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createElement("strong");
+        var el7 = dom.createTextNode("Address:");
+        dom.appendChild(el6, el7);
+        dom.appendChild(el5, el6);
+        var el6 = dom.createElement("br");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n					1110 S 67th St");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createElement("br");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n					Omaha, NE 68182\n				");
+        dom.appendChild(el5, el6);
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode("\n\n				");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createElement("div");
+        dom.setAttribute(el5, "class", "social-cont");
+        var el6 = dom.createTextNode("\n					");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createElement("span");
+        dom.setAttribute(el6, "class", "fa-stack facebook");
+        var el7 = dom.createTextNode("\n						");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createElement("a");
+        dom.setAttribute(el7, "href", "#");
+        var el8 = dom.createTextNode("\n							");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("i");
+        dom.setAttribute(el8, "class", "fa fa-circle fa-stack-2x");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n							");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("i");
+        dom.setAttribute(el8, "class", "fa fa-facebook fa-stack-1x fa-inverse social-ico");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n						");
+        dom.appendChild(el7, el8);
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n					");
+        dom.appendChild(el6, el7);
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n\n					");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createElement("span");
+        dom.setAttribute(el6, "class", "fa-stack twitter");
+        var el7 = dom.createTextNode("\n						");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createElement("a");
+        dom.setAttribute(el7, "href", "#");
+        var el8 = dom.createTextNode("\n							");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("i");
+        dom.setAttribute(el8, "class", "fa fa-circle fa-stack-2x");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n							");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("i");
+        dom.setAttribute(el8, "class", "fa fa-twitter fa-stack-1x fa-inverse social-ico");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n						");
+        dom.appendChild(el7, el8);
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n					");
+        dom.appendChild(el6, el7);
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n\n					");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createElement("span");
+        dom.setAttribute(el6, "class", "fa-stack google");
+        var el7 = dom.createTextNode("\n						");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createElement("a");
+        dom.setAttribute(el7, "href", "#");
+        var el8 = dom.createTextNode("\n							");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("i");
+        dom.setAttribute(el8, "class", "fa fa-circle fa-stack-2x");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n							");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("i");
+        dom.setAttribute(el8, "class", "fa fa-google-plus fa-stack-1x fa-inverse social-ico");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n						");
+        dom.appendChild(el7, el8);
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n					");
+        dom.appendChild(el6, el7);
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n\n					");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createElement("span");
+        dom.setAttribute(el6, "class", "fa-stack instagram");
+        var el7 = dom.createTextNode("\n						");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createElement("a");
+        dom.setAttribute(el7, "href", "#");
+        var el8 = dom.createTextNode("\n							");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("i");
+        dom.setAttribute(el8, "class", "fa fa-circle fa-stack-2x");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n							");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createElement("i");
+        dom.setAttribute(el8, "class", "fa fa-linkedin fa-stack-1x fa-inverse social-ico");
+        dom.appendChild(el7, el8);
+        var el8 = dom.createTextNode("\n						");
+        dom.appendChild(el7, el8);
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n					");
+        dom.appendChild(el6, el7);
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n				");
+        dom.appendChild(el5, el6);
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode("\n\n			");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n			");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("div");
+        dom.setAttribute(el4, "class", "col-sm-4");
+        var el5 = dom.createTextNode("\n				");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createElement("h3");
+        var el6 = dom.createElement("i");
+        dom.setAttribute(el6, "class", "fa fa-newspaper-o");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode(" Recent Posts");
+        dom.appendChild(el5, el6);
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode("\n\n				");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createElement("div");
+        dom.setAttribute(el5, "class", "recent-posts-cont");
+        var el6 = dom.createTextNode("\n					");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createElement("ul");
+        dom.setAttribute(el6, "class", "image-list");
+        var el7 = dom.createTextNode("\n");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createComment("");
+        dom.appendChild(el6, el7);
+        var el7 = dom.createTextNode("\n					");
+        dom.appendChild(el6, el7);
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n				");
+        dom.appendChild(el5, el6);
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode("\n\n			");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n			");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("div");
+        dom.setAttribute(el4, "class", "col-sm-4");
+        var el5 = dom.createTextNode("\n				");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createElement("h3");
+        var el6 = dom.createElement("i");
+        dom.setAttribute(el6, "class", "fa fa-tags");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode(" All Tags");
+        dom.appendChild(el5, el6);
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode("\n				");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createElement("div");
+        dom.setAttribute(el5, "class", "tag-cont");
+        var el6 = dom.createTextNode("\n");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createComment("");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("				");
+        dom.appendChild(el5, el6);
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode("\n			");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n		");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n	");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-        var element2 = dom.childAt(fragment, [0]);
-        var element3 = dom.childAt(element2, [1, 1]);
-        var element4 = dom.childAt(element2, [3, 1]);
-        var element5 = dom.childAt(fragment, [3, 1]);
+        var element1 = dom.childAt(fragment, [0]);
+        var element2 = dom.childAt(element1, [1, 1]);
+        var element3 = dom.childAt(element1, [3, 1]);
+        var element4 = dom.childAt(fragment, [3, 1]);
+        var element5 = dom.childAt(element4, [1]);
         var element6 = dom.childAt(element5, [1]);
-        var element7 = dom.childAt(element6, [1]);
-        var element8 = dom.childAt(element7, [1, 1]);
-        var element9 = dom.childAt(element5, [3]);
-        var element10 = dom.childAt(element9, [3]);
-        var morphs = new Array(11);
-        morphs[0] = dom.createAttrMorph(element3, 'src');
-        morphs[1] = dom.createMorphAt(dom.childAt(element4, [1]), 0, 0);
-        morphs[2] = dom.createMorphAt(element4, 3, 3);
-        morphs[3] = dom.createMorphAt(element8, 1, 1);
-        morphs[4] = dom.createMorphAt(dom.childAt(element8, [2]), 0, 0);
-        morphs[5] = dom.createMorphAt(dom.childAt(element7, [3]), 1, 1);
-        morphs[6] = dom.createMorphAt(dom.childAt(element6, [3, 3, 1]), 1, 1);
-        morphs[7] = dom.createMorphAt(dom.childAt(element6, [5, 3]), 1, 1);
-        morphs[8] = dom.createUnsafeMorphAt(dom.childAt(element9, [1, 1]), 1, 1);
-        morphs[9] = dom.createMorphAt(element10, 1, 1);
-        morphs[10] = dom.createMorphAt(element10, 2, 2);
+        var element7 = dom.childAt(element6, [1, 1]);
+        var element8 = dom.childAt(element4, [3]);
+        var element9 = dom.childAt(element8, [3]);
+        var element10 = dom.childAt(fragment, [5, 1, 1]);
+        var morphs = new Array(12);
+        morphs[0] = dom.createAttrMorph(element2, 'src');
+        morphs[1] = dom.createMorphAt(dom.childAt(element3, [1]), 0, 0);
+        morphs[2] = dom.createMorphAt(element3, 3, 3);
+        morphs[3] = dom.createMorphAt(element7, 1, 1);
+        morphs[4] = dom.createMorphAt(dom.childAt(element7, [2]), 0, 0);
+        morphs[5] = dom.createMorphAt(dom.childAt(element6, [3]), 1, 1);
+        morphs[6] = dom.createMorphAt(dom.childAt(element5, [5, 3]), 1, 1);
+        morphs[7] = dom.createUnsafeMorphAt(dom.childAt(element8, [1, 1]), 1, 1);
+        morphs[8] = dom.createMorphAt(element9, 1, 1);
+        morphs[9] = dom.createMorphAt(element9, 2, 2);
+        morphs[10] = dom.createMorphAt(dom.childAt(element10, [3, 3, 1]), 1, 1);
+        morphs[11] = dom.createMorphAt(dom.childAt(element10, [5, 3]), 1, 1);
         return morphs;
       },
-      statements: [["attribute", "src", ["get", "postContent.image", ["loc", [null, [3, 22], [3, 39]]]]], ["content", "postContent.title", ["loc", [null, [7, 28], [7, 49]]]], ["block", "if", [["get", "postContent.subtitle", ["loc", [null, [8, 8], [8, 28]]]]], [], 0, null, ["loc", [null, [8, 2], [10, 9]]]], ["block", "if", [["get", "postContent.author.profileImageUrl", ["loc", [null, [23, 12], [23, 46]]]]], [], 1, null, ["loc", [null, [23, 6], [23, 136]]]], ["content", "postContent.author.name", ["loc", [null, [23, 162], [23, 189]]]], ["inline", "date-formatter", ["MMMM DD, YYYY", ["get", "model.datePublished", ["loc", [null, [27, 38], [27, 57]]]]], [], ["loc", [null, [27, 5], [27, 59]]]], ["block", "each", [["get", "recentPosts", ["loc", [null, [35, 22], [35, 33]]]]], [], 2, null, ["loc", [null, [35, 6], [46, 15]]]], ["block", "each", [["get", "postContent.tags", ["loc", [null, [54, 19], [54, 35]]]]], [], 3, null, ["loc", [null, [54, 4], [56, 13]]]], ["content", "postContent.content", ["loc", [null, [64, 4], [64, 29]]]], ["block", "if", [["get", "previousPost", ["loc", [null, [69, 9], [69, 21]]]]], [], 4, 5, ["loc", [null, [69, 3], [73, 10]]]], ["block", "if", [["get", "nextPost", ["loc", [null, [74, 9], [74, 17]]]]], [], 6, 7, ["loc", [null, [74, 3], [78, 10]]]]],
+      statements: [["attribute", "src", ["get", "postContent.image", ["loc", [null, [3, 22], [3, 39]]]]], ["content", "postContent.title", ["loc", [null, [7, 28], [7, 49]]]], ["block", "if", [["get", "postContent.subtitle", ["loc", [null, [8, 8], [8, 28]]]]], [], 0, null, ["loc", [null, [8, 2], [10, 9]]]], ["block", "if", [["get", "postContent.author.profileImageUrl", ["loc", [null, [23, 12], [23, 46]]]]], [], 1, null, ["loc", [null, [23, 6], [23, 136]]]], ["content", "postContent.author.name", ["loc", [null, [23, 162], [23, 189]]]], ["inline", "date-formatter", ["MMMM DD, YYYY", ["get", "model.datePublished", ["loc", [null, [27, 38], [27, 57]]]]], [], ["loc", [null, [27, 5], [27, 59]]]], ["block", "each", [["get", "postContent.tags", ["loc", [null, [55, 19], [55, 35]]]]], [], 2, null, ["loc", [null, [55, 4], [57, 13]]]], ["content", "postContent.content", ["loc", [null, [65, 4], [65, 29]]]], ["block", "if", [["get", "previousPost", ["loc", [null, [70, 9], [70, 21]]]]], [], 3, 4, ["loc", [null, [70, 3], [74, 10]]]], ["block", "if", [["get", "nextPost", ["loc", [null, [75, 9], [75, 17]]]]], [], 5, 6, ["loc", [null, [75, 3], [79, 10]]]], ["block", "each", [["get", "topposts", ["loc", [null, [137, 14], [137, 22]]]]], [], 7, null, ["loc", [null, [137, 6], [149, 15]]]], ["block", "each", [["get", "tags", ["loc", [null, [158, 12], [158, 16]]]]], [], 8, null, ["loc", [null, [158, 4], [162, 13]]]]],
       locals: [],
-      templates: [child0, child1, child2, child3, child4, child5, child6, child7]
+      templates: [child0, child1, child2, child3, child4, child5, child6, child7, child8]
     };
   })());
 });
@@ -6183,6 +6481,50 @@ define("student-org-site/templates/posts", ["exports"], function (exports) {
       };
     })();
     var child3 = (function () {
+      var child0 = (function () {
+        return {
+          meta: {
+            "revision": "Ember@1.13.7",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 100,
+                "column": 5
+              },
+              "end": {
+                "line": 102,
+                "column": 5
+              }
+            },
+            "moduleName": "student-org-site/templates/posts.hbs"
+          },
+          arity: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("						");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("button");
+            dom.setAttribute(el1, "type", "submit");
+            dom.setAttribute(el1, "class", "btn");
+            var el2 = dom.createComment("");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
+            return morphs;
+          },
+          statements: [["content", "tag.name", ["loc", [null, [101, 40], [101, 52]]]]],
+          locals: [],
+          templates: []
+        };
+      })();
       return {
         meta: {
           "revision": "Ember@1.13.7",
@@ -6193,7 +6535,7 @@ define("student-org-site/templates/posts", ["exports"], function (exports) {
               "column": 4
             },
             "end": {
-              "line": 101,
+              "line": 103,
               "column": 4
             }
           },
@@ -6204,26 +6546,20 @@ define("student-org-site/templates/posts", ["exports"], function (exports) {
         hasRendered: false,
         buildFragment: function buildFragment(dom) {
           var el0 = dom.createDocumentFragment();
-          var el1 = dom.createTextNode("					");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("button");
-          dom.setAttribute(el1, "type", "submit");
-          dom.setAttribute(el1, "class", "btn");
-          var el2 = dom.createComment("");
-          dom.appendChild(el1, el2);
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n");
+          var el1 = dom.createComment("");
           dom.appendChild(el0, el1);
           return el0;
         },
         buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
           var morphs = new Array(1);
-          morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
+          morphs[0] = dom.createMorphAt(fragment, 0, 0, contextualElement);
+          dom.insertBoundary(fragment, 0);
+          dom.insertBoundary(fragment, null);
           return morphs;
         },
-        statements: [["content", "tag.name", ["loc", [null, [100, 39], [100, 51]]]]],
+        statements: [["block", "if", [["get", "tag.name", ["loc", [null, [100, 11], [100, 19]]]]], [], 0, null, ["loc", [null, [100, 5], [102, 12]]]]],
         locals: ["tag"],
-        templates: []
+        templates: [child0]
       };
     })();
     return {
@@ -6236,7 +6572,7 @@ define("student-org-site/templates/posts", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 109,
+            "line": 111,
             "column": 0
           }
         },
@@ -6458,7 +6794,7 @@ define("student-org-site/templates/posts", ["exports"], function (exports) {
         var el6 = dom.createElement("i");
         dom.setAttribute(el6, "class", "fa fa-tags");
         dom.appendChild(el5, el6);
-        var el6 = dom.createTextNode(" Tags");
+        var el6 = dom.createTextNode(" All Tags");
         dom.appendChild(el5, el6);
         dom.appendChild(el4, el5);
         var el5 = dom.createTextNode("\n				");
@@ -6504,7 +6840,7 @@ define("student-org-site/templates/posts", ["exports"], function (exports) {
         dom.insertBoundary(fragment, 0);
         return morphs;
       },
-      statements: [["inline", "page-title", [], ["title", "Posts, Articles, & Writeups"], ["loc", [null, [1, 0], [1, 50]]]], ["block", "link-to", ["addPost"], ["tagName", "button", "class", "btn btn-default pull-right"], 0, null, ["loc", [null, [2, 0], [2, 131]]]], ["block", "each", [["get", "posts", ["loc", [null, [5, 9], [5, 14]]]]], [], 1, null, ["loc", [null, [5, 1], [24, 10]]]], ["block", "each", [["get", "topposts", ["loc", [null, [78, 14], [78, 22]]]]], [], 2, null, ["loc", [null, [78, 6], [90, 15]]]], ["block", "each", [["get", "tags", ["loc", [null, [99, 12], [99, 16]]]]], [], 3, null, ["loc", [null, [99, 4], [101, 13]]]], ["content", "outlet", ["loc", [null, [108, 0], [108, 10]]]]],
+      statements: [["inline", "page-title", [], ["title", "Posts, Articles, & Writeups"], ["loc", [null, [1, 0], [1, 50]]]], ["block", "link-to", ["addPost"], ["tagName", "button", "class", "btn btn-default pull-right"], 0, null, ["loc", [null, [2, 0], [2, 131]]]], ["block", "each", [["get", "posts", ["loc", [null, [5, 9], [5, 14]]]]], [], 1, null, ["loc", [null, [5, 1], [24, 10]]]], ["block", "each", [["get", "topposts", ["loc", [null, [78, 14], [78, 22]]]]], [], 2, null, ["loc", [null, [78, 6], [90, 15]]]], ["block", "each", [["get", "tags", ["loc", [null, [99, 12], [99, 16]]]]], [], 3, null, ["loc", [null, [99, 4], [103, 13]]]], ["content", "outlet", ["loc", [null, [110, 0], [110, 10]]]]],
       locals: [],
       templates: [child0, child1, child2, child3]
     };
@@ -6601,7 +6937,7 @@ catch(err) {
 });
 
 if (!runningTests) {
-  require("student-org-site/app")["default"].create({"API_HOST":"http://localhost:8000","name":"student-org-site","version":"0.0.0+e45e3e89","API_NAMESPACE":"api","API_ADD_TRAILING_SLASHES":true});
+  require("student-org-site/app")["default"].create({"API_HOST":"http://localhost:8000","name":"student-org-site","version":"0.0.0+ef1cfa6f","API_NAMESPACE":"api","API_ADD_TRAILING_SLASHES":true});
 }
 
 /* jshint ignore:end */

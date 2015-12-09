@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib import admin
 from Student_Org_Site_Backend.localsettings import *
-print IS_PROD
 if IS_PROD:
     from api.validators import *
 else:
@@ -33,8 +32,8 @@ class Event(models.Model):
     This is an event for the calendar.
     """
     title = models.CharField(max_length=20, blank=False, unique=True, validators=[XSScheck])
-    start = models.CharField(max_length=40, blank=False, unique=True, validators=[XSScheck, isDateFormat])
-    end = models.CharField(max_length=40, blank=False, unique=True, validators=[XSScheck, isDateFormat])
+    start = models.CharField(max_length=40, blank=False, unique=True, validators=[XSScheck])
+    end = models.CharField(max_length=40, blank=False, unique=True, validators=[XSScheck])
     #allday = models.BooleanField(unique=True)
     tags = models.ManyToManyField('tag', blank=True)
     def __str__(self):

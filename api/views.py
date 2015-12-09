@@ -90,7 +90,6 @@ class PostList(APIView):
 
     def post(self, request, format=None):
         new_post = request.data
-        #print new_post
         if 'tags' in new_post and new_post['tags']:
             tags = new_post['tags'].split(',')
             tags = map(lambda s: s.strip(), tags)
@@ -98,7 +97,6 @@ class PostList(APIView):
             for g in tags:
                 obj, created = Tag.objects.get_or_create(name=g)
                 tags_array.append(obj)
-                print tags_array
             created_post = Post.objects.create(title=new_post['title'], subtitle=new_post['subtitle'], image=new_post['image'], content=new_post['content'], author=request.user)
             created_post.save()
             created_post.tags = tags_array
