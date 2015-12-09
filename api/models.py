@@ -31,9 +31,9 @@ class Event(models.Model):
     """
     This is an event for the calendar.
     """
-    title = models.CharField(max_length=20, blank=False, unique=True, validators=[XSScheck])
-    start = models.CharField(max_length=40, blank=False, unique=True, validators=[XSScheck])
-    end = models.CharField(max_length=40, blank=False, unique=True, validators=[XSScheck])
+    title = models.CharField(max_length=20, blank=False, unique=False, validators=[XSScheck])
+    start = models.CharField(max_length=40, blank=False, unique=False, validators=[XSScheck])
+    end = models.CharField(max_length=40, blank=False, unique=False, validators=[XSScheck])
     #allday = models.BooleanField(unique=True)
     tags = models.ManyToManyField('tag', blank=True)
     def __str__(self):
