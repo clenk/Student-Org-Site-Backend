@@ -14,6 +14,8 @@ router = routers.DefaultRouter()
 #router.register(r'posts', views.PostViewSet) #use this for viewset approach
 router.register(r'tags', views.TagViewSet)
 router.register(r'users', views.UserViewSet)
+router.register(r'orgnames', views.OrgnameViewSet)
+router.register(r'orgabouts', views.OrgaboutViewSet)
 #router.register(r'posts', views.PostViewSet)
 router.register(r'events', views.EventViewSet)
 router.register(r'userprofiles', views.UserProfileViewSet)

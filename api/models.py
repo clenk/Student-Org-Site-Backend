@@ -27,6 +27,36 @@ class Tag(models.Model):
 class TagAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
+class Orgname(models.Model):
+    """
+    This is static content for the org name
+    """
+    name = models.CharField(max_length=30, blank=False, unique=True, validators=[XSScheck])
+
+    def __str__(self):
+        return str(self.id)+":"+self.name
+
+    class Meta:
+        verbose_name_plural = "Orgnames"
+
+class OrgnameAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+
+class Orgabout(models.Model):
+    """
+    This is static content for the about page
+    """
+    about = models.TextField(blank=False, unique=False, validators=[XSScheck])
+
+    def __str__(self):
+        return str(self.id)+":"+self.about
+
+    class Meta:
+        verbose_name_plural = "Orgabouts"
+
+class OrgaboutAdmin(admin.ModelAdmin):
+    list_display = ('id', 'about')
+
 class Event(models.Model):
     """
     This is an event for the calendar.

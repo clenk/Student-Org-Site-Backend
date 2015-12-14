@@ -8,6 +8,8 @@ else:
 admin.site.register(Post, PostAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Event, EventAdmin)
+admin.site.register(Orgname, OrgnameAdmin)
+admin.site.register(Orgabout, OrgaboutAdmin)
 #admin.site.register(myUser, myUserAdmin)
 #admin.site.register(Usr, UsrAdmin)
 admin.site.register(UserProfile, UserProfileAdmin)

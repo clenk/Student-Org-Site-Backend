@@ -19,6 +19,16 @@ class TagSerializer(serializers.ModelSerializer):
         model = Tag
         fields = ('id','name', )
 
+class OrgnameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Orgname
+        fields = ('id', 'name')
+
+class OrgaboutSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Orgabout
+        fields = ('id', 'about')
+
 # class UserSerializer(serializers.ModelSerializer):
 #     #name = serializers.username #TODO change the field name 'username' to 'name'
 #     profileImageUrl = serializers.CharField(source='myuser.profileImageUrl')

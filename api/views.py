@@ -148,6 +148,20 @@ class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
+class OrgnameViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows for CRUD operations on event objects.
+    """
+    queryset = Orgname.objects.all()
+    serializer_class = OrgnameSerializer
+
+class OrgaboutViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows for CRUD operations on event objects.
+    """
+    queryset = Orgabout.objects.all()
+    serializer_class = OrgaboutSerializer
+
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed.
