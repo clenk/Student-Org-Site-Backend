@@ -26,11 +26,14 @@ This application is intended for student organizations to quickly and easily cre
 9. ```python ../manage makemigrations```
 10. ```python ../manage migrate```
 11. ```python vim localsettings```
-  1. change ```IS_PROD = False``` to ```IS_PROD = True```
+  1. Change ```IS_PROD = False``` to ```IS_PROD = True```
 12. ```python vim ../localsettings```
-  1. change ```IS_PROD = False``` to ```IS_PROD = True```
-13. ```sudo apachectl restart```
-14. Now you should be good to go!
+  1. Change ```IS_PROD = False``` to ```IS_PROD = True```
+13. ```sudo chmod 775 db.sqlite3```
+14. ```vim settings.py```
+  1. Change ```DEBUG = True``` to ```DEBUG = False```
+15. ```sudo apachectl restart```
+16. Now you should be good to go!
 
 ## Integrating With Your Club
 1. An 'admin' (typically the club leader or representative) is responsible for adding users to the site
