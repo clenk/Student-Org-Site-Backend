@@ -7,6 +7,7 @@ This application is intended for student organizations to quickly and easily cre
 
 * [Git](http://git-scm.com/)
 * [Python] (https://www.python.org/)
+* [Apache and Django] (http://secwebdev.mlhale.com/)
 * A web-facing server to host the application on
 
 ## Installation
@@ -14,7 +15,7 @@ This application is intended for student organizations to quickly and easily cre
 1. ```cd /var/www/```
   1. if the directory doesn't exist, create it using ```mkdir /var/www```
 2. ```git clone https://github.com/clenk/Student_Org_Site_Backend.git```
-3. blah
+3. Configure the localsettings with how Dr. Hale describes in his [Apache and Django configuration guide] (http://secwebdev.mlhale.com/)
 4. ```cd /var/www/Student_Org_Site_Backend```
 5. ```sudo chown :www-data -R Student_Org_Site_Backend```
 6. ```vim localsettings```
