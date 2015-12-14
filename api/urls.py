@@ -3,7 +3,10 @@ from django.conf.urls import include, url
 #Django Rest Framework
 from rest_framework import routers
 from rest_framework.urlpatterns import format_suffix_patterns
-from Student_Org_Site_Backend.localsettings import *
+try:
+    from localsettings import *
+except ImportError:
+    from Student_Org_Site_Backend.localsettings import *
 if IS_PROD:
     from api import views
 else:
