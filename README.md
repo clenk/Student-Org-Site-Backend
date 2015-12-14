@@ -31,3 +31,27 @@ This application is intended for student organizations to quickly and easily cre
   1. change ```IS_PROD = False``` to ```IS_PROD = True```
 13. ```sudo apachectl restart```
 14. Now you should be good to go!
+
+## Integrating With Your Club
+1. An 'admin' (typically the club leader or representative) is responsible for adding users to the site
+  1. To add a user, go to <i>```clubApplicationURL/admin/```</i>
+    1. The last slash is important!
+  2. Log in using the credentials that were used when generating the admin
+  3. Select ```Users```
+  4. Select ```Add user```
+  5. Fill in the ```Username```, ```Password```, and ```Password confirmation```
+2. Editing a user's information is also up to the admin
+  1. To add a user, go to <i>```clubApplicationURL/admin/```</i>
+  2. Log in using the credentials that were used when generating the admin
+  3. Select the user that is going to be edited
+  4. Can change things such as:
+    1. First Name
+    2. Last Name
+    3. Email Address
+    4. If they are active or not
+    5. If they are an admin
+    6. etc.
+3. Adding Posts
+  1. Anyone that is logged in can create a post by navigating to the 'Posts' tab and then selecting 'Add Post'
+4. Adding Calendar Events
+  1. Anyone that is logged in can create a calendar event by navigating to the 'Calendar' tab and then selecting 'Add Event'
