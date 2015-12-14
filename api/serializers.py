@@ -2,7 +2,10 @@ from rest_framework import serializers
 
 #load django and webapp models
 from django.contrib.auth.models import *
-from Student_Org_Site_Backend.localsettings import *
+try:
+    from localsettings import *
+except ImportError:
+    from Student_Org_Site_Backend.localsettings import *
 if IS_PROD:
     from api.models import *
 else:

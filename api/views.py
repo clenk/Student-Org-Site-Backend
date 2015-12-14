@@ -4,7 +4,10 @@ from django.shortcuts import *
 # Import models
 from django.db import models
 from django.contrib.auth.models import *
-from Student_Org_Site_Backend.localsettings import *
+try:
+    from localsettings import *
+except ImportError:
+    from Student_Org_Site_Backend.localsettings import *
 if IS_PROD:
     from api.models import *
     from api.serializers import *
