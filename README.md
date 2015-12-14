@@ -42,6 +42,7 @@ This application is intended for student organizations to quickly and easily cre
   5. Fill in the ```Username```, ```Password```, and ```Password confirmation```
 2. Editing a user's information is also up to the admin
   1. To add a user, go to <i>```clubApplicationURL/admin/```</i>
+    1. The last slash is important!
   2. Log in using the credentials that were used when generating the admin
   3. Select the user that is going to be edited
   4. Can change things such as:
